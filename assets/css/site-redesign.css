@@ -96,37 +96,6 @@ button { color: inherit; }
 .desktop-nav a[aria-current="page"],
 .footer-link:hover { color: var(--paper); }
 .header-actions { display: flex; align-items: center; gap: 10px; }
-.nebula-lang-shell { position: relative; }
-.nebula-lang-menu {
-  position: absolute;
-  z-index: 120;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 164px;
-  padding: 6px;
-  border: 1px solid var(--line);
-  background: #111113;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
-}
-.nebula-lang-menu[aria-hidden="true"] { display: none; }
-.nebula-lang-option {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 8px;
-  align-items: center;
-  padding: 9px 10px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  text-align: left;
-  cursor: pointer;
-}
-.nebula-lang-option:hover,
-.nebula-lang-option.is-active { background: rgba(255, 255, 255, 0.07); color: var(--paper); }
-.nebula-lang-option__flag { font-size: 0.9rem; }
-.nebula-lang-option__name { font-size: 0.82rem; }
-.lang-button,
 .mobile-toggle {
   min-width: 44px;
   min-height: 44px;
@@ -135,7 +104,6 @@ button { color: inherit; }
   background: transparent;
   cursor: pointer;
 }
-.lang-button { padding: 0 14px; font-size: 0.78rem; font-weight: 700; }
 .mobile-toggle { display: none; place-items: center; padding: 0; }
 .mobile-toggle span,
 .mobile-toggle::before,
@@ -452,7 +420,6 @@ button { color: inherit; }
   .header-actions { gap: 7px; }
   .brand-logo { height: 44px; }
   .brand-logo-footer { height: 52px; }
-  .lang-button { min-width: 42px; padding: 0 10px; }
   .signal-grid { grid-template-columns: 1fr; }
   .signal-item, .signal-item:nth-child(3) { padding: 18px 0; border-left: 0; border-top: 1px solid var(--line); }
   .signal-item:first-child { border-top: 0; }

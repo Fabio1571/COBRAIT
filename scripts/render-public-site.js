@@ -37,9 +37,6 @@ function header(active = "") {
       <a class="brand" href="/" aria-label="Cobrait — início"><img class="brand-logo" src="/assets/logo-mark-cropped-CVmwixhD.png" alt="Cobrait"></a>
       <nav class="desktop-nav" aria-label="Navegação principal">${links}</nav>
       <div class="header-actions">
-        <div class="nebula-lang-shell">
-          <button class="lang-button" type="button" aria-label="Idioma"><span class="tracking-wide" data-nebula-lang-badge>PT</span></button>
-        </div>
         <a class="button button-primary header-cta" href="/book-a-call.html">Falar do projeto</a>
         <button class="mobile-toggle" type="button" aria-label="Abrir menu" aria-controls="mobile-navigation" aria-expanded="false" data-nav-toggle><span></span></button>
       </div>
@@ -87,7 +84,6 @@ function footer() {
 
 function scripts(extra = []) {
   return [...extra,
-    "/assets/js/nebula-language.js",
     "/assets/js/site-ui.js",
     "/assets/js/cms-client.js",
     "/assets/js/cms-inline-editor.js"

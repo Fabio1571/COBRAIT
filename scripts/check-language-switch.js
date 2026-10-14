@@ -24,13 +24,8 @@ function publicHtmlFiles() {
   });
 }
 
-const languageScriptPath = path.join(root, "assets", "js", "nebula-language.js");
 const responsiveCssPath = path.join(root, "assets", "css", "site-redesign.css");
 const siteUiPath = path.join(root, "assets", "js", "site-ui.js");
-
-if (!fs.existsSync(languageScriptPath)) {
-  fail("Missing assets/js/nebula-language.js");
-}
 
 if (!fs.existsSync(responsiveCssPath)) {
   fail("Missing assets/css/site-redesign.css");
@@ -38,26 +33,6 @@ if (!fs.existsSync(responsiveCssPath)) {
 
 if (!fs.existsSync(siteUiPath)) {
   fail("Missing assets/js/site-ui.js");
-}
-
-if (fs.existsSync(languageScriptPath)) {
-  const languageScript = readText(languageScriptPath);
-  ["pt", "en", "es"].forEach((lang) => {
-    if (!languageScript.includes('code: "' + lang + '"')) {
-      fail("Desktop language script is missing option: " + lang);
-    }
-  });
-
-  [
-    "window.CobraitLanguage",
-    "setLanguage(lang, true)",
-    "applyLanguageToDocument",
-    "MutationObserver"
-  ].forEach((marker) => {
-    if (!languageScript.includes(marker)) {
-      fail("Desktop language script is missing marker: " + marker);
-    }
-  });
 }
 
 const htmlFiles = publicHtmlFiles();
@@ -69,10 +44,6 @@ htmlFiles.forEach((file) => {
   const relative = path.relative(root, file).replace(/\\/g, "/");
   const html = readText(file);
 
-  if (!html.includes('/assets/js/nebula-language.js')) {
-    fail(relative + " does not load nebula-language.js");
-  }
-
   if (!html.includes('/assets/css/site-redesign.css')) {
     fail(relative + " does not load the shared responsive stylesheet");
   }
@@ -81,15 +52,15 @@ htmlFiles.forEach((file) => {
     fail(relative + " does not load the shared interface script");
   }
 
-  if (!/aria-label=["']Idioma["']/.test(html)) {
-    fail(relative + " does not include the desktop language button");
+  if (html.includes('/assets/js/nebula-language.js') || /aria-label=["']Idioma["']/.test(html)) {
+    fail(relative + " still includes the removed language control");
   }
 });
 
 if (failures.length) {
-  console.error("Language switch check failed:");
+  console.error("Public site check failed:");
   failures.forEach((message) => console.error("- " + message));
   process.exit(1);
 }
 
-console.log("Public site check OK: " + htmlFiles.length + " responsive pages wired for PT/EN/ES.");
+console.log("Public site check OK: " + htmlFiles.length + " responsive Portuguese pages without language controls.");
