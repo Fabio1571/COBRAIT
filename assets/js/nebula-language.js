@@ -2083,10 +2083,18 @@
 
   function translateBlockElement(element, lang) {
     if (!element || !element.textContent) return;
+    var originalKey = "nebulaOriginalBlock";
+
+    if (lang === "pt") {
+      if (element.dataset && element.dataset[originalKey]) {
+        element.innerHTML = element.dataset[originalKey];
+      }
+      return;
+    }
+
     var set = getPhraseSet(element.textContent);
     if (!set || !set[lang]) return;
 
-    var originalKey = "nebulaOriginalBlock";
     if (element.dataset && !element.dataset[originalKey]) {
       element.dataset[originalKey] = element.innerHTML;
     }
@@ -2106,6 +2114,7 @@
 
     Array.prototype.forEach.call(nodes, function (element) {
       if (element.closest && element.closest("script, style, noscript, svg, template")) return;
+      if (element.closest && element.closest(".nebula-lang-shell")) return;
       if (element.querySelector && element.querySelector("svg, img, input, select, textarea")) return;
       translateBlockElement(element, lang);
     });
@@ -2118,12 +2127,19 @@
 
     applyBlockTranslations(normalized, scanRoot);
 
+    if (normalized === "pt") {
+      applyFallbackAttributes(normalized, scanRoot);
+      applyDocumentMeta(normalized);
+      return;
+    }
+
     var walker = document.createTreeWalker(scanRoot, NodeFilter.SHOW_TEXT, {
       acceptNode: function (node) {
         var parent = node.parentElement;
         if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT", "SVG", "TEMPLATE"].indexOf(parent.tagName) >= 0) {
           return NodeFilter.FILTER_REJECT;
         }
+        if (parent.closest && parent.closest(".nebula-lang-shell")) return NodeFilter.FILTER_REJECT;
         var set = getPhraseSet(node.nodeValue);
         return set && set[normalized] ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
       }
@@ -2433,11 +2449,6 @@
   function init() {
     var lang = normalizeLang(getUrlLang() || getStoredLang() || document.documentElement.lang || "pt");
 
-    if (!isDesktopViewport()) {
-      resetMobileButtons();
-      return;
-    }
-
     var buttons = document.querySelectorAll('button[aria-label="Idioma"]');
     Array.prototype.forEach.call(buttons, function (button, index) {
       var shell = button.parentElement;
@@ -2468,12 +2479,7 @@
   }
 
   function syncViewport() {
-    if (isDesktopViewport()) {
-      init();
-      return;
-    }
-
-    resetMobileButtons();
+    init();
   }
 
   document.addEventListener("click", function () {

@@ -25,14 +25,19 @@ function publicHtmlFiles() {
 }
 
 const languageScriptPath = path.join(root, "assets", "js", "nebula-language.js");
-const mobileScriptPath = path.join(root, "assets", "js", "mobile-preview.js");
+const responsiveCssPath = path.join(root, "assets", "css", "site-redesign.css");
+const siteUiPath = path.join(root, "assets", "js", "site-ui.js");
 
 if (!fs.existsSync(languageScriptPath)) {
   fail("Missing assets/js/nebula-language.js");
 }
 
-if (!fs.existsSync(mobileScriptPath)) {
-  fail("Missing assets/js/mobile-preview.js");
+if (!fs.existsSync(responsiveCssPath)) {
+  fail("Missing assets/css/site-redesign.css");
+}
+
+if (!fs.existsSync(siteUiPath)) {
+  fail("Missing assets/js/site-ui.js");
 }
 
 if (fs.existsSync(languageScriptPath)) {
@@ -55,15 +60,6 @@ if (fs.existsSync(languageScriptPath)) {
   });
 }
 
-if (fs.existsSync(mobileScriptPath)) {
-  const mobileScript = readText(mobileScriptPath);
-  ["pt", "en", "es"].forEach((lang) => {
-    if (!mobileScript.includes('"' + lang + '"')) {
-      fail("Mobile preview language script is missing language: " + lang);
-    }
-  });
-}
-
 const htmlFiles = publicHtmlFiles();
 if (!htmlFiles.length) {
   fail("No public HTML files found.");
@@ -77,8 +73,12 @@ htmlFiles.forEach((file) => {
     fail(relative + " does not load nebula-language.js");
   }
 
-  if (!html.includes('/assets/js/mobile-preview.js') && !html.includes('mobile-preview-guard')) {
-    fail(relative + " does not load or route to the mobile preview");
+  if (!html.includes('/assets/css/site-redesign.css')) {
+    fail(relative + " does not load the shared responsive stylesheet");
+  }
+
+  if (!html.includes('/assets/js/site-ui.js')) {
+    fail(relative + " does not load the shared interface script");
   }
 
   if (!/aria-label=["']Idioma["']/.test(html)) {
@@ -92,4 +92,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("Language switch check OK: " + htmlFiles.length + " public pages wired for PT/EN/ES.");
+console.log("Public site check OK: " + htmlFiles.length + " responsive pages wired for PT/EN/ES.");

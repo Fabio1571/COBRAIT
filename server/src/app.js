@@ -109,60 +109,12 @@ function isTrustedLocalOrigin(origin) {
   }
 }
 
-function isMobileRequest(request) {
-  const userAgent = String(request.get("user-agent") || "");
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-}
-
-function buildMobilePreviewShell() {
-  return `<!doctype html>
-<html lang="pt">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#07091a">
-    <title>Cobrait</title>
-    <style>
-      html,
-      body {
-        min-height: 100%;
-        margin: 0;
-        background: #07091a;
-      }
-    </style>
-    <script>
-      (function () {
-        function leaveMobilePreview() {
-          if (window.innerWidth <= 768) return;
-          var url = new URL(window.location.href);
-          if (!url.searchParams.has("__mobile")) return;
-          url.searchParams.delete("__mobile");
-          window.location.replace(url.href);
-        }
-
-        leaveMobilePreview();
-        window.addEventListener("resize", leaveMobilePreview);
-        window.addEventListener("orientationchange", leaveMobilePreview);
-      })();
-    </script>
-  </head>
-  <body>
-    <script src="/assets/js/mobile-preview.js"></script>
-  </body>
-</html>`;
-}
-
 function sendPage(request, response, next) {
   const pathName = request.path || "/";
   const selectedFile = pageMap.get(pathName);
 
   if (!selectedFile) {
     next();
-    return;
-  }
-
-  if (request.query.__mobile === "1" || isMobileRequest(request)) {
-    response.type("html").send(buildMobilePreviewShell());
     return;
   }
 
