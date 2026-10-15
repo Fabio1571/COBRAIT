@@ -1,74 +1,44 @@
-# Edicao Pelo cPanel
+# Editar conteúdo no cPanel
 
-Este site ficou preparado para edicoes simples em modo estatico.
+O website público é renderizado pelo Node.js/Express e já não depende de ficheiros HTML separados para desktop, mobile ou idioma.
 
-Para publicar ou reiniciar a aplicacao Node no cPanel, ver `CPANEL-DEPLOY.md`.
+## Método recomendado
 
-O ficheiro principal para alterar textos e contactos e:
+1. Abrir `https://teu-dominio.pt/admin.html`.
+2. Iniciar sessão com um utilizador Editor ou Administrador.
+3. Abrir `Páginas` e escolher a página e o idioma.
+4. Escolher a página PT ou EN pretendida.
+5. Editar apenas os campos apresentados e guardar.
+6. Usar `Ver no site` para confirmar o resultado.
 
-- `assets/data/site-content.json`
+Cada idioma tem conteúdo e URL próprios. Alterar a página portuguesa não altera automaticamente a versão inglesa.
 
-## O que pode ser editado la
+## Page Builder
 
-Dentro desse ficheiro podes mudar:
+O editor de novas páginas utiliza secções controladas — cabeçalho, texto, destaques, FAQ, imagem e CTA — para manter consistência com o website principal. Permite:
 
-- email principal do site
-- email que recebe o formulario
-- link e nome do Instagram
-- texto do footer
-- textos principais da `index.html`
-- textos principais da `about-us.html`
-- textos principais da `tech.html`
-- textos principais da `book-a-call.html`
+- reordenar secções por arrastar ou com os botões Subir/Descer;
+- duplicar e ocultar secções sem apagar conteúdo;
+- escolher imagens carregadas na biblioteca;
+- pré-visualizar desktop, tablet e mobile antes de publicar;
+- recuperar uma cópia automática não publicada guardada no mesmo navegador.
 
-## Como editar no cPanel
+Cada página criada deve indicar explicitamente `Português` ou `English`. Para páginas principais ou alterações estruturais, deve ser usado o sistema de templates no repositório, não HTML inserido manualmente.
 
-1. Entrar no `cPanel`
-2. Abrir `File Manager`
-3. Ir para a pasta do site
-4. Abrir `assets/data/site-content.json`
-5. Carregar em `Edit`
-6. Alterar apenas o texto entre aspas `"..."` depois dos `:`
-7. Carregar em `Save Changes`
-8. Atualizar o site no browser
+## Definições, histórico e acessos
 
-## Regras importantes
+- `Definições` gere contactos, dados legais, menu, CTA, rodapé, imagem social e a futura URL Cal.com.
+- `Atividade` mostra ações administrativas aos administradores.
+- Cada página principal mantém histórico, autor e comparação antes de restaurar.
+- `O meu perfil` permite a cada utilizador alterar a própria palavra-passe. Com SMTP ativo, o login também envia ligações de recuperação válidas durante 30 minutos.
+- `Acessos` permite ao administrador criar editores e contas apenas de consulta.
+- `Ferramentas` mostra o estado de SMTP, Zoho, Cal.com e armazenamento sem expor segredos.
 
-- Nao apagar `{ } [ ] , :`
-- Nao apagar as aspas das chaves, por exemplo `"email"`
-- Se o texto tiver aspas no meio, usar `\"`
-- Em textos com quebra de linha no site, o ficheiro pode usar `<br>`
+## Depois de uma alteração técnica
 
-## Exemplos
+Se forem enviados novos ficheiros ou alteradas dependências:
 
-Mudar o email:
-
-```json
-"email": "novoemail@empresa.pt"
-```
-
-Mudar o email que recebe o formulario:
-
-```json
-"formRecipientEmail": "comercial@empresa.pt"
-```
-
-Mudar um titulo da home:
-
-```json
-"titleLine1": {
-  "pt": "Novo titulo em portugues",
-  "en": "New title in english",
-  "es": "Nuevo titulo en espanol"
-}
-```
-
-## Quando editar imagens
-
-As imagens continuam a ser trocadas manualmente no `File Manager`.
-
-Exemplo:
-
-- substituir ficheiros dentro de `assets/images/`
-
-Se quiserem trocar uma imagem e manter o mesmo nome do ficheiro, normalmente o site atualiza sem precisar mexer no HTML.
+1. Executar `Run NPM Install`, quando necessário.
+2. Reiniciar a aplicação Node.js.
+3. Confirmar `/api/health`.
+4. Verificar pelo menos `/pt/`, `/en/`, o formulário e o painel administrativo.

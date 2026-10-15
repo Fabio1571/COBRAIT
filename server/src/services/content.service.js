@@ -1,10 +1,10 @@
 const config = require("../config");
 const { query } = require("../db");
-const { nowIso, queueWrite, readData } = require("../storage/file-store");
+const { createId, nowIso, queueWrite, readData } = require("../storage/file-store");
 const { HttpError } = require("../utils/errors");
 
 const PAGE_KEY_REGEX = /^[a-z0-9][a-z0-9._-]{0,63}$/;
-const FIELD_KEY_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,1023}$/;
+const FIELD_KEY_REGEX = /^[a-zA-Z0-9_][a-zA-Z0-9._-]{0,1023}$/;
 let ensureStoragePromise = null;
 
 function normalizeText(value) {
@@ -62,6 +62,25 @@ function mapContentEntry(row) {
   };
 }
 
+function mapContentRevision(row) {
+  if (!row) return null;
+  let content = row.content || {};
+  if (typeof content === "string") {
+    try {
+      content = JSON.parse(content);
+    } catch {
+      content = {};
+    }
+  }
+  return {
+    id: row.id,
+    pageKey: row.page_key,
+    content,
+    createdBy: row.created_by,
+    createdAt: row.created_at
+  };
+}
+
 async function ensureContentStorage() {
   if (config.storageMode === "file") {
     return;
@@ -87,6 +106,20 @@ async function ensureContentStorage() {
           CREATE INDEX site_content_entries_updated_at_idx
           ON site_content_entries (updated_at)
         `).catch(() => {});
+
+        await query(`
+          CREATE TABLE IF NOT EXISTS site_content_revisions (
+            id VARCHAR(36) PRIMARY KEY,
+            page_key VARCHAR(64) NOT NULL,
+            content JSON NOT NULL,
+            created_by VARCHAR(36) NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX site_content_revisions_page_created_idx (page_key, created_at),
+            CONSTRAINT fk_site_content_revisions_created_by
+              FOREIGN KEY (created_by) REFERENCES admin_users(id)
+              ON DELETE SET NULL
+          )
+        `);
       } else {
         await query(`
           CREATE TABLE IF NOT EXISTS site_content_entries (
@@ -102,6 +135,21 @@ async function ensureContentStorage() {
           CREATE INDEX IF NOT EXISTS site_content_entries_updated_at_idx
           ON site_content_entries (updated_at DESC)
         `);
+
+        await query(`
+          CREATE TABLE IF NOT EXISTS site_content_revisions (
+            id UUID PRIMARY KEY,
+            page_key TEXT NOT NULL,
+            content JSONB NOT NULL DEFAULT '{}'::jsonb,
+            created_by UUID REFERENCES admin_users(id) ON DELETE SET NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+          )
+        `);
+
+        await query(`
+          CREATE INDEX IF NOT EXISTS site_content_revisions_page_created_idx
+          ON site_content_revisions (page_key, created_at DESC)
+        `);
       }
     })().catch((error) => {
       ensureStoragePromise = null;
@@ -110,6 +158,88 @@ async function ensureContentStorage() {
   }
 
   return ensureStoragePromise;
+}
+
+async function createSiteContentRevision(pageKeyInput, contentInput, createdBy) {
+  const pageKey = validatePageKey(pageKeyInput);
+  const content = validateContentObject(contentInput);
+  const revisionId = createId();
+  const actorId = createdBy || null;
+
+  if (config.storageMode === "file") {
+    let revision = null;
+    await queueWrite((data) => {
+      const latest = data.siteContentRevisions
+        .filter((item) => item.page_key === pageKey)
+        .sort((left, right) => String(right.created_at || "").localeCompare(String(left.created_at || "")))[0];
+      if (latest && JSON.stringify(latest.content || {}) === JSON.stringify(content)) {
+        revision = { ...latest };
+        return data;
+      }
+      revision = {
+        id: revisionId,
+        page_key: pageKey,
+        content,
+        created_by: actorId,
+        created_at: nowIso()
+      };
+      data.siteContentRevisions.push(revision);
+      if (data.siteContentRevisions.length > 500) {
+        data.siteContentRevisions = data.siteContentRevisions
+          .sort((left, right) => String(right.created_at || "").localeCompare(String(left.created_at || "")))
+          .slice(0, 500);
+      }
+      return data;
+    });
+    return mapContentRevision(revision);
+  }
+
+  await ensureContentStorage();
+  if (config.databaseClient === "mysql") {
+    await query(
+      `INSERT INTO site_content_revisions (id, page_key, content, created_by) VALUES ($1, $2, $3, $4)`,
+      [revisionId, pageKey, JSON.stringify(content), actorId]
+    );
+  } else {
+    await query(
+      `INSERT INTO site_content_revisions (id, page_key, content, created_by) VALUES ($1, $2, $3::jsonb, $4)`,
+      [revisionId, pageKey, JSON.stringify(content), actorId]
+    );
+  }
+  return mapContentRevision({ id: revisionId, page_key: pageKey, content, created_by: actorId, created_at: nowIso() });
+}
+
+async function listSiteContentRevisions(pageKeyInput, limitInput) {
+  const pageKey = validatePageKey(pageKeyInput);
+  const limit = Math.min(Math.max(Number(limitInput) || 20, 1), 50);
+  if (config.storageMode === "file") {
+    return readData().siteContentRevisions
+      .filter((item) => item.page_key === pageKey)
+      .sort((left, right) => String(right.created_at || "").localeCompare(String(left.created_at || "")))
+      .slice(0, limit)
+      .map(mapContentRevision);
+  }
+  await ensureContentStorage();
+  const result = await query(
+    `SELECT id, page_key, content, created_by, created_at FROM site_content_revisions WHERE page_key = $1 ORDER BY created_at DESC LIMIT ${limit}`,
+    [pageKey]
+  );
+  return result.rows.map(mapContentRevision);
+}
+
+async function getSiteContentRevision(pageKeyInput, revisionIdInput) {
+  const pageKey = validatePageKey(pageKeyInput);
+  const revisionId = normalizeText(revisionIdInput);
+  if (config.storageMode === "file") {
+    const revision = readData().siteContentRevisions.find((item) => item.page_key === pageKey && item.id === revisionId);
+    return mapContentRevision(revision || null);
+  }
+  await ensureContentStorage();
+  const result = await query(
+    `SELECT id, page_key, content, created_by, created_at FROM site_content_revisions WHERE page_key = $1 AND id = $2 LIMIT 1`,
+    [pageKey, revisionId]
+  );
+  return mapContentRevision(result.rows[0] || null);
 }
 
 async function listSiteContentEntries() {
@@ -182,7 +312,9 @@ async function upsertSiteContentEntry(pageKeyInput, contentInput, updatedBy) {
       return data;
     });
 
-    return mapContentEntry(updated);
+    const mappedEntry = mapContentEntry(updated);
+    await createSiteContentRevision(pageKey, content, actorId);
+    return mappedEntry;
   }
 
   await ensureContentStorage();
@@ -217,12 +349,17 @@ async function upsertSiteContentEntry(pageKeyInput, contentInput, updatedBy) {
     );
   }
 
-  return getSiteContentEntry(pageKey);
+  const updatedEntry = await getSiteContentEntry(pageKey);
+  await createSiteContentRevision(pageKey, content, actorId);
+  return updatedEntry;
 }
 
 module.exports = {
+  createSiteContentRevision,
   ensureContentStorage,
   getSiteContentEntry,
+  getSiteContentRevision,
   listSiteContentEntries,
+  listSiteContentRevisions,
   upsertSiteContentEntry
 };

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="{{ locale }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ '#15131d' if page.kind == 'engineering' else '#f4f1ea' }}">
+    <meta name="description" content="{{ page.seo.description }}">
+    <meta name="robots" content="{{ 'noindex,nofollow' if previewMode else 'index,follow,max-image-preview:large' }}">
+    <title>{{ page.seo.title }}</title>
+    <link rel="canonical" href="{{ canonical }}">
+    <link rel="alternate" hreflang="pt" href="{{ alternates.pt }}">
+    <link rel="alternate" hreflang="en" href="{{ alternates.en }}">
+    <link rel="alternate" hreflang="x-default" href="{{ alternates.en }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="COBRAIT">
+    <meta property="og:title" content="{{ page.seo.title }}">
+    <meta property="og:description" content="{{ page.seo.description }}">
+    <meta property="og:url" content="{{ canonical }}">
+    <meta property="og:locale" content="{{ 'pt_PT' if locale == 'pt' else 'en_GB' }}">
+    {% if shared.seo.socialImage %}<meta property="og:image" content="{{ shared.seo.socialImage }}">{% endif %}
+    <meta name="twitter:card" content="summary_large_image">
+    {% if shared.seo.socialImage %}<meta name="twitter:image" content="{{ shared.seo.socialImage }}">{% endif %}
+    <link rel="icon" href="/assets/images/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/assets/images/cobrait-symbol.svg?v=20260826b">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/assets/images/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/assets/images/favicon/site.webmanifest">
+    <link rel="stylesheet" href="/assets/css/site-v2.css?v=20260825a">
+    <style id="cms-content-hidden-style" nonce="{{ nonce }}">
+      [data-cms-content-hidden="true"]{display:none!important}
+      {% for cmsKey in hiddenCmsKeys %}[data-cms-key="{{ cmsKey }}"],[data-cms-src-key="{{ cmsKey }}"],[data-cms-remove-key="{{ cmsKey }}"]{display:none!important}{% endfor %}
+    </style>
+    <script nonce="{{ nonce }}">document.documentElement.classList.remove("no-js");document.documentElement.classList.add("js");</script>
+    <script type="application/ld+json" nonce="{{ nonce }}">{{ structuredData | safe }}</script>
+  </head>
+  <body class="site-v2 page-{{ page.kind }}{% if previewMode %} draft-preview{% endif %}" data-page-id="{{ page.id }}" data-cms-page="v2.{{ locale }}.{{ page.id }}" data-locale="{{ locale }}">
+    {% if previewMode %}
+      <aside class="draft-preview-banner" role="status">
+        <strong>{{ 'Pré-visualização do rascunho' if locale == 'pt' else 'Draft preview' }}</strong>
+        <span>{{ 'Esta versão ainda não está publicada.' if locale == 'pt' else 'This version is not published yet.' }}</span>
+        <a href="{{ publishedPath }}">{{ 'Ver versão publicada' if locale == 'pt' else 'View published version' }}</a>
+      </aside>
+    {% endif %}
+    <a class="skip-link" href="#main-content">{{ shared.skipLink }}</a>
+
+    <header class="site-header" data-site-header>
+      <div class="shell header-inner">
+        <a class="brand" href="{{ paths.home }}" aria-label="COBRAIT — {{ 'página inicial' if locale == 'pt' else 'homepage' }}">
+          <span class="brand-symbol" aria-hidden="true"><img src="{{ shared.brand.logo }}" alt="{{ shared.brand.logoAlt }}" width="64" height="64" data-cms-scope="global" data-cms-src-key="brand.logo" data-cms-alt-key="brand.logoAlt"></span>
+          <span class="brand-word">COBRAIT</span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="{{ 'Navegação principal' if locale == 'pt' else 'Primary navigation' }}">
+          <a href="{{ paths.services }}"{% if active == 'services' %} aria-current="page"{% endif %}><span data-cms-scope="global" data-cms-key="nav.services.{{ locale }}">{{ shared.nav.services }}</span></a>
+          {% if shared.nav.visibility.process %}<a href="{{ paths.process }}"{% if active == 'process' %} aria-current="page"{% endif %}><span data-cms-scope="global" data-cms-key="nav.process.{{ locale }}">{{ shared.nav.process }}</span></a>{% endif %}
+          {% if shared.nav.visibility.engineering %}<a href="{{ paths.engineering }}"{% if active == 'engineering' %} aria-current="page"{% endif %}><span data-cms-scope="global" data-cms-key="nav.engineering.{{ locale }}">{{ shared.nav.engineering }}</span></a>{% endif %}
+          {% if shared.nav.visibility.about %}<a href="{{ paths.about }}"{% if active == 'about' %} aria-current="page"{% endif %}><span data-cms-scope="global" data-cms-key="nav.about.{{ locale }}">{{ shared.nav.about }}</span></a>{% endif %}
+        </nav>
+
+        <div class="header-actions">
+          <a class="language-link" href="{{ alternatePath }}" hreflang="{{ alternateLocale }}" lang="{{ alternateLocale }}" aria-label="{{ shared.nav.language }}: {{ alternateName }}">{{ alternateLocale | upper }}</a>
+          <a class="button button-small button-dark header-cta" href="{{ paths.booking }}" data-track="header_booking"><span data-cms-scope="global" data-cms-key="nav.booking.{{ locale }}">{{ shared.nav.booking }}</span></a>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-navigation" data-menu-toggle>
+            <span class="sr-only" data-menu-label data-open-label="{{ shared.nav.menu }}" data-close-label="{{ shared.nav.close }}">{{ shared.nav.menu }}</span>
+            <span aria-hidden="true"></span><span aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="mobile-nav" id="mobile-navigation" aria-label="{{ 'Navegação mobile' if locale == 'pt' else 'Mobile navigation' }}" data-mobile-nav hidden>
+        <div class="shell mobile-nav-inner">
+          <a href="{{ paths.services }}"><span data-cms-scope="global" data-cms-key="nav.services.{{ locale }}">{{ shared.nav.services }}</span><span aria-hidden="true">↗</span></a>
+          {% if shared.nav.visibility.process %}<a href="{{ paths.process }}"><span data-cms-scope="global" data-cms-key="nav.process.{{ locale }}">{{ shared.nav.process }}</span><span aria-hidden="true">↗</span></a>{% endif %}
+          {% if shared.nav.visibility.engineering %}<a href="{{ paths.engineering }}"><span data-cms-scope="global" data-cms-key="nav.engineering.{{ locale }}">{{ shared.nav.engineering }}</span><span aria-hidden="true">↗</span></a>{% endif %}
+          {% if shared.nav.visibility.about %}<a href="{{ paths.about }}"><span data-cms-scope="global" data-cms-key="nav.about.{{ locale }}">{{ shared.nav.about }}</span><span aria-hidden="true">↗</span></a>{% endif %}
+          <a class="button button-primary" href="{{ paths.booking }}"><span data-cms-scope="global" data-cms-key="nav.booking.{{ locale }}">{{ shared.nav.booking }}</span></a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell">
+        <div class="footer-lead">
+          <a class="brand brand-footer" href="{{ paths.home }}">
+            <span class="brand-symbol" aria-hidden="true"><img src="{{ shared.brand.logo }}" alt="{{ shared.brand.logoAlt }}" width="250" height="250" data-cms-scope="global" data-cms-src-key="brand.logo" data-cms-alt-key="brand.logoAlt"></span>
+            <span class="brand-word">COBRAIT</span>
+          </a>
+          <p data-cms-scope="global" data-cms-key="footer.statement.{{ locale }}">{{ shared.footer.statement }}</p>
+          <span data-cms-scope="global" data-cms-key="footer.location.{{ locale }}">{{ shared.footer.location }}</span>
+          <a class="complaints-book-link" href="https://www.livroreclamacoes.pt/inicio" target="_blank" rel="noopener noreferrer">
+            <img src="/assets/images/logo-lre-vermelho-negativo.png" alt="{{ 'Electronic Complaints Book' if locale == 'en' else 'Livro de Reclamações Eletrónico' }}" width="140" height="58" decoding="async">
+            <span class="sr-only">{{ ' (opens in a new tab)' if locale == 'en' else ' (abre num novo separador)' }}</span>
+          </a>
+        </div>
+        <div class="footer-links">
+          <div>
+            <p class="footer-label" data-cms-scope="global" data-cms-key="footer.explore.{{ locale }}">{{ shared.footer.explore }}</p>
+            <a href="{{ paths.services }}"><span data-cms-scope="global" data-cms-key="nav.services.{{ locale }}">{{ shared.nav.services }}</span></a>
+            {% if shared.nav.visibility.process %}<a href="{{ paths.process }}"><span data-cms-scope="global" data-cms-key="nav.process.{{ locale }}">{{ shared.nav.process }}</span></a>{% endif %}
+            {% if shared.nav.visibility.engineering %}<a href="{{ paths.engineering }}"><span data-cms-scope="global" data-cms-key="nav.engineering.{{ locale }}">{{ shared.nav.engineering }}</span></a>{% endif %}
+            {% if shared.nav.visibility.about %}<a href="{{ paths.about }}"><span data-cms-scope="global" data-cms-key="nav.about.{{ locale }}">{{ shared.nav.about }}</span></a>{% endif %}
+          </div>
+          <div>
+            <p class="footer-label" data-cms-scope="global" data-cms-key="footer.contact.{{ locale }}">{{ shared.footer.contact }}</p>
+            <a href="{{ paths.booking }}"><span data-cms-scope="global" data-cms-key="nav.booking.{{ locale }}">{{ shared.nav.booking }}</span></a>
+            <a href="mailto:{{ shared.company.email }}" data-cms-scope="global"><span data-cms-key="company.email">{{ shared.company.email }}</span></a>
+            {% if shared.company.linkedin %}<a href="{{ shared.company.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>{% endif %}
+          </div>
+          <div>
+            <p class="footer-label" data-cms-scope="global" data-cms-key="footer.legal.{{ locale }}">{{ shared.footer.legal }}</p>
+            <a href="{{ paths.privacy }}"><span data-cms-scope="global" data-cms-key="footer.privacy.{{ locale }}">{{ shared.footer.privacy }}</span></a>
+            <a href="{{ paths.cookies }}"><span data-cms-scope="global" data-cms-key="footer.cookies.{{ locale }}">{{ shared.footer.cookies }}</span></a>
+            <a href="{{ paths.terms }}"><span data-cms-scope="global" data-cms-key="footer.terms.{{ locale }}">{{ shared.footer.terms }}</span></a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© {{ year }} <span data-cms-scope="global" data-cms-key="company.legalName">{{ shared.company.legalName }}</span> · COBRAIT. <span data-cms-scope="global" data-cms-key="footer.rights.{{ locale }}">{{ shared.footer.rights }}</span></span>
+          <a href="{{ alternatePath }}" hreflang="{{ alternateLocale }}">{{ alternateName }}</a>
+        </div>
+      </div>
+    </footer>
+
+    <a class="mobile-sticky-cta" href="{{ paths.booking }}" data-track="mobile_sticky_booking">
+      <span data-cms-scope="global" data-cms-key="nav.booking.{{ locale }}">{{ shared.nav.booking }}</span><i aria-hidden="true">↗</i>
+    </a>
+
+    <script src="/assets/js/site-v2.js?v=20260806h" defer></script>
+    {% if hiddenCmsKeys.length %}
+      <script nonce="{{ nonce }}">
+        (function(){
+          var keys={{ hiddenCmsKeys | dump | safe }};
+          keys.forEach(function(key){
+            var safe=window.CSS&&CSS.escape?CSS.escape(key):key.replace(/[^a-zA-Z0-9_.-]/g,"\\$&");
+            document.querySelectorAll('[data-cms-key="'+safe+'"],[data-cms-src-key="'+safe+'"],[data-cms-remove-key="'+safe+'"]').forEach(function(node){
+              node.setAttribute("data-cms-content-hidden","true");
+              node.querySelectorAll("input,select,textarea,button").forEach(function(control){if(!control.disabled){control.disabled=true;control.setAttribute("data-cms-disabled-by-hidden","true");}});
+            });
+          });
+        })();
+      </script>
+    {% endif %}
+    {% if editorMode %}
+      <script src="/assets/js/cms-client.js?v=20260806i" defer></script>
+      <script src="/assets/js/cms-inline-editor.js?v=20260806k" defer></script>
+    {% endif %}
+  </body>
+</html>

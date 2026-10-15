@@ -45,6 +45,7 @@ Obrigatorias:
 - `JWT_SECRET`
 - `SESSION_COOKIE_SECURE=true`
 - `CORS_ORIGINS=https://teu-dominio.pt`
+- `SITE_URL=https://teu-dominio.pt`
 
 O cPanel injeta normalmente o `PORT`. Se existir campo para variaveis, nao precisas de fixar o `PORT` manualmente.
 
@@ -52,8 +53,9 @@ O cPanel injeta normalmente o `PORT`. Se existir campo para variaveis, nao preci
 
 Os pedidos de contacto e de chamada sao sempre guardados no painel admin. Para tambem receber email, configura SMTP no `Setup Node.js App`:
 
-- `NOTIFICATION_EMAIL_TO=geral@cobrait.pt`
-- `NOTIFICATION_EMAIL_FROM=COBRAIT Website <geral@cobrait.pt>`
+- `NOTIFICATION_EMAIL_TO=clientes@cobrait.pt`
+- `LEAD_CONFIRMATION_ENABLED=true`
+- `NOTIFICATION_EMAIL_FROM=COBRAIT <geral@cobrait.pt>`
 - `SMTP_HOST=mail.cobrait.pt`
 - `SMTP_PORT=587`
 - `SMTP_SECURE=false`
@@ -87,6 +89,36 @@ Depois do primeiro arranque podes remover `ADMIN_PASSWORD` das variaveis, desde 
 
 ## URLs de teste
 
-- Site: `https://teu-dominio.pt/`
+- Site PT: `https://teu-dominio.pt/pt/`
+- Site EN: `https://teu-dominio.pt/en/`
 - API health: `https://teu-dominio.pt/api/health`
 - Admin: `https://teu-dominio.pt/admin.html`
+
+## Agendamento Cal.com
+
+Depois de criar uma conta Cal.com pertencente à COBRAIT, configura:
+
+- `CALCOM_BOOKING_URL=https://cal.com/conta-cobrait/tipo-de-evento`
+- `CALCOM_WEBHOOK_SECRET=segredo-longo-e-aleatorio`
+
+No Cal.com, cria um webhook HTTPS para:
+
+```text
+https://teu-dominio.pt/api/calendar/calcom/webhook
+```
+
+Ativa pelo menos os eventos de criação, reagendamento e cancelamento de reservas. O segredo definido no Cal.com deve ser igual a `CALCOM_WEBHOOK_SECRET`.
+
+## Integração Zoho CRM
+
+Cria uma aplicação OAuth no Zoho API Console do data center europeu com o scope mínimo `ZohoCRM.modules.leads.CREATE`. Depois configura:
+
+- `ZOHO_ACCOUNTS_URL=https://accounts.zoho.eu`
+- `ZOHO_API_DOMAIN=https://www.zohoapis.eu`
+- `ZOHO_CLIENT_ID=...`
+- `ZOHO_CLIENT_SECRET=...`
+- `ZOHO_REFRESH_TOKEN=...`
+- `ZOHO_LEAD_MODULE=Leads`
+- `ZOHO_TRIGGER_WORKFLOWS=false`
+
+Os pedidos ficam primeiro guardados na COBRAIT e são depois enviados para o módulo Leads. Uma indisponibilidade do Zoho não impede a submissão do formulário. Ativa `ZOHO_TRIGGER_WORKFLOWS=true` apenas se os workflows configurados no CRM tiverem sido revistos.

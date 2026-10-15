@@ -1,0 +1,123 @@
+{% extends "layouts/base.njk" %}
+{% block content %}
+<section class="page-hero booking-hero">
+  <div class="shell page-hero-grid">
+    <p class="eyebrow" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+    <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+    <p class="hero-text" data-cms-key="hero.text">{{ page.hero.text }}</p>
+  </div>
+</section>
+
+<section class="section booking-section">
+  <div class="shell booking-layout">
+    <aside class="booking-aside">
+      <p class="eyebrow">{{ 'O que acontece a seguir' if locale == 'pt' else 'What happens next' }}</p>
+      <ol>
+        <li><span>01</span><div><strong>{{ 'Contexto guardado' if locale == 'pt' else 'Context saved' }}</strong><p>{{ 'O pedido entra no sistema COBRAIT antes do agendamento.' if locale == 'pt' else 'Your request enters the COBRAIT system before scheduling.' }}</p></div></li>
+        <li><span>02</span><div><strong>{{ 'Escolha de horário' if locale == 'pt' else 'Choose a time' }}</strong><p>{{ 'O calendário apresenta disponibilidade real no seu fuso horário.' if locale == 'pt' else 'The calendar shows real availability in your time zone.' }}</p></div></li>
+        <li><span>03</span><div><strong>{{ 'Conversa preparada' if locale == 'pt' else 'A prepared conversation' }}</strong><p>{{ 'O Comercial recebe o contexto para preparar uma conversa útil sobre o projeto.' if locale == 'pt' else 'Our commercial lead receives the context to prepare a useful conversation about the project.' }}</p></div></li>
+      </ol>
+      <p class="booking-event-name"><strong>{{ 'Reunião inicial com a COBRAIT' if locale == 'pt' else 'Initial meeting with COBRAIT' }}</strong><span>{{ 'Comercial · Calendário a configurar' if locale == 'pt' else 'Commercial lead · Calendar to be configured' }}</span></p>
+      <p class="booking-availability">{{ 'Disponibilidade: segunda a sexta, 09:30–17:30 (Lisboa), com 3 dias de antecedência.' if locale == 'pt' else 'Availability: Monday to Friday, 09:30–17:30 (Lisbon), with 3 days’ notice.' }}</p>
+      <p class="booking-response">{{ shared.common.response }}</p>
+    </aside>
+
+    <div class="booking-card">
+      <div class="booking-progress" data-booking-progress data-step="1" aria-label="{{ 'Progresso do pedido' if locale == 'pt' else 'Request progress' }}">
+        <span class="booking-progress-line" aria-hidden="true"><i></i></span>
+        <ol>
+          <li aria-current="step"><span>01</span>{{ 'Contacto' if locale == 'pt' else 'Contact' }}</li>
+          <li><span>02</span>{{ 'Projeto' if locale == 'pt' else 'Project' }}</li>
+          <li><span>03</span>{{ 'Horário' if locale == 'pt' else 'Schedule' }}</li>
+        </ol>
+      </div>
+      <div data-booking-form-panel>
+        <p class="eyebrow">01 · {{ 'Contexto' if locale == 'pt' else 'Context' }}</p>
+        <h2 data-cms-key="form.title">{{ page.form.title }}</h2>
+        <p data-cms-key="form.text">{{ page.form.text }}</p>
+
+        <form class="project-form" data-project-form data-locale="{{ locale }}" data-required-message="{{ page.form.errors.required }}" data-submit-message="{{ page.form.errors.submit }}" novalidate>
+          <div class="honeypot" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <section class="form-step" data-form-step="1">
+            <div class="form-grid">
+              <div class="field">
+                <label for="fullName"><span data-cms-key="form.fields.name" data-cms-protected="true">{{ page.form.fields.name }}</span> *</label>
+                <input id="fullName" name="fullName" type="text" autocomplete="name" required minlength="2">
+              </div>
+              <div class="field">
+                <label for="email"><span data-cms-key="form.fields.email" data-cms-protected="true">{{ page.form.fields.email }}</span> *</label>
+                <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+              </div>
+              <div class="field form-full" data-cms-remove-key="form.optional.company">
+                <label for="company" data-cms-key="form.fields.company">{{ page.form.fields.company }}</label>
+                <input id="company" name="company" type="text" autocomplete="organization">
+              </div>
+            </div>
+            <div class="form-status" data-form-status-one role="status" aria-live="polite"></div>
+            <div class="form-navigation form-navigation-next">
+              <button class="button button-primary" type="button" data-form-next>{{ 'Continuar para o projeto' if locale == 'pt' else 'Continue to project' }}<span aria-hidden="true">→</span></button>
+            </div>
+          </section>
+
+          <section class="form-step" data-form-step="2" hidden>
+            <div class="form-grid">
+              <div class="field" data-cms-remove-key="form.optional.serviceInterest">
+                <label for="serviceInterest"><span data-cms-key="form.fields.service">{{ page.form.fields.service }}</span> *</label>
+                <select id="serviceInterest" name="serviceInterest" required>
+                  <option value="" data-cms-key="form.fields.choose">{{ page.form.fields.choose }}</option>
+                  {% for option in page.form.fields.options.service %}<option value="{{ option }}" data-cms-key="form.fields.options.service.{{ loop.index0 }}">{{ option }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field" data-cms-remove-key="form.optional.projectStage">
+                <label for="projectStage"><span data-cms-key="form.fields.stage">{{ page.form.fields.stage }}</span> *</label>
+                <select id="projectStage" name="projectStage" required>
+                  <option value="" data-cms-key="form.fields.choose">{{ page.form.fields.choose }}</option>
+                  {% for option in page.form.fields.options.stage %}<option value="{{ option }}" data-cms-key="form.fields.options.stage.{{ loop.index0 }}">{{ option }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field" data-cms-remove-key="form.optional.preferredStart">
+                <label for="preferredStart"><span data-cms-key="form.fields.start">{{ page.form.fields.start }}</span> *</label>
+                <select id="preferredStart" name="preferredStart" required>
+                  <option value="" data-cms-key="form.fields.choose">{{ page.form.fields.choose }}</option>
+                  {% for option in page.form.fields.options.start %}<option value="{{ option }}" data-cms-key="form.fields.options.start.{{ loop.index0 }}">{{ option }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field" data-cms-remove-key="form.optional.investmentStatus">
+                <label for="investmentStatus"><span data-cms-key="form.fields.approved">{{ page.form.fields.approved }}</span> *</label>
+                <select id="investmentStatus" name="investmentStatus" required>
+                  <option value="" data-cms-key="form.fields.choose">{{ page.form.fields.choose }}</option>
+                  {% for option in page.form.fields.options.approved %}<option value="{{ option }}" data-cms-key="form.fields.options.approved.{{ loop.index0 }}">{{ option }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="field form-full">
+                <label for="projectSummary"><span data-cms-key="form.fields.message" data-cms-protected="true">{{ page.form.fields.message }}</span> *</label>
+                <textarea id="projectSummary" name="projectSummary" rows="6" required minlength="10" maxlength="1600"></textarea>
+                <small class="form-character-count" data-summary-count>0 / 1600</small>
+              </div>
+            </div>
+            <label class="consent-field" for="privacyConsent">
+              <input id="privacyConsent" name="privacyConsent" type="checkbox" required>
+              <span>{{ page.form.fields.consent }} <a href="{{ paths.privacy }}" target="_blank" rel="noopener">{{ shared.footer.privacy }}</a></span>
+            </label>
+            <div class="form-status" data-form-status role="status" aria-live="polite"></div>
+            <div class="form-navigation">
+              <button class="button button-quiet" type="button" data-form-back><span aria-hidden="true">←</span>{{ 'Voltar' if locale == 'pt' else 'Back' }}</button>
+              <button class="button button-primary form-submit" type="submit" data-track="booking_submit">
+                <span>{{ page.form.submit }}</span><span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <div class="calendar-panel" data-calendar-panel data-cal-url="{{ calBookingUrl }}" hidden>
+        <p class="eyebrow">02 · {{ 'Horário' if locale == 'pt' else 'Schedule' }}</p>
+        <h2 data-calendar-heading tabindex="-1">{{ page.form.successTitle }}</h2>
+        <p>{{ page.form.calendarReadyText if calBookingUrl else page.form.successText }}</p>
+        <div class="calendar-embed" data-calendar-embed></div>
+        <p class="calendar-fallback"><a href="mailto:geral@cobrait.pt">{{ page.form.fallback }}</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

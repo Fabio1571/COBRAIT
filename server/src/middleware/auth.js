@@ -40,6 +40,23 @@ async function requireAuth(request, response, next) {
   }
 }
 
+async function optionalAuth(request, _response, next) {
+  const token = extractToken(request);
+  if (!token) {
+    next();
+    return;
+  }
+
+  try {
+    const payload = verifySessionToken(token);
+    const user = await getUserById(payload.sub);
+    if (user && user.isActive) request.user = user;
+  } catch (_error) {
+    // A public page remains available when an old or invalid admin cookie exists.
+  }
+  next();
+}
+
 function requireAdmin(request, response, next) {
   if (!request.user || request.user.role !== "admin") {
     next(new HttpError(403, "Acesso reservado a administradores."));
@@ -59,6 +76,7 @@ function requireEditor(request, response, next) {
 }
 
 module.exports = {
+  optionalAuth,
   requireAdmin,
   requireEditor,
   requireAuth

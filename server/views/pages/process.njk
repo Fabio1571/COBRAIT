@@ -1,0 +1,49 @@
+{% extends "layouts/base.njk" %}
+{% block content %}
+<section class="page-hero">
+  <div class="shell page-hero-grid">
+    <p class="eyebrow" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+    <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+    <p class="hero-text" data-cms-key="hero.text">{{ page.hero.text }}</p>
+  </div>
+  {% include "partials/technical-diagram.njk" %}
+</section>
+<section class="section section-tight" data-cms-remove-key="block.process.principles">
+  <div class="shell principle-strip">
+    {% for principle in page.principles %}<span><i>0{{ loop.index }}</i><span data-cms-key="principles.{{ loop.index0 }}">{{ principle }}</span></span>{% endfor %}
+  </div>
+</section>
+<section class="section process-page-steps" data-cms-remove-key="block.process.steps">
+  <div class="shell process-explorer" data-process-explorer>
+    <div class="process-tabs" role="tablist" aria-label="{{ 'Fases do processo' if locale == 'pt' else 'Process stages' }}">
+      {% for step in page.steps %}
+      <button id="process-tab-{{ loop.index }}" type="button" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" aria-controls="process-panel-{{ loop.index }}" tabindex="{{ '0' if loop.first else '-1' }}" data-process-tab="{{ loop.index0 }}">
+        <span>{{ step.number }}</span><strong data-cms-key="steps.{{ loop.index0 }}.title">{{ step.title }}</strong>
+      </button>
+      {% endfor %}
+    </div>
+    <div class="process-stage">
+      <div class="process-stage-visual" aria-hidden="true">
+        <span class="process-pulse"></span>
+        <span class="process-axis"></span>
+        <strong data-process-number>01</strong>
+      </div>
+      {% for step in page.steps %}
+      <article id="process-panel-{{ loop.index }}" role="tabpanel" aria-labelledby="process-tab-{{ loop.index }}" data-process-panel="{{ loop.index0 }}"{% if not loop.first %} hidden{% endif %}>
+        <p class="eyebrow">{{ 'Fase' if locale == 'pt' else 'Stage' }} {{ step.number }}</p>
+        <h2 data-cms-key="steps.{{ loop.index0 }}.title">{{ step.title }}</h2>
+        <p data-cms-key="steps.{{ loop.index0 }}.text">{{ step.text }}</p>
+        <small>{{ 'Decisão visível · Entregável verificável' if locale == 'pt' else 'Visible decision · Verifiable output' }}</small>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="section section-dark collaboration-section" data-cms-remove-key="block.process.collaboration">
+  <div class="shell editorial-intro editorial-intro-light">
+    <h2 data-cms-key="collaboration.title">{{ page.collaboration.title }}</h2>
+    <p data-cms-key="collaboration.text">{{ page.collaboration.text }}</p>
+  </div>
+</section>
+{% include "partials/final-cta.njk" %}
+{% endblock %}

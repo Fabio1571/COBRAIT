@@ -1,0 +1,27 @@
+{% extends "layouts/base.njk" %}
+{% block content %}
+<section class="page-hero">
+  <div class="shell page-hero-grid">
+    <p class="eyebrow" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+    <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+  </div>
+  {% include "partials/technical-diagram.njk" %}
+</section>
+<section class="section section-tight" data-cms-remove-key="block.about.story">
+  <div class="shell about-statements about-statements-single">
+    <article><span>01</span><h2 data-cms-key="story.title">{{ page.story.title }}</h2><p data-cms-key="story.text">{{ page.story.text }}</p></article>
+  </div>
+</section>
+<section class="section section-dark about-principles" data-cms-remove-key="block.about.principles">
+  <div class="shell">
+    <div class="section-heading section-heading-narrow">
+      <p class="eyebrow eyebrow-light">{{ 'Princípios' if locale == 'pt' else 'Principles' }}</p>
+      <h2>{{ 'A forma de trabalhar também faz parte da entrega.' if locale == 'pt' else 'The way of working is part of the delivery.' }}</h2>
+    </div>
+    <div class="principles-grid">
+      {% for item in page.principles %}<article><span>0{{ loop.index }}</span><h3 data-cms-key="principles.{{ loop.index0 }}.title">{{ item.title }}</h3><p data-cms-key="principles.{{ loop.index0 }}.text">{{ item.text }}</p></article>{% endfor %}
+    </div>
+  </div>
+</section>
+{% include "partials/final-cta.njk" %}
+{% endblock %}

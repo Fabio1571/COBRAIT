@@ -1,66 +1,66 @@
 const fs = require("fs");
 const path = require("path");
+const { paths, services, shared } = require("../server/src/site/content");
+const { getPage } = require("../server/src/site/pages");
 
 const root = path.resolve(__dirname, "..");
-const publicHtmlDirs = [root, path.join(root, "servicos")];
-const skippedPages = new Set(["admin.html"]);
 const failures = [];
+const pageIds = [
+  "home", "services", "productScope", "mvp", "customSoftware", "uxui", "dedicatedTeams",
+  "process", "engineering", "about", "booking", "privacy", "cookies", "terms"
+];
 
 function fail(message) {
   failures.push(message);
 }
 
-function readText(file) {
-  return fs.readFileSync(file, "utf8");
+function read(relativePath) {
+  return fs.readFileSync(path.join(root, relativePath), "utf8");
 }
 
-function publicHtmlFiles() {
-  return publicHtmlDirs.flatMap((dir) => {
-    if (!fs.existsSync(dir)) return [];
-    return fs.readdirSync(dir)
-      .filter((name) => name.endsWith(".html"))
-      .filter((name) => !skippedPages.has(name))
-      .map((name) => path.join(dir, name));
+["pt", "en"].forEach((locale) => {
+  if (!shared[locale]) fail(`Missing shared content for ${locale}`);
+  if (!paths[locale]) fail(`Missing route map for ${locale}`);
+  if (!Array.isArray(services[locale]) || services[locale].length !== 5) fail(`Expected five services for ${locale}`);
+
+  pageIds.forEach((id) => {
+    const page = getPage(locale, id);
+    if (!page) {
+      fail(`Missing ${locale} page: ${id}`);
+      return;
+    }
+    if (!page.seo || !page.seo.title || !page.seo.description) fail(`Missing SEO copy for ${locale}.${id}`);
+    if (!page.hero || !page.hero.title || !page.hero.text) fail(`Missing hero copy for ${locale}.${id}`);
+    if (!paths[locale][id]) fail(`Missing route for ${locale}.${id}`);
   });
+});
+
+const allPaths = Object.values(paths.pt).concat(Object.values(paths.en));
+if (new Set(allPaths).size !== allPaths.length) fail("Localized paths must be unique.");
+if (allPaths.some((route) => /\/es(?:\/|$)/.test(route))) fail("Spanish routes are still present.");
+
+const baseTemplate = read("server/views/layouts/base.njk");
+["hreflang=\"pt\"", "hreflang=\"en\"", "hreflang=\"x-default\"", "alternatePath", "data-cms-page"].forEach((marker) => {
+  if (!baseTemplate.includes(marker)) fail(`Base template is missing ${marker}`);
+});
+
+const appSource = read("server/src/app.js");
+if (appSource.includes("mobile-preview.js") || appSource.includes("isMobileRequest")) {
+  fail("The Express application still contains the separate mobile implementation.");
 }
 
-const responsiveCssPath = path.join(root, "assets", "css", "site-redesign.css");
-const siteUiPath = path.join(root, "assets", "js", "site-ui.js");
-
-if (!fs.existsSync(responsiveCssPath)) {
-  fail("Missing assets/css/site-redesign.css");
-}
-
-if (!fs.existsSync(siteUiPath)) {
-  fail("Missing assets/js/site-ui.js");
-}
-
-const htmlFiles = publicHtmlFiles();
-if (!htmlFiles.length) {
-  fail("No public HTML files found.");
-}
-
-htmlFiles.forEach((file) => {
-  const relative = path.relative(root, file).replace(/\\/g, "/");
-  const html = readText(file);
-
-  if (!html.includes('/assets/css/site-redesign.css')) {
-    fail(relative + " does not load the shared responsive stylesheet");
-  }
-
-  if (!html.includes('/assets/js/site-ui.js')) {
-    fail(relative + " does not load the shared interface script");
-  }
-
-  if (html.includes('/assets/js/nebula-language.js') || /aria-label=["']Idioma["']/.test(html)) {
-    fail(relative + " still includes the removed language control");
+const viewFiles = fs.readdirSync(path.join(root, "server", "views", "pages"));
+viewFiles.forEach((file) => {
+  const source = read(path.join("server", "views", "pages", file));
+  if (source.includes("data-es=") || source.includes("mobile-preview.js") || source.includes("nebula-language.js")) {
+    fail(`Legacy language/mobile marker found in ${file}`);
   }
 });
 
 if (failures.length) {
-  console.error("Public site check failed:");
-  failures.forEach((message) => console.error("- " + message));
+  console.error("Localized site check failed:");
+  failures.forEach((message) => console.error(`- ${message}`));
   process.exit(1);
 }
 
-console.log("Public site check OK: " + htmlFiles.length + " responsive Portuguese pages without language controls.");
+console.log(`Localized site check OK: ${pageIds.length * 2} PT/EN routes, one responsive implementation, no ES routes.`);

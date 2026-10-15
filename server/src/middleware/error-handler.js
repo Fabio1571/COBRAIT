@@ -1,4 +1,13 @@
 function notFound(request, response) {
+  if (!request.path.startsWith("/api") && request.accepts("html")) {
+    const locale = request.path.startsWith("/en/") || request.cookies.cobrait_locale === "en" ? "en" : "pt";
+    response.status(404).render("pages/not-found.njk", {
+      home: locale === "en" ? "/en/" : "/pt/",
+      locale,
+      year: new Date().getFullYear()
+    });
+    return;
+  }
   response.status(404).json({
     message: "Endpoint nao encontrado."
   });
@@ -31,4 +40,3 @@ module.exports = {
   errorHandler,
   notFound
 };
-

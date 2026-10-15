@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">COBRAIT</title>
+  <desc id="desc">Símbolo abstrato COBRAIT: um C aberto formado por uma fita tecnológica.</desc>
+  <defs>
+    <linearGradient id="cobrait-ribbon" x1="9" y1="8" x2="55" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6db3ff"/>
+      <stop offset=".45" stop-color="#2364d7"/>
+      <stop offset="1" stop-color="#103e8d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Uma única fita aberta forma o C de COBRAIT, sem recorrer a uma forma de infinito. -->
+  <path d="M49.7 9.8A27.5 27.5 0 1 0 56.2 46.1l-8-4.7A18.2 18.2 0 1 1 43.5 17Z" fill="url(#cobrait-ribbon)"/>
+
+  <!-- O terminal angular dá direção ao símbolo sem desenhar literalmente uma cobra. -->
+  <path d="m44.2 7.6 13.4 3.7c2.2.6 2.8 3 1.2 4.6l-8.5 8-8.8-6.3Z" fill="#153b78"/>
+  <path d="m48.6 12.8 5.3 1.4" fill="none" stroke="#7eb7fa" stroke-width="1.55" stroke-linecap="round"/>
+</svg>

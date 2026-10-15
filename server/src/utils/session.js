@@ -20,6 +20,16 @@ function verifySessionToken(token) {
   return jwt.verify(token, config.jwtSecret);
 }
 
+function signPasswordResetToken(user) {
+  return jwt.sign({ type: "password-reset", email: user.email }, config.jwtSecret, { subject: user.id, expiresIn: "30m" });
+}
+
+function verifyPasswordResetToken(token) {
+  const payload = jwt.verify(token, config.jwtSecret);
+  if (!payload || payload.type !== "password-reset") throw new Error("Invalid password reset token");
+  return payload;
+}
+
 function getCookieOptions() {
   return {
     httpOnly: true,
@@ -46,7 +56,8 @@ function clearSessionCookie(response) {
 module.exports = {
   clearSessionCookie,
   setSessionCookie,
+  signPasswordResetToken,
   signSessionToken,
+  verifyPasswordResetToken,
   verifySessionToken
 };
-

@@ -12,9 +12,6 @@
   <link rel="icon" type="image/x-icon" href="assets/images/favicon/favicon.ico">
   <link rel="apple-touch-icon" href="assets/images/favicon/apple-touch-icon.png">
   <link rel="manifest" href="assets/images/favicon/site.webmanifest">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #03050d;
@@ -459,18 +456,43 @@
     .cms-lang-grid { display: grid; gap: 10px; }
     .cms-lang-grid label { display: grid; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
     .cms-lang-grid textarea { min-height: 92px; line-height: 1.55; }
+    .char-count { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; font-weight: 600; }
+    .char-count.is-warning { color: #9a5b00; }
+    .char-count.is-over { color: #b42318; font-weight: 800; }
+    .cms-seo-preview { display: grid; gap: 5px; margin-bottom: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .cms-seo-preview small { color: #188038; font-size: 12px; }
+    .cms-seo-preview b { color: #1a0dab; font-size: 19px; font-weight: 500; line-height: 1.3; }
+    .cms-seo-preview p { color: #4d5156; font-size: 13px; line-height: 1.45; }
+    .cms-guidance { margin: -4px 0 12px; color: var(--muted); font-size: 12px; }
+    .form-manager { display: grid; gap: 10px; margin-bottom: 14px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: #f5f8fd; }
+    .form-manager h3 { font-size: 15px; }
+    .form-manager > p { color: var(--muted); font-size: 12px; }
+    .form-field-toggle { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 12px; border: 1px solid #d9e3f2; border-radius: 8px; background: #fff; }
+    .form-field-toggle span { display: grid; font-size: 13px; font-weight: 750; }
+    .form-field-toggle small { color: var(--muted); font-size: 11px; font-weight: 500; }
+    .form-field-toggle input { width: 19px; height: 19px; accent-color: var(--primary); }
     .builder-panel { grid-column: 1 / -1; }
     .builder-grid { display: grid; grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.8fr); gap: 18px; }
     .builder-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .builder-blocks { display: grid; gap: 12px; margin-top: 16px; }
     .builder-block { padding: 14px; border: 1px solid rgba(255,255,255,.08); border-radius: var(--radius); background: rgba(255,255,255,.025); }
+    .builder-block.is-hidden { opacity: .68; border-style: dashed; }
+    .builder-block.is-drag-over { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(32, 89, 181, .12); }
     .builder-block-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-    .builder-block-title { color: var(--ink); font-size: 13px; font-weight: 900; }
+    .builder-block-title { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 13px; font-weight: 900; }
+    .builder-drag-handle { min-width: 34px; cursor: grab; font-size: 17px; line-height: 1; }
+    .builder-drag-handle:active { cursor: grabbing; }
     .builder-block-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .builder-fieldset { display: grid; gap: 10px; }
     .builder-fieldset textarea { min-height: 78px; resize: vertical; }
     .builder-full { grid-column: 1 / -1; }
     .builder-help { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .builder-preview { margin-top: 18px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: #eceae5; }
+    .builder-preview[hidden] { display: none; }
+    .builder-preview-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .builder-preview-frame-wrap { width: 100%; max-width: 100%; margin-inline: auto; transition: width .2s ease; }
+    .builder-preview-frame { display: block; width: 100%; min-height: 680px; border: 1px solid #cbc9c2; border-radius: 8px; background: #fff; box-shadow: 0 12px 35px rgba(25, 24, 29, .12); }
+    .builder-autosave { min-height: 18px; margin-top: 8px; color: var(--muted); font-size: 11px; }
     .empty-state {
       display: grid;
       place-items: center;
@@ -523,29 +545,313 @@
       .item-actions { justify-content: flex-start; }
       .compact-select { width: 100%; }
     }
+
+    /* Admin v2: uma interface editorial simples, legível e alinhada com a nova COBRAIT. */
+    :root {
+      --bg: #f3f1ec;
+      --bg-soft: #ebe8e1;
+      --surface: #ffffff;
+      --surface-strong: #ffffff;
+      --surface-soft: #f7f6f2;
+      --ink: #171721;
+      --muted: #686975;
+      --muted-2: #888994;
+      --line: #deddd7;
+      --line-strong: #c8c7c0;
+      --primary: #174ea6;
+      --primary-2: #0b63d8;
+      --accent: #16794f;
+      --amber: #9b6700;
+      --bad: #b42318;
+      --radius: 12px;
+    }
+    body {
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    body::before, body::after { display: none; }
+    h1, h2, h3 { font-family: inherit; letter-spacing: -0.03em; }
+    button, input, select, textarea { font-family: inherit; }
+    .card {
+      background: var(--surface);
+      border-color: var(--line);
+      box-shadow: 0 1px 2px rgba(18, 18, 24, 0.04), 0 14px 40px rgba(18, 18, 24, 0.045);
+    }
+    .btn { min-height: 42px; padding: 10px 15px; font-weight: 700; }
+    .btn-primary { background: var(--primary); box-shadow: none; }
+    .btn-primary:hover { background: #123f89; }
+    .btn-soft, .btn-ghost { color: var(--ink); background: #fff; border-color: var(--line); }
+    .btn-soft:hover, .btn-ghost:hover { color: var(--ink); background: #f6f5f1; border-color: var(--line-strong); }
+    .input, .search, .compact-select {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+    .input::placeholder, .search::placeholder { color: #9a9aa3; }
+    .input:focus, .search:focus, .compact-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(23, 78, 166, 0.12);
+    }
+    .input:disabled { background: #efeee9; color: #777883; }
+    .notice { background: #f5f6f8; }
+    .notice--info { color: #174ea6; border-color: #bdd2f4; background: #f2f7ff; }
+    .notice--ok { color: #116149; border-color: #b7dfd0; background: #f2faf6; }
+    .notice--bad { color: #9f241b; border-color: #efc4c0; background: #fff5f4; }
+    .pill { text-transform: none; font-weight: 750; }
+    .pill--ok { color: #116149; border-color: #b7dfd0; background: #edf8f3; }
+    .pill--warn { color: #795000; border-color: #ead7a9; background: #fff8e8; }
+    .pill--bad { color: #9f241b; border-color: #efc4c0; background: #fff3f2; }
+    .pill--info { color: #174ea6; border-color: #c4d5ef; background: #f0f5fc; }
+    .badge[data-group], .badge[data-role] { color: #4e505a; border-color: #d7d6d0; background: #f2f1ed; }
+    .auth {
+      width: min(480px, calc(100% - 32px));
+      margin: clamp(30px, 9vh, 96px) auto;
+      padding: clamp(24px, 4vw, 38px);
+      background: #fff;
+    }
+    .auth-brand { margin-bottom: 30px; }
+    .auth-mark, .brand-mark { padding: 6px; border-radius: 9px; background: #eef4ff; box-shadow: none; }
+    .auth-mark img, .brand-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .auth h1 { font-size: clamp(28px, 4vw, 38px); }
+    .auth p { line-height: 1.55; }
+    .auth .btn-primary { width: 100%; margin-top: 20px; }
+    .advanced-settings { margin-top: 16px; color: var(--muted); font-size: 12px; }
+    .advanced-settings summary { cursor: pointer; font-weight: 700; }
+    .advanced-settings[open] { padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-soft); }
+    .admin-shell { grid-template-columns: 244px minmax(0, 1fr); gap: 32px; padding: 24px 34px 40px 24px; }
+    .admin-sidebar { top: 18px; height: calc(100vh - 36px); padding: 20px 16px; background: #171721; border-color: #171721; }
+    .brand-lockup { margin-bottom: 34px; padding: 0 8px; }
+    .brand-name { color: #fff; font-size: 14px; }
+    .brand-kicker { color: #999ba6; letter-spacing: 0.1em; }
+    .nav-link { min-height: 44px; padding: 11px 12px; color: #aeb0bb; font-size: 14px; }
+    .nav-link:hover { color: #fff; background: #252630; }
+    .nav-link.is-active { color: #fff; background: #2d303c; border-color: #3d404d; }
+    .admin-nav-label {
+      display: block;
+      margin: 22px 12px 6px;
+      color: #777a86;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .sidebar-user { border-color: #343640; }
+    .session-mini b { color: #fff; }
+    .session-mini span { color: #999ba6; }
+    .sidebar-user .btn { color: #fff; background: transparent; border-color: #3d404d; }
+    .avatar { color: #fff; background: var(--primary); }
+    .admin-main { max-width: 1500px; padding-top: 8px; }
+    .admin-actions { top: 14px; }
+    .view-head { min-height: 90px; }
+    .view-head h1 { margin-top: 5px; font-size: clamp(32px, 4vw, 46px); line-height: 1; }
+    .view-head em { color: var(--primary); font-family: inherit; font-style: normal; font-weight: 700; }
+    .eyebrow { color: var(--muted); letter-spacing: 0.12em; }
+    .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .kpi { min-height: 112px; padding: 20px; }
+    .kpi-label { color: var(--muted); letter-spacing: 0; text-transform: none; font-size: 12px; }
+    .kpi b { font-family: inherit; font-size: 34px; }
+    .kpi-technical { display: none; }
+    .panel { padding: clamp(18px, 2.5vw, 28px); }
+    .panel p { font-size: 14px; line-height: 1.55; }
+    .list { border-color: var(--line); scrollbar-color: #bfc1c7 transparent; }
+    .item, .cms-page-button { border-color: var(--line); }
+    .item-meta { color: var(--muted); font-family: inherit; }
+    .meta-chip { color: #595a65; background: #f4f3ef; border-color: #e3e1dc; }
+    .text-link { color: var(--primary); }
+    .cms-layout { grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.7fr); }
+    .cms-editor-layout { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; align-items: start; }
+    .cms-editor-panel { min-width: 0; }
+    .publish-sidebar { position: sticky; top: 18px; padding: 22px; }
+    .publish-sidebar h2 { margin-bottom: 16px; font-size: 18px; }
+    .publish-summary { display: grid; gap: 12px; margin-bottom: 20px; }
+    .publish-summary div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+    .publish-summary span { color: var(--muted); font-size: 12px; }
+    .publish-summary b { font-size: 12px; text-align: right; }
+    .publish-actions { display: grid; gap: 9px; }
+    .publish-actions .btn { width: 100%; }
+    .publish-actions #cmsSaveBtn { margin-top: 3px; }
+    .revision-panel { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+    .revision-panel summary { cursor: pointer; color: var(--ink); font-size: 13px; font-weight: 800; }
+    .revision-list { display: grid; gap: 8px; margin-top: 12px; }
+    .revision-item { padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #faf9f6; }
+    .revision-item b, .revision-item span { display: block; }
+    .revision-item b { font-size: 12px; }
+    .revision-item span { margin: 3px 0 8px; color: var(--muted); font-size: 11px; }
+    .revision-item .btn { width: 100%; min-height: 34px; padding: 6px 9px; font-size: 11px; }
+    .revision-item-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .revision-diff { display: grid; gap: 5px; margin: 9px 0; padding: 9px; border-radius: 6px; color: var(--muted); background: #f0eee8; font-size: 11px; }
+    .revision-diff b { overflow-wrap: anywhere; }
+    .editor-back { margin-top: 14px; }
+    .pages-toolbar { display: grid; grid-template-columns: minmax(200px, 1fr) 150px 160px 150px; gap: 10px; width: min(880px, 100%); }
+    .pages-toolbar .search { max-width: none; }
+    .page-row { min-height: 76px; padding: 15px 0; }
+    .page-row .item-title { font-size: 14px; }
+    .page-row .item-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 7px; }
+    .row-action { color: var(--primary); border: 0; padding: 0; background: transparent; cursor: pointer; font-size: 12px; font-weight: 750; }
+    .row-action:hover { text-decoration: underline; }
+    .row-separator { color: #b5b5ba; }
+    .admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 54px;
+      margin: -8px -10px 26px;
+      padding: 0 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .admin-topbar-title { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .settings-panel { max-width: 920px; }
+    .settings-section { padding: 18px 0; border-top: 1px solid var(--line); }
+    .settings-section:first-of-type { padding-top: 0; border-top: 0; }
+    .settings-section h3 { margin-bottom: 4px; font-size: 16px; }
+    .settings-section > p { margin-bottom: 14px; }
+    .settings-checks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    .settings-check { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fbfaf7; font-size: 13px; font-weight: 700; }
+    .settings-check input { width: 17px; height: 17px; accent-color: var(--primary); }
+    .activity-list { display: grid; gap: 0; max-width: 1000px; border-top: 1px solid var(--line); }
+    .activity-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) 180px; gap: 18px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+    .activity-row b { font-size: 13px; }
+    .activity-row span { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+    .profile-panel { max-width: 720px; }
+    .media-layout { display: grid; grid-template-columns: minmax(280px, 0.65fr) minmax(0, 1.6fr); gap: 20px; align-items: start; }
+    .media-upload-panel { position: sticky; top: 18px; }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+    .media-card { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .media-preview { aspect-ratio: 4 / 3; display: grid; place-items: center; overflow: hidden; background: #eeeae2; }
+    .media-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .media-card-body { padding: 12px; }
+    .media-card-body b { display: block; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .media-card-body span { display: block; margin: 4px 0 9px; color: var(--muted); font-size: 11px; }
+    .media-url { width: 100%; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); background: #f7f6f2; font-size: 10px; }
+    .cms-page-button { padding: 14px 12px; border-radius: 8px; }
+    .cms-page-button:hover { background: #f6f5f1; }
+    .cms-page-button.is-active { color: var(--primary); background: #edf3fc; }
+    .cms-page-button span { color: var(--muted); font: 12px/1.4 inherit; }
+    .cms-toolbar { grid-template-columns: minmax(0, 1fr) auto auto; }
+    .cms-toolbar-actions { display: flex; gap: 6px; }
+    .cms-toolbar-actions .btn { min-height: 42px; padding: 8px 11px; font-size: 11px; }
+    .cms-field { padding: 18px; border-color: var(--line); background: #fbfaf7; }
+    details.cms-field > summary { cursor: pointer; list-style: none; }
+    details.cms-field > summary::-webkit-details-marker { display: none; }
+    details.cms-field > summary::after { content: "⌄"; flex: 0 0 auto; margin-left: 5px; color: var(--muted); font-size: 16px; transition: transform .2s ease; }
+    details.cms-field:not([open]) > summary { margin-bottom: 0; }
+    details.cms-field[open] > summary::after { transform: rotate(180deg); }
+    .cms-field-title { font-size: 14px; }
+    .cms-field-title span { font: 12px/1.45 inherit; color: var(--muted); }
+    .cms-lang-grid label { color: var(--muted); letter-spacing: 0; text-transform: none; font-size: 12px; }
+    .cms-lang-grid textarea { background: #fff; }
+    .builder-block { border-color: var(--line); background: #fbfaf7; }
+    .empty-state { border-color: #cfcec8; background: #faf9f6; }
+    .quick-actions { grid-column: 1 / -1; }
+    .quick-action-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+    .quick-action {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 110px;
+      padding: 18px;
+      color: var(--ink);
+      text-decoration: none;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfaf7;
+      cursor: pointer;
+    }
+    .quick-action:hover { border-color: #9eb9e2; background: #f3f7fd; }
+    .quick-action b { display: block; margin-bottom: 6px; font-size: 15px; }
+    .quick-action span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .quick-action strong { color: var(--primary); font-size: 20px; }
+    .help-box { margin-top: 18px; padding: 14px 16px; border-left: 3px solid var(--primary); background: #f4f7fc; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .char-count { margin-top: 6px; color: var(--muted-2); font-size: 11px; text-align: right; }
+    .unsaved-dot { color: #9b6700; }
+    .integration-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .integration-card { padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: #fbfaf7; }
+    .integration-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .integration-card p { color: var(--muted); font-size: 12px; }
+    .session-card { grid-column: 1 / -1; min-height: 0; }
+
+    @media (max-width: 1100px) {
+      .admin-shell { grid-template-columns: 220px minmax(0, 1fr); gap: 20px; padding: 18px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .overview-grid, .layout, .users-layout, .requests-grid, .cms-layout, .cms-editor-layout, .media-layout { grid-template-columns: 1fr; }
+      .publish-sidebar { position: static; }
+      .media-upload-panel { position: static; }
+      .settings-checks { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .admin-shell { display: block; padding: 12px; }
+      .admin-sidebar { position: relative; top: auto; height: auto; margin-bottom: 18px; }
+      .brand-lockup { margin-bottom: 16px; }
+      .admin-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .nav-link span { display: none; }
+      .admin-nav-label { display: none; }
+      .admin-actions { position: static; justify-content: flex-start; margin-bottom: 18px; }
+      .view-head { min-height: 0; padding: 0; margin-bottom: 22px; }
+      .quick-action-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .admin-sidebar, .panel, .kpi { padding: 16px; }
+      .admin-nav { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px; }
+      .nav-link { min-width: 90px; flex-direction: column; justify-content: center; text-align: center; font-size: 11px; }
+      .nav-link span { display: inline; }
+      .admin-nav-label { display: none; }
+      .kpis, .form-grid, .builder-grid, .builder-form-grid { grid-template-columns: 1fr; }
+      .panel-head { flex-direction: column; }
+      .panel-actions, .panel-actions .btn, .panel-actions .search { width: 100%; }
+      .item { grid-template-columns: 1fr; }
+      .item-actions { justify-content: stretch; }
+      .item-actions .btn, .compact-select { width: 100%; }
+      .cms-toolbar { grid-template-columns: 1fr; }
+      .cms-toolbar-actions { width: 100%; }
+      .cms-toolbar-actions .btn { flex: 1; }
+      .pages-toolbar { grid-template-columns: 1fr; }
+      .cms-fields { max-height: none; }
+      .activity-row { grid-template-columns: 1fr; gap: 5px; }
+      .view-head h1 { font-size: 34px; }
+      .form-field-toggle { align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body>
   <main class="shell">
     <section id="loginSection" class="auth card">
       <div class="auth-brand">
-        <div class="auth-mark">C</div>
+        <div class="auth-mark"><img src="/assets/images/cobrait-symbol.svg?v=20260826b" alt=""></div>
         <div>
-          <h2>COBRAIT Admin Access</h2>
-          <p class="muted">Autenticação real via API e armazenamento configurado no servidor.</p>
+          <h2>COBRAIT</h2>
+          <p class="muted">Gestão do website</p>
         </div>
       </div>
-      <h1>Entrar no painel</h1>
-      <p>Usa um utilizador gravado na tabela <code>admin_users</code>.</p>
-      <label class="field-label" for="apiBaseInput">API Base</label>
-      <input id="apiBaseInput" class="input" type="text" placeholder="http://localhost:4000/api" autocomplete="off" />
-      <label class="field-label" for="adminEmail">Email</label>
-      <input id="adminEmail" class="input" type="email" placeholder="admin@cobrait.pt" autocomplete="username" />
-      <label class="field-label" for="adminPass">Password</label>
-      <input id="adminPass" class="input" type="password" placeholder="Introduz a password" autocomplete="current-password" />
-      <button id="loginBtn" class="btn btn-primary" type="button">Entrar</button>
+      <h1>Iniciar sessão</h1>
+      <p>Entra para atualizar os conteúdos do site e acompanhar pedidos de contacto.</p>
+      <div id="loginFormPanel">
+        <label class="field-label" for="adminEmail">Email</label>
+        <input id="adminEmail" class="input" type="email" placeholder="admin@cobrait.pt" autocomplete="username" />
+        <label class="field-label" for="adminPass">Palavra-passe</label>
+        <input id="adminPass" class="input" type="password" placeholder="Introduz a tua palavra-passe" autocomplete="current-password" />
+        <button id="loginBtn" class="btn btn-primary" type="button">Entrar</button>
+        <button id="forgotPasswordBtn" class="btn btn-ghost" type="button">Esqueci-me da palavra-passe</button>
+      </div>
+      <div id="resetPasswordPanel" class="hidden">
+        <p class="muted">Define uma nova palavra-passe para a tua conta.</p>
+        <label class="field-label" for="resetPassword">Nova palavra-passe</label><input id="resetPassword" class="input" type="password" minlength="8" autocomplete="new-password">
+        <label class="field-label" for="resetPasswordConfirm">Confirmar palavra-passe</label><input id="resetPasswordConfirm" class="input" type="password" minlength="8" autocomplete="new-password">
+        <button id="resetPasswordBtn" class="btn btn-primary" type="button">Guardar nova palavra-passe</button>
+      </div>
       <div id="loginError" class="err"></div>
-      <p class="hint">Se ainda não existir nenhum admin, define <code>ADMIN_EMAIL</code> e <code>ADMIN_PASSWORD</code> nas variáveis de ambiente da app Node e reinicia a API.</p>
+      <details class="advanced-settings">
+        <summary>Configuração avançada</summary>
+        <label class="field-label" for="apiBaseInput">Endereço da API</label>
+        <input id="apiBaseInput" class="input" type="text" placeholder="http://localhost:4000/api" autocomplete="off" />
+      </details>
+      <p class="hint">Problemas a entrar? Contacta o responsável técnico pelo website.</p>
     </section>
 
     <section id="adminSection" class="hidden">
@@ -557,7 +863,7 @@
         </div>
         <div class="topbar-actions">
           <div id="sessionRole" class="pill pill--info">viewer</div>
-          <a class="btn btn-soft" href="index.html">Abrir site</a>
+          <a class="btn btn-soft" href="/pt/?edit=1&amp;active=1">Editar website</a>
           <button id="logoutBtn" class="btn btn-primary" type="button">Sair</button>
         </div>
       </header>
@@ -603,8 +909,8 @@
         <section class="panel card">
           <div class="panel-head">
             <div>
-              <h2 style="font-size:21px;margin-bottom:4px;">Páginas editáveis</h2>
-              <p class="muted">Escolhe a página que queres alterar.</p>
+              <h2 style="font-size:21px;margin-bottom:4px;">Escolher página</h2>
+              <p class="muted">Seleciona a página e o idioma que queres atualizar.</p>
             </div>
           </div>
           <ul id="cmsPagesList" class="list cms-page-list"></ul>
@@ -613,38 +919,46 @@
         <section class="panel card">
           <div class="panel-head">
             <div>
-              <h2 id="cmsEditorTitle" style="font-size:21px;margin-bottom:4px;">CMS de conteúdo</h2>
-              <p id="cmsEditorMeta" class="muted">Seleciona uma página para carregar campos editáveis.</p>
+              <h2 id="cmsEditorTitle" style="font-size:21px;margin-bottom:4px;">Editar conteúdo</h2>
+              <p id="cmsEditorMeta" class="muted">Seleciona uma página para começar.</p>
             </div>
             <div class="panel-actions">
-              <a id="cmsPreviewLink" class="btn btn-soft" href="index.html" target="_blank" rel="noopener noreferrer">Abrir página</a>
-              <button id="cmsReloadBtn" class="btn btn-soft" type="button">Recarregar</button>
-              <button id="cmsSaveBtn" class="btn btn-primary" type="button">Guardar</button>
+              <a id="cmsPreviewLink" class="btn btn-soft" href="index.html" target="_blank" rel="noopener noreferrer">Pré-visualizar rascunho</a>
+              <button id="cmsReloadBtn" class="btn btn-soft" type="button">Descartar alterações</button>
+              <button id="cmsUndoBtn" class="btn btn-soft" type="button">Desfazer publicação</button>
+              <button id="cmsDraftBtn" class="btn btn-soft" type="button">Guardar rascunho</button>
+              <button id="cmsSaveBtn" class="btn btn-primary" type="button">Publicar alterações</button>
             </div>
           </div>
           <div id="cmsNotice" class="notice notice--info hidden"></div>
           <div class="cms-toolbar">
-            <input id="cmsFieldFilter" class="search" type="search" placeholder="Filtrar campos por texto ou secção" />
+            <input id="cmsFieldFilter" class="search" type="search" placeholder="Procurar um texto nesta página" />
             <select id="cmsFieldMode" class="compact-select">
-              <option value="main">Principais</option>
-              <option value="all">Todos</option>
+              <option value="main">Conteúdo principal</option>
+              <option value="seo">SEO e Google</option>
+              <option value="form">Formulário</option>
+              <option value="all">Todo o conteúdo</option>
             </select>
+            <div class="cms-toolbar-actions">
+              <button id="cmsExpandAllBtn" class="btn btn-soft" type="button">Expandir</button>
+              <button id="cmsCollapseAllBtn" class="btn btn-soft" type="button">Recolher</button>
+            </div>
           </div>
           <div id="cmsMeta" class="cms-meta"></div>
           <div id="cmsFields" class="cms-fields"></div>
-          <div class="panel-footer">As alterações são guardadas na API e aplicadas ao site sem mexer no HTML. Para produção usa <code>STORAGE_MODE=mysql</code>.</div>
+          <div class="help-box">Guarde primeiro como rascunho, confirme a pré-visualização e publique apenas quando o conteúdo estiver pronto.</div>
         </section>
 
         <section class="panel card builder-panel">
           <div class="panel-head">
             <div>
-              <h2 style="font-size:21px;margin-bottom:4px;">Page Builder</h2>
-              <p class="muted">Cria páginas novas com secções reutilizáveis, sem mexer no código.</p>
+              <h2 style="font-size:21px;margin-bottom:4px;">Criar uma página</h2>
+              <p class="muted">Constrói uma página nova a partir de secções prontas a utilizar.</p>
             </div>
             <div class="panel-actions">
               <button id="builderNewBtn" class="btn btn-soft" type="button">Nova página</button>
-              <a id="builderPreviewLink" class="btn btn-soft" href="#" target="_blank" rel="noopener noreferrer">Abrir</a>
-              <button id="builderSaveBtn" class="btn btn-primary" type="button">Guardar página</button>
+              <button id="builderPreviewLink" class="btn btn-soft" type="button">Pré-visualizar</button>
+              <button id="builderSaveBtn" class="btn btn-primary" type="button">Guardar rascunho</button>
             </div>
           </div>
           <div id="builderNotice" class="notice notice--info hidden"></div>
@@ -653,43 +967,57 @@
               <div class="panel-head" style="padding:0;margin-bottom:10px;">
                 <div>
                   <h3 style="font-size:15px;">Páginas criadas</h3>
-                  <p class="muted">URLs geradas pelo CMS.</p>
+                  <p class="muted">Páginas adicionadas através deste editor.</p>
                 </div>
               </div>
               <ul id="builderPagesList" class="list cms-page-list"></ul>
             </section>
             <section>
               <div class="builder-form-grid">
-                <label class="field-label" for="builderSlug">URL / slug
-                  <input id="builderSlug" class="input" type="text" placeholder="ex: landing-campanha" autocomplete="off" />
+                <label class="field-label" for="builderSlug">Endereço da página
+                  <input id="builderSlug" class="input" type="text" placeholder="Ex.: nova-pagina" autocomplete="off" />
                 </label>
                 <label class="field-label" for="builderStatus">Estado
                   <select id="builderStatus" class="input">
                     <option value="draft">rascunho</option>
                     <option value="published">publicada</option>
+                    <option value="archived">arquivada</option>
+                  </select>
+                </label>
+                <label class="field-label" for="builderLocale">Idioma
+                  <select id="builderLocale" class="input">
+                    <option value="pt">Português</option>
+                    <option value="en">English</option>
                   </select>
                 </label>
                 <label class="field-label" for="builderTitle">Título
                   <input id="builderTitle" class="input" type="text" placeholder="Título da página" autocomplete="off" />
                 </label>
-                <label class="field-label" for="builderDescription">Meta description
-                  <input id="builderDescription" class="input" type="text" placeholder="Resumo para SEO e partilhas" autocomplete="off" />
+                <label class="field-label" for="builderDescription">Resumo para Google e partilhas
+                  <input id="builderDescription" class="input" type="text" placeholder="Descreve esta página numa frase curta" autocomplete="off" />
                 </label>
               </div>
               <div class="panel-actions" style="margin-top:12px;">
                 <select id="builderBlockType" class="compact-select">
-                  <option value="hero">Hero</option>
-                  <option value="text">Texto</option>
-                  <option value="cards">Cards</option>
-                  <option value="faq">FAQ</option>
-                  <option value="cta">CTA</option>
+                  <option value="hero">Cabeçalho principal</option>
+                  <option value="text">Bloco de texto</option>
+                  <option value="cards">Lista de destaques</option>
+                  <option value="faq">Perguntas e respostas</option>
+                  <option value="image">Imagem</option>
+                  <option value="cta">Chamada para ação</option>
                 </select>
                 <button id="builderAddBlockBtn" class="btn btn-soft" type="button">Adicionar secção</button>
               </div>
-              <p class="builder-help">Cards e FAQ usam uma linha por item no formato <code>Título | Texto</code>. Listas usam uma linha por item.</p>
+              <p class="builder-help">Nos destaques e perguntas, escreva um item por linha: primeiro o título, depois “|” e o respetivo texto.</p>
+              <p id="builderAutosaveStatus" class="builder-autosave" aria-live="polite"></p>
+              <datalist id="builderMediaOptions"></datalist>
               <div id="builderBlocks" class="builder-blocks"></div>
             </section>
           </div>
+          <section id="builderPreviewPanel" class="builder-preview" hidden>
+            <div class="builder-preview-toolbar"><div><b>Pré-visualização</b><p class="muted">Conteúdo atual do editor, ainda sem publicar.</p></div><div class="panel-actions"><button class="btn btn-soft" type="button" data-preview-width="100%">Desktop</button><button class="btn btn-soft" type="button" data-preview-width="768px">Tablet</button><button class="btn btn-soft" type="button" data-preview-width="390px">Mobile</button><button id="builderPreviewClose" class="btn btn-ghost" type="button">Fechar</button></div></div>
+            <div id="builderPreviewFrameWrap" class="builder-preview-frame-wrap"><iframe id="builderPreviewFrame" class="builder-preview-frame" title="Pré-visualização da página"></iframe></div>
+          </section>
         </section>
       </section>
 
@@ -697,8 +1025,8 @@
         <section class="panel card">
           <div class="panel-head">
             <div>
-              <h2 style="font-size:21px;margin-bottom:4px;">Utilizadores</h2>
-              <p id="usersMeta" class="muted">Contas gravadas no armazenamento configurado para o painel admin.</p>
+              <h2 style="font-size:21px;margin-bottom:4px;">Pessoas com acesso</h2>
+              <p id="usersMeta" class="muted">Contas que podem entrar neste painel.</p>
             </div>
             <div class="panel-actions">
               <button id="refreshUsersBtn" class="btn btn-soft" type="button">Atualizar</button>
@@ -712,7 +1040,7 @@
           <div class="panel-head">
             <div>
               <h2 id="userFormTitle" style="font-size:21px;margin-bottom:4px;">Novo utilizador</h2>
-              <p class="muted">Cria ou edita acessos admin, editor e viewer.</p>
+              <p class="muted">Define o que cada pessoa pode consultar ou alterar.</p>
             </div>
             <div class="panel-actions">
               <button id="resetUserFormBtn" class="btn btn-soft" type="button">Limpar</button>
@@ -731,11 +1059,11 @@
                 <input id="userEmail" class="input" type="email" placeholder="maria@cobrait.pt" autocomplete="email" />
               </div>
               <div>
-                <label class="field-label" for="userRole">Role</label>
+                <label class="field-label" for="userRole">Nível de acesso</label>
                 <select id="userRole" class="input">
-                  <option value="viewer">viewer</option>
-                  <option value="editor">editor</option>
-                  <option value="admin">admin</option>
+                  <option value="viewer">Apenas consulta</option>
+                  <option value="editor">Editor de conteúdos</option>
+                  <option value="admin">Administrador</option>
                 </select>
               </div>
               <div>
@@ -746,7 +1074,7 @@
                 </select>
               </div>
               <div class="span-2">
-                <label class="field-label" for="userPassword">Password</label>
+                <label class="field-label" for="userPassword">Palavra-passe</label>
                 <input id="userPassword" class="input" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
                 <div id="userPasswordHint" class="form-note">Obrigatória ao criar um novo utilizador.</div>
               </div>
@@ -755,7 +1083,7 @@
               <button id="saveUserBtn" class="btn btn-primary" type="submit">Criar utilizador</button>
             </div>
           </form>
-          <div class="panel-footer">Cada utilizador criado aqui é guardado em <code>admin_users</code>. A API protege a sessão com cookie HTTP-only e lista também <code>contact_requests</code> e <code>call_bookings</code>.</div>
+          <div class="help-box"><strong>Administrador:</strong> pode gerir tudo. <strong>Editor:</strong> pode alterar conteúdos. <strong>Apenas consulta:</strong> pode entrar sem fazer alterações.</div>
         </section>
       </section>
 
@@ -763,7 +1091,7 @@
         <section class="panel card">
           <div class="panel-head">
             <div>
-              <h2 style="font-size:21px;margin-bottom:4px;">Agendar chamadas</h2>
+              <h2 style="font-size:21px;margin-bottom:4px;">Pedidos de reunião</h2>
               <p id="bookingsMeta" class="muted">Pedidos recebidos pelo formulário do site.</p>
             </div>
             <div class="panel-actions">
@@ -779,7 +1107,7 @@
           <div class="panel-head">
             <div>
               <h2 style="font-size:21px;margin-bottom:4px;">Pedidos de contacto</h2>
-              <p id="contactsMeta" class="muted">Leads gerais guardadas para o backoffice.</p>
+              <p id="contactsMeta" class="muted">Mensagens enviadas através do website.</p>
             </div>
             <div class="panel-actions">
               <input id="contactsFilter" class="search search--compact" type="search" placeholder="Filtrar por nome, email ou estado" />
@@ -796,24 +1124,38 @@
   <script>
     const DEFAULT_LOCAL_API = "http://localhost:4000/api";
     const pages = [
-      { path: "index.html", label: "Home", group: "core" },
-      { path: "about-us.html", label: "About Us", group: "core" },
-      { path: "book-a-call.html", label: "Book a Call", group: "core" },
-      { path: "tech.html", label: "Tech", group: "core" },
-      { path: "servicos.html", label: "Serviços", group: "core" },
-      { path: "privacidade.html", label: "Privacidade", group: "legal" },
-      { path: "termos.html", label: "Termos", group: "legal" },
-      { path: "cookies.html", label: "Cookies", group: "legal" },
-      { path: "servicos/product-scope.html", label: "Product Scope", group: "servicos" },
-      { path: "servicos/mvp-builder.html", label: "MVP Builder", group: "servicos" },
-      { path: "servicos/ux-ui.html", label: "UX/UI", group: "servicos" },
-      { path: "servicos/custom-software.html", label: "Custom Software", group: "servicos" },
-      { path: "servicos/dedicated-teams.html", label: "Dedicated Teams", group: "servicos" }
+      { path: "/pt/", pageKey: "v2.pt.home", label: "Home · PT", group: "core" },
+      { path: "/en/", pageKey: "v2.en.home", label: "Home · EN", group: "core" },
+      { path: "/pt/servicos/", pageKey: "v2.pt.services", label: "Serviços · PT", group: "servicos" },
+      { path: "/en/services/", pageKey: "v2.en.services", label: "Services · EN", group: "servicos" },
+      { path: "/pt/servicos/product-scope/", pageKey: "v2.pt.productscope", label: "Product Scope · PT", group: "servicos" },
+      { path: "/en/services/product-scope/", pageKey: "v2.en.productscope", label: "Product Scope · EN", group: "servicos" },
+      { path: "/pt/servicos/mvp-e-produtos-digitais/", pageKey: "v2.pt.mvp", label: "MVP e produto · PT", group: "servicos" },
+      { path: "/en/services/mvp-and-product-development/", pageKey: "v2.en.mvp", label: "MVP and product · EN", group: "servicos" },
+      { path: "/pt/servicos/software-a-medida/", pageKey: "v2.pt.customsoftware", label: "Software à medida · PT", group: "servicos" },
+      { path: "/en/services/custom-software/", pageKey: "v2.en.customsoftware", label: "Custom software · EN", group: "servicos" },
+      { path: "/pt/servicos/ux-ui-e-design-systems/", pageKey: "v2.pt.uxui", label: "UX/UI · PT", group: "servicos" },
+      { path: "/en/services/ux-ui-and-design-systems/", pageKey: "v2.en.uxui", label: "UX/UI · EN", group: "servicos" },
+      { path: "/pt/servicos/equipas-dedicadas/", pageKey: "v2.pt.dedicatedteams", label: "Equipas dedicadas · PT", group: "servicos" },
+      { path: "/en/services/dedicated-teams/", pageKey: "v2.en.dedicatedteams", label: "Dedicated teams · EN", group: "servicos" },
+      { path: "/pt/processo/", pageKey: "v2.pt.process", label: "Processo · PT", group: "core" },
+      { path: "/en/process/", pageKey: "v2.en.process", label: "Process · EN", group: "core" },
+      { path: "/pt/engenharia/", pageKey: "v2.pt.engineering", label: "Engenharia · PT", group: "core" },
+      { path: "/en/engineering/", pageKey: "v2.en.engineering", label: "Engineering · EN", group: "core" },
+      { path: "/pt/sobre/", pageKey: "v2.pt.about", label: "Sobre · PT", group: "core" },
+      { path: "/en/about/", pageKey: "v2.en.about", label: "About · EN", group: "core" },
+      { path: "/pt/agendar/", pageKey: "v2.pt.booking", label: "Agendar · PT", group: "core" },
+      { path: "/en/book-a-call/", pageKey: "v2.en.booking", label: "Book a call · EN", group: "core" },
+      { path: "/pt/privacidade/", pageKey: "v2.pt.privacy", label: "Privacidade · PT", group: "legal" },
+      { path: "/en/privacy/", pageKey: "v2.en.privacy", label: "Privacy · EN", group: "legal" },
+      { path: "/pt/cookies/", pageKey: "v2.pt.cookies", label: "Cookies · PT", group: "legal" },
+      { path: "/en/cookies/", pageKey: "v2.en.cookies", label: "Cookies · EN", group: "legal" },
+      { path: "/pt/termos/", pageKey: "v2.pt.terms", label: "Termos · PT", group: "legal" },
+      { path: "/en/terms/", pageKey: "v2.en.terms", label: "Terms · EN", group: "legal" }
     ];
     const CMS_LANGS = [
       { code: "pt", label: "Português" },
-      { code: "en", label: "English" },
-      { code: "es", label: "Español" }
+      { code: "en", label: "English" }
     ];
     const CMS_EDITABLE_SELECTOR = [
       "h1",
@@ -836,7 +1178,7 @@
       "blockquote",
       "figcaption"
     ].join(",");
-    const CMS_MAIN_TAGS = new Set(["H1", "H2", "H3", "P", "A", "BUTTON"]);
+    const CMS_MAIN_TAGS = new Set(["TITLE", "META", "H1", "H2", "H3", "P", "A", "BUTTON"]);
 
     function qs(id) { return document.getElementById(id); }
     function escapeHtml(value) {
@@ -862,6 +1204,8 @@
         .replace(/^-+|-+$/g, "");
     }
     function pageKeyForPath(path) {
+      const configured = pages.find((page) => page.path === path);
+      if (configured && configured.pageKey) return configured.pageKey;
       const normalized = String(path || "").replace(/^\/+|\/+$/g, "");
       if (!normalized || /^index\.html?$/i.test(normalized)) return "home";
       return normalized
@@ -962,6 +1306,45 @@
 
     const CONTACT_STATUS_OPTIONS = ["new", "contacted", "qualified", "proposal_sent", "won", "lost", "archived"];
     const BOOKING_STATUS_OPTIONS = ["new", "contacted", "scheduled", "confirmed", "completed", "cancelled", "no_show"];
+    const STATUS_LABELS = {
+      new: "Novo",
+      contacted: "Contactado",
+      qualified: "Qualificado",
+      proposal_sent: "Proposta enviada",
+      won: "Ganho",
+      lost: "Perdido",
+      archived: "Arquivado",
+      scheduled: "Agendado",
+      confirmed: "Confirmado",
+      completed: "Concluído",
+      cancelled: "Cancelado",
+      no_show: "Não compareceu"
+    };
+    const ROLE_LABELS = {
+      viewer: "Apenas consulta",
+      editor: "Editor de conteúdos",
+      admin: "Administrador"
+    };
+    const GROUP_LABELS = {
+      core: "Página principal",
+      servicos: "Serviço",
+      legal: "Informação legal",
+      tools: "Ferramenta",
+      builder: "Página criada no editor"
+    };
+    const BUILDER_BLOCK_LABELS = {
+      hero: "Cabeçalho principal",
+      text: "Bloco de texto",
+      cards: "Lista de destaques",
+      faq: "Perguntas e respostas",
+      image: "Imagem",
+      cta: "Chamada para ação"
+    };
+
+    function statusLabel(value) { return STATUS_LABELS[value] || value || "Sem estado"; }
+    function roleLabel(value) { return ROLE_LABELS[value] || value || "Sem nível"; }
+    function pageLanguage(page) { return page && page.path.startsWith("/en/") ? "Inglês" : "Português"; }
+    function pageDisplayName(page) { return String(page && page.label || "Página").replace(/\s·\s(?:PT|EN)$/i, ""); }
 
     const state = {
       apiBase: defaultApiBase(),
@@ -974,10 +1357,19 @@
       cmsPage: null,
       cmsFields: [],
       cmsContent: {},
+      cmsPublishedContent: {},
+      cmsDraftContent: {},
+      cmsHasDraft: false,
       cmsDirty: false,
+      cmsRevisions: [],
+      globalSettings: {},
+      mediaItems: [],
       builderPages: [],
       builderPage: null,
-      builderDirty: false
+      builderDirty: false,
+      builderDragIndex: null,
+      builderAutosaveTimer: null,
+      auditLogs: []
     };
 
     const loginSection = qs("loginSection");
@@ -986,6 +1378,8 @@
     const loginEmail = qs("adminEmail");
     const loginPass = qs("adminPass");
     const loginBtn = qs("loginBtn");
+    const forgotPasswordBtn = qs("forgotPasswordBtn");
+    const resetPasswordBtn = qs("resetPasswordBtn");
     const loginError = qs("loginError");
     const logoutBtn = qs("logoutBtn");
     const sessionInfo = qs("sessionInfo");
@@ -1032,10 +1426,14 @@
     const cmsEditorMeta = qs("cmsEditorMeta");
     const cmsPreviewLink = qs("cmsPreviewLink");
     const cmsReloadBtn = qs("cmsReloadBtn");
+    const cmsUndoBtn = qs("cmsUndoBtn");
+    const cmsDraftBtn = qs("cmsDraftBtn");
     const cmsSaveBtn = qs("cmsSaveBtn");
     const cmsNotice = qs("cmsNotice");
     const cmsFieldFilter = qs("cmsFieldFilter");
     const cmsFieldMode = qs("cmsFieldMode");
+    const cmsExpandAllBtn = qs("cmsExpandAllBtn");
+    const cmsCollapseAllBtn = qs("cmsCollapseAllBtn");
     const cmsMeta = qs("cmsMeta");
     const cmsFields = qs("cmsFields");
     const builderPagesList = qs("builderPagesList");
@@ -1047,9 +1445,16 @@
     const builderTitle = qs("builderTitle");
     const builderDescription = qs("builderDescription");
     const builderStatus = qs("builderStatus");
+    const builderLocale = qs("builderLocale");
     const builderBlockType = qs("builderBlockType");
     const builderAddBlockBtn = qs("builderAddBlockBtn");
     const builderBlocks = qs("builderBlocks");
+    const builderAutosaveStatus = qs("builderAutosaveStatus");
+    const builderMediaOptions = qs("builderMediaOptions");
+    const builderPreviewPanel = qs("builderPreviewPanel");
+    const builderPreviewFrame = qs("builderPreviewFrame");
+    const builderPreviewFrameWrap = qs("builderPreviewFrameWrap");
+    const builderPreviewClose = qs("builderPreviewClose");
 
     function createView(id, eyebrow, titleHtml) {
       const section = document.createElement("section");
@@ -1071,12 +1476,15 @@
       adminSection.classList.add("admin-shell");
 
       const topbar = adminSection.querySelector(".topbar");
-      const siteLink = topbar ? topbar.querySelector('a[href="index.html"]') : null;
+      const siteLink = topbar ? topbar.querySelector('a[href="/pt/?edit=1&active=1"]') : null;
       const kpis = adminSection.querySelector(":scope > .kpis");
       const layouts = Array.from(adminSection.querySelectorAll(":scope > .layout"));
       const pagesPanel = layouts[0] ? layouts[0].children[0] : null;
       const checksPanel = layouts[0] ? layouts[0].children[1] : null;
       const cmsLayout = layouts[1] || null;
+      const cmsSelectorPanel = cmsLayout && cmsLayout.children[0] ? cmsLayout.children[0] : null;
+      const cmsEditorPanel = cmsLayout && cmsLayout.children[1] ? cmsLayout.children[1] : null;
+      const builderPanel = cmsLayout && cmsLayout.children[2] ? cmsLayout.children[2] : null;
       const usersLayout = layouts[2] || null;
       const requestsLayout = layouts[3] || null;
 
@@ -1085,19 +1493,33 @@
           const label = card.querySelector(".kpi-label");
           if (label) card.insertBefore(label, card.firstChild);
         });
+        kpiTotal.closest(".kpi").querySelector(".kpi-label").textContent = "Páginas publicadas";
+        kpiUsers.closest(".kpi").querySelector(".kpi-label").textContent = "Acessos ativos";
+        kpiBookings.closest(".kpi").querySelector(".kpi-label").textContent = "Reuniões novas";
+        kpiContacts.closest(".kpi").querySelector(".kpi-label").textContent = "Contactos novos";
+        kpiServicos.closest(".kpi").classList.add("kpi-technical");
+        kpiChecks.closest(".kpi").classList.add("kpi-technical");
       }
 
       const sidebar = document.createElement("aside");
       sidebar.className = "admin-sidebar card";
       sidebar.setAttribute("aria-label", "Navegação do painel admin");
       sidebar.innerHTML =
-        '<div class="brand-lockup"><div class="brand-mark">C</div><div><span class="brand-name">COBRAIT</span><span class="brand-kicker">Admin</span></div></div>' +
+        '<div class="brand-lockup"><div class="brand-mark"><img src="/assets/images/cobrait-symbol.svg?v=20260826b" alt=""></div><div><span class="brand-name">COBRAIT</span><span class="brand-kicker">Painel de gestão</span></div></div>' +
         '<nav class="admin-nav">' +
-        '<button class="nav-link is-active" type="button" data-admin-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect x="14" y="14" width="6" height="6" rx="1.5"></rect></svg><span>Overview</span></button>' +
-        '<button class="nav-link" type="button" data-admin-view="pages"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg><span>Páginas</span></button>' +
-        '<button class="nav-link" type="button" data-admin-view="cms"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h10"></path><path d="M4 19h7"></path><path d="M17 14l3 3-5 5h-3v-3z"></path></svg><span>CMS</span></button>' +
-        '<button class="nav-link" type="button" data-admin-view="users"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M16 19a4 4 0 0 0-8 0"></path><circle cx="12" cy="8" r="3.5"></circle><path d="M20 18a3 3 0 0 0-3-3"></path><path d="M17 5a3 3 0 0 1 0 6"></path></svg><span>Utilizadores</span></button>' +
-        '<button class="nav-link" type="button" data-admin-view="requests"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M22 16.9v2.3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.5 2 2 0 0 1 4.1 1.3h2.3a2 2 0 0 1 2 1.7l.4 2.4a2 2 0 0 1-.6 1.8L7.2 8.2a15 15 0 0 0 6.6 6.6l1.1-1.1a2 2 0 0 1 1.8-.5l2.4.5a2 2 0 0 1 1.6 2z"></path></svg><span>Pedidos</span></button>' +
+        '<button class="nav-link is-active" type="button" data-admin-view="overview" title="Início"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect x="14" y="14" width="6" height="6" rx="1.5"></rect></svg><span>Início</span></button>' +
+        '<span class="admin-nav-label">Website</span>' +
+        '<button class="nav-link" type="button" data-admin-view="pages" title="Páginas"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg><span>Páginas</span></button>' +
+        '<button class="nav-link" type="button" data-admin-view="builder" title="Criar página"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5"></path><path d="M12 12v6"></path><path d="M9 15h6"></path></svg><span>Criar página</span></button>' +
+        '<button class="nav-link" type="button" data-admin-view="media" title="Imagens"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5L5 20"></path></svg><span>Imagens</span></button>' +
+        '<span class="admin-nav-label">Gestão</span>' +
+        '<button class="nav-link" type="button" data-admin-view="requests" title="Pedidos"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M22 16.9v2.3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.5 2 2 0 0 1 4.1 1.3h2.3a2 2 0 0 1 2 1.7l.4 2.4a2 2 0 0 1-.6 1.8L7.2 8.2a15 15 0 0 0 6.6 6.6l1.1-1.1a2 2 0 0 1 1.8-.5l2.4.5a2 2 0 0 1 1.6 2z"></path></svg><span>Pedidos</span></button>' +
+        '<button class="nav-link" type="button" data-admin-view="users" title="Acessos"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M16 19a4 4 0 0 0-8 0"></path><circle cx="12" cy="8" r="3.5"></circle><path d="M20 18a3 3 0 0 0-3-3"></path><path d="M17 5a3 3 0 0 1 0 6"></path></svg><span>Acessos</span></button>' +
+        '<span class="admin-nav-label">Sistema</span>' +
+        '<button class="nav-link" type="button" data-admin-view="settings" title="Definições"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path><circle cx="9" cy="6" r="2"></circle><circle cx="15" cy="12" r="2"></circle><circle cx="8" cy="18" r="2"></circle></svg><span>Definições</span></button>' +
+        '<button class="nav-link" type="button" data-admin-view="activity" title="Atividade"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="M7 15l4-4 3 2 5-6"></path></svg><span>Atividade</span></button>' +
+        '<button class="nav-link" type="button" data-admin-view="profile" title="O meu perfil"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg><span>O meu perfil</span></button>' +
+        '<button class="nav-link" type="button" data-admin-view="tools" title="Ferramentas"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1z"></path></svg><span>Ferramentas</span></button>' +
         '</nav><div class="sidebar-user"><div class="session-mini"><div class="avatar">CA</div><div><b id="sidebarSessionName">COBRAIT Admin</b><span id="sidebarSessionEmail">admin@cobrait.pt</span></div></div></div>';
 
       const sidebarUser = sidebar.querySelector(".sidebar-user");
@@ -1111,64 +1533,131 @@
       main.className = "admin-main";
 
       const actions = document.createElement("div");
-      actions.className = "admin-actions";
+      actions.className = "admin-topbar";
+      actions.innerHTML = '<span class="admin-topbar-title">COBRAIT · Gestão do website</span>';
+      const actionsRight = document.createElement("div");
+      actionsRight.className = "panel-actions";
       if (siteLink) {
         siteLink.className = "btn btn-soft";
+        siteLink.href = "/pt/?edit=1&active=1";
         siteLink.target = "_blank";
         siteLink.rel = "noopener noreferrer";
-        siteLink.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M14 3h7v7"></path><path d="M10 14L21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path></svg>Abrir site';
-        actions.appendChild(siteLink);
+        siteLink.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"></path></svg>Editar website';
+        actionsRight.appendChild(siteLink);
       }
-      if (sessionRole) actions.appendChild(sessionRole);
+      if (sessionRole) actionsRight.appendChild(sessionRole);
+      actions.appendChild(actionsRight);
       main.appendChild(actions);
 
-      const overviewView = createView("overview", "Overview", "Bem-vindo, <em>Admin</em>");
+      const overviewView = createView("overview", "PAINEL DE GESTÃO", "O que pretende <em>fazer?</em>");
       if (kpis) overviewView.appendChild(kpis);
       const overviewGrid = document.createElement("section");
       overviewGrid.className = "overview-grid";
-      if (checksPanel) {
-        checksPanel.querySelector("h2").textContent = "Estado das páginas";
-        checksPanel.querySelector("p").textContent = "Resposta e validação de title.";
-        checksList.classList.add("overview-list");
-        const allPagesButton = document.createElement("button");
-        allPagesButton.className = "text-link";
-        allPagesButton.type = "button";
-        allPagesButton.dataset.adminView = "pages";
-        allPagesButton.textContent = "Ver todas";
-        checksPanel.appendChild(allPagesButton);
-        overviewGrid.appendChild(checksPanel);
-      }
+      const quickActions = document.createElement("section");
+      quickActions.className = "panel card quick-actions";
+      quickActions.innerHTML =
+        '<h2>Ações rápidas</h2><p>Escolha uma tarefa para começar. As opções técnicas ficam separadas e não interferem com a edição diária.</p>' +
+        '<div class="quick-action-grid">' +
+        '<button class="quick-action" type="button" data-admin-view="pages"><span><b>Gerir páginas</b>Escolher uma página para editar, pré-visualizar ou publicar.</span><strong>→</strong></button>' +
+        '<button class="quick-action" type="button" data-admin-view="requests"><span><b>Ver novos pedidos</b>Acompanhar contactos e pedidos de reunião recebidos.</span><strong>→</strong></button>' +
+        '<a class="quick-action" href="/pt/?edit=1&active=1" target="_blank" rel="noopener noreferrer"><span><b>Editar diretamente no website</b>Clicar num texto, alterar e guardar sem procurar o campo no painel.</span><strong>✎</strong></a>' +
+        '</div>';
+      overviewGrid.appendChild(quickActions);
       const sessionCard = document.createElement("section");
       sessionCard.className = "panel card session-card";
       sessionCard.innerHTML =
-        '<h2>Sessão</h2><p>Conta atual.</p><div class="session-identity"><div class="avatar">CA</div><div><b id="sessionName">COBRAIT Admin</b><span id="sessionEmail">admin@cobrait.pt</span></div></div><div class="session-chips"><span class="pill pill--info">admin</span><span class="pill pill--ok">ativo</span><span class="pill pill--info">sessão atual</span></div>';
+        '<h2>A sua conta</h2><p>Sessão atualmente em utilização.</p><div class="session-identity"><div class="avatar">CA</div><div><b id="sessionName">COBRAIT Admin</b><span id="sessionEmail">admin@cobrait.pt</span></div></div><div class="session-chips"><span class="pill pill--info">Administrador</span><span class="pill pill--ok">Ativo</span></div><button class="text-link" type="button" data-admin-view="users">Gerir acessos</button>';
       sessionInfo.className = "session-detail";
       sessionCard.appendChild(sessionInfo);
       overviewGrid.appendChild(sessionCard);
       overviewView.appendChild(overviewGrid);
 
-      const pagesView = createView("pages", "Páginas", "Todas as <em>páginas</em>");
+      const pagesView = createView("pages", "CONTEÚDOS", "Páginas do <em>website</em>");
       if (pagesPanel) {
         pagesPanel.classList.add("panel--full");
         pagesPanel.querySelector("h2").textContent = "Todas as páginas";
-        pagesPanel.querySelector("p").textContent = "Acesso direto a cada página do projeto.";
-        pagesFilter.placeholder = "Filtrar";
+        pagesPanel.querySelector("p").textContent = "Escolha uma página para editar o conteúdo ou consultar a versão publicada.";
+        const pagesActions = pagesPanel.querySelector(".panel-actions");
+        pagesActions.className = "pages-toolbar";
+        pagesFilter.placeholder = "Pesquisar páginas";
+        const languageFilter = document.createElement("select");
+        languageFilter.id = "pagesLanguageFilter";
+        languageFilter.className = "compact-select";
+        languageFilter.innerHTML = '<option value="all">Todos os idiomas</option><option value="pt">Português</option><option value="en">Inglês</option>';
+        const groupFilter = document.createElement("select");
+        groupFilter.id = "pagesGroupFilter";
+        groupFilter.className = "compact-select";
+        groupFilter.innerHTML = '<option value="all">Todos os tipos</option><option value="core">Páginas principais</option><option value="servicos">Serviços</option><option value="legal">Informação legal</option><option value="builder">Páginas criadas no editor</option>';
+        const statusFilter = document.createElement("select");
+        statusFilter.id = "pagesStatusFilter";
+        statusFilter.className = "compact-select";
+        statusFilter.innerHTML = '<option value="all">Todos os estados</option><option value="published">Publicadas</option><option value="draft">Rascunhos</option><option value="archived">Arquivadas</option>';
+        pagesActions.appendChild(languageFilter);
+        pagesActions.appendChild(groupFilter);
+        pagesActions.appendChild(statusFilter);
+        const pagesNotice = document.createElement("div");
+        pagesNotice.id = "pagesNotice";
+        pagesNotice.className = "notice notice--info hidden";
+        pagesPanel.insertBefore(pagesNotice, pagesList);
         pagesView.appendChild(pagesPanel);
       }
 
-      const cmsView = createView("cms", "CMS", "Conteúdo <em>editável</em>");
+      const cmsView = createView("cms", "EDITOR", "Editar <em>página</em>");
+      const cmsViewHead = cmsView.querySelector(".view-head");
+      const backToPages = document.createElement("button");
+      backToPages.className = "btn btn-soft editor-back";
+      backToPages.type = "button";
+      backToPages.dataset.adminView = "pages";
+      backToPages.textContent = "← Voltar às páginas";
+      cmsViewHead.appendChild(backToPages);
       if (cmsLayout) {
-        cmsLayout.className = "cms-layout";
+        if (builderPanel) builderPanel.remove();
+        if (cmsSelectorPanel) cmsSelectorPanel.remove();
+        cmsLayout.className = "cms-editor-layout";
+        if (cmsEditorPanel) cmsEditorPanel.classList.add("cms-editor-panel");
+        const publishSidebar = document.createElement("aside");
+        publishSidebar.className = "publish-sidebar card";
+        publishSidebar.innerHTML =
+          '<h2>Publicação</h2><div class="publish-summary">' +
+          '<div><span>Estado</span><b id="cmsPublishStatus">Publicado</b></div>' +
+          '<div><span>Idioma</span><b id="cmsPublishLanguage">—</b></div>' +
+          '<div><span>Alterações</span><b id="cmsPublishChanges">Sem alterações</b></div>' +
+          '</div><div class="publish-actions" id="cmsPublishActions"></div>' +
+          '<details class="revision-panel"><summary>Histórico de versões</summary><div id="cmsRevisions" class="revision-list"><span class="muted">A carregar...</span></div></details>' +
+          '<div class="help-box">Utilize “Ver no site” para confirmar a página antes e depois de publicar.</div>';
+        const publishActions = publishSidebar.querySelector("#cmsPublishActions");
+        [cmsPreviewLink, cmsReloadBtn, cmsUndoBtn, cmsDraftBtn, cmsSaveBtn].forEach((control) => publishActions.appendChild(control));
+        cmsLayout.appendChild(publishSidebar);
         cmsView.appendChild(cmsLayout);
       }
 
-      const usersView = createView("users", "Utilizadores", "Acessos <em>admin</em>");
+      const builderView = createView("builder", "NOVAS PÁGINAS", "Criar uma <em>página</em>");
+      if (builderPanel) {
+        builderPanel.classList.remove("builder-panel");
+        builderView.appendChild(builderPanel);
+      }
+
+      const mediaView = createView("media", "CONTEÚDOS", "Biblioteca de <em>imagens</em>");
+      const mediaLayout = document.createElement("section");
+      mediaLayout.className = "media-layout";
+      mediaLayout.innerHTML =
+        '<section class="panel card media-upload-panel"><div class="panel-head"><div><h2>Adicionar imagem</h2><p>JPG, PNG ou WebP, até 5 MB.</p></div></div>' +
+        '<div id="mediaNotice" class="notice notice--info hidden"></div>' +
+        '<form id="mediaUploadForm"><label class="field-label">Ficheiro<input id="mediaFile" class="input" type="file" accept="image/jpeg,image/png,image/webp" required></label>' +
+        '<label class="field-label">Texto alternativo<input id="mediaAlt" class="input" type="text" maxlength="240" placeholder="Descreva a imagem para acessibilidade"></label>' +
+        '<button id="mediaUploadBtn" class="btn btn-primary" type="submit">Carregar imagem</button></form>' +
+        '<div class="help-box">O texto alternativo deve descrever o conteúdo útil da imagem. Imagens meramente decorativas podem ficar sem descrição.</div></section>' +
+        '<section class="panel card"><div class="panel-head"><div><h2>Imagens disponíveis</h2><p id="mediaMeta">A carregar biblioteca...</p></div><button id="mediaRefreshBtn" class="btn btn-soft" type="button">Atualizar</button></div>' +
+        '<div id="mediaGrid" class="media-grid"></div></section>';
+      mediaView.appendChild(mediaLayout);
+
+      const usersView = createView("users", "SEGURANÇA", "Gerir <em>acessos</em>");
       if (usersLayout) {
         usersLayout.className = "users-layout";
         usersView.appendChild(usersLayout);
       }
 
-      const requestsView = createView("requests", "Pedidos", "Pedidos <em>recebidos</em>");
+      const requestsView = createView("requests", "CONTACTOS", "Pedidos <em>recebidos</em>");
       if (requestsLayout) {
         requestsLayout.className = "requests-grid";
         bookingsFilter.placeholder = "Filtrar";
@@ -1176,11 +1665,77 @@
         requestsView.appendChild(requestsLayout);
       }
 
+      const settingsView = createView("settings", "WEBSITE", "Definições <em>globais</em>");
+      const settingsPanel = document.createElement("section");
+      settingsPanel.className = "panel card settings-panel";
+      settingsPanel.innerHTML =
+        '<div class="panel-head"><div><h2>Informação partilhada</h2><p>Estes dados são utilizados em várias páginas e idiomas.</p></div></div>' +
+        '<div id="settingsNotice" class="notice notice--info hidden"></div>' +
+        '<form id="settingsForm">' +
+        '<section class="settings-section"><h3>Contacto e presença digital</h3><p class="muted">Informação apresentada no rodapé e nos dados da empresa.</p><div class="form-grid">' +
+        '<label class="field-label">Email geral<input id="globalEmail" class="input" type="email" autocomplete="email"></label>' +
+        '<label class="field-label">LinkedIn<input id="globalLinkedin" class="input" type="url" placeholder="https://www.linkedin.com/company/..."></label>' +
+        '</div></section>' +
+        '<section class="settings-section"><h3>Dados legais da empresa</h3><p class="muted">Utilizados no rodapé e nos dados estruturados para motores de pesquisa.</p><div class="form-grid">' +
+        '<label class="field-label">Nome jurídico<input id="globalLegalName" class="input" type="text"></label>' +
+        '<label class="field-label">NIF / NIPC<input id="globalTaxId" class="input" type="text" inputmode="numeric"></label>' +
+        '<label class="field-label span-2">Morada<input id="globalStreet" class="input" type="text"></label>' +
+        '<label class="field-label">Código postal<input id="globalPostalCode" class="input" type="text"></label>' +
+        '<label class="field-label">Cidade<input id="globalCity" class="input" type="text"></label>' +
+        '</div></section>' +
+        '<section class="settings-section"><h3>Navegação e chamada para ação</h3><p class="muted">Altera os nomes apresentados no menu sem alterar os endereços das páginas.</p><div class="form-grid">' +
+        '<label class="field-label">Serviços · PT<input id="globalNavServicesPt" class="input" type="text"></label><label class="field-label">Services · EN<input id="globalNavServicesEn" class="input" type="text"></label>' +
+        '<label class="field-label">Processo · PT<input id="globalNavProcessPt" class="input" type="text"></label><label class="field-label">Process · EN<input id="globalNavProcessEn" class="input" type="text"></label>' +
+        '<label class="field-label">Engenharia · PT<input id="globalNavEngineeringPt" class="input" type="text"></label><label class="field-label">Engineering · EN<input id="globalNavEngineeringEn" class="input" type="text"></label>' +
+        '<label class="field-label">Sobre · PT<input id="globalNavAboutPt" class="input" type="text"></label><label class="field-label">About · EN<input id="globalNavAboutEn" class="input" type="text"></label>' +
+        '<label class="field-label">Botão principal · PT<input id="globalNavBookingPt" class="input" type="text"></label><label class="field-label">Main button · EN<input id="globalNavBookingEn" class="input" type="text"></label>' +
+        '</div><div class="settings-checks"><label class="settings-check"><input id="globalShowProcess" type="checkbox"> Mostrar Processo</label><label class="settings-check"><input id="globalShowEngineering" type="checkbox"> Mostrar Engenharia</label><label class="settings-check"><input id="globalShowAbout" type="checkbox"> Mostrar Sobre</label></div></section>' +
+        '<section class="settings-section"><h3>Partilhas e agendamento</h3><p class="muted">A imagem é usada nas partilhas sociais. O calendário só é ativado com um endereço oficial Cal.com.</p><div class="form-grid">' +
+        '<label class="field-label span-2">Imagem social predefinida<input id="globalSocialImage" class="input" type="text" list="builderMediaOptions" placeholder="/assets/uploads/imagem.webp"></label>' +
+        '<label class="field-label span-2">Endereço público Cal.com<input id="globalCalendarUrl" class="input" type="url" placeholder="https://cal.com/cobrait/reuniao-inicial"></label>' +
+        '</div></section>' +
+        '<section class="settings-section"><h3>Rodapé em português</h3><div class="form-grid">' +
+        '<label class="field-label">Localização<input id="globalLocationPt" class="input" type="text"></label>' +
+        '<label class="field-label span-2">Mensagem institucional<textarea id="globalStatementPt" class="input"></textarea></label>' +
+        '</div></section>' +
+        '<section class="settings-section"><h3>Rodapé em inglês</h3><div class="form-grid">' +
+        '<label class="field-label">Localização<input id="globalLocationEn" class="input" type="text"></label>' +
+        '<label class="field-label span-2">Mensagem institucional<textarea id="globalStatementEn" class="input"></textarea></label>' +
+        '</div></section>' +
+        '<div class="panel-actions"><button id="settingsSaveBtn" class="btn btn-primary" type="submit">Guardar definições</button></div>' +
+        '</form>';
+      settingsView.appendChild(settingsPanel);
+
+      const activityView = createView("activity", "SEGURANÇA", "Histórico de <em>atividade</em>");
+      activityView.innerHTML += '<section class="panel card"><div class="panel-head"><div><h2>Alterações recentes</h2><p>Registo de acessos, conteúdos, pedidos e configurações.</p></div><button id="activityRefreshBtn" class="btn btn-soft" type="button">Atualizar</button></div><div id="activityNotice" class="notice notice--info hidden"></div><div id="activityList" class="activity-list"></div></section>';
+
+      const profileView = createView("profile", "CONTA", "O meu <em>perfil</em>");
+      profileView.innerHTML += '<section class="panel card profile-panel"><div class="panel-head"><div><h2>Alterar palavra-passe</h2><p>Utilize uma palavra-passe única com pelo menos 8 caracteres.</p></div></div><div id="profileNotice" class="notice notice--info hidden"></div><form id="profilePasswordForm"><div class="form-grid"><label class="field-label span-2">Palavra-passe atual<input id="profileCurrentPassword" class="input" type="password" autocomplete="current-password" required></label><label class="field-label">Nova palavra-passe<input id="profileNewPassword" class="input" type="password" autocomplete="new-password" minlength="8" required></label><label class="field-label">Confirmar nova palavra-passe<input id="profileConfirmPassword" class="input" type="password" autocomplete="new-password" minlength="8" required></label></div><div class="panel-actions"><button id="profilePasswordBtn" class="btn btn-primary" type="submit">Atualizar palavra-passe</button></div></form><div class="help-box">A recuperação por email será ativada quando o SMTP do cPanel estiver configurado. Até lá, um administrador pode definir uma nova palavra-passe em “Acessos”.</div></section>';
+
+      const toolsView = createView("tools", "SISTEMA", "Ferramentas do <em>website</em>");
+      const integrationsPanel = document.createElement("section");
+      integrationsPanel.className = "panel card";
+      integrationsPanel.innerHTML = '<div class="panel-head"><div><h2>Integrações</h2><p>Estado técnico das ligações externas, sem apresentar credenciais.</p></div><button id="integrationsRefreshBtn" class="btn btn-soft" type="button">Atualizar</button></div><div id="integrationsNotice" class="notice notice--info hidden"></div><div id="integrationGrid" class="integration-grid"><div class="empty-state">A carregar...</div></div><div id="integrationActions" class="panel-actions" style="margin-top:14px;"></div>';
+      toolsView.appendChild(integrationsPanel);
+      const integrationActions = integrationsPanel.querySelector("#integrationActions");
+      if (testEmailBtn) integrationActions.appendChild(testEmailBtn);
+      if (checksPanel) {
+        checksPanel.querySelector("h2").textContent = "Estado das páginas";
+        checksPanel.querySelector("p").textContent = "Confirma automaticamente se todas as páginas estão acessíveis.";
+        toolsView.appendChild(checksPanel);
+      }
+
       main.appendChild(overviewView);
       main.appendChild(pagesView);
       main.appendChild(cmsView);
+      main.appendChild(builderView);
+      main.appendChild(mediaView);
       main.appendChild(usersView);
       main.appendChild(requestsView);
+      main.appendChild(settingsView);
+      main.appendChild(activityView);
+      main.appendChild(profileView);
+      main.appendChild(toolsView);
       adminSection.textContent = "";
       adminSection.appendChild(sidebar);
       adminSection.appendChild(main);
@@ -1192,7 +1747,8 @@
         panel.classList.toggle("is-active", panel.dataset.adminPanel === target);
       });
       document.querySelectorAll(".nav-link[data-admin-view]").forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.adminView === target);
+        const navigationTarget = target === "cms" ? "pages" : target;
+        button.classList.toggle("is-active", button.dataset.adminView === navigationTarget);
       });
       if (!keepScroll) window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -1260,30 +1816,73 @@
 
     function filteredPages() {
       const query = String(pagesFilter.value || "").trim().toLowerCase();
-      if (!query) return pages;
-      return pages.filter((page) =>
-        page.label.toLowerCase().includes(query) ||
-        page.path.toLowerCase().includes(query) ||
-        page.group.toLowerCase().includes(query)
-      );
+      const languageFilter = qs("pagesLanguageFilter");
+      const groupFilter = qs("pagesGroupFilter");
+      const statusFilter = qs("pagesStatusFilter");
+      const language = languageFilter ? languageFilter.value : "all";
+      const group = groupFilter ? groupFilter.value : "all";
+      const status = statusFilter ? statusFilter.value : "all";
+      return pages.filter((page) => {
+        const matchesQuery = !query ||
+          page.label.toLowerCase().includes(query) ||
+          page.path.toLowerCase().includes(query) ||
+          page.group.toLowerCase().includes(query);
+        const matchesLanguage = language === "all" || page.path.startsWith("/" + language + "/");
+        const matchesGroup = group === "all" || page.group === group;
+        const matchesStatus = status === "all" || status === "published";
+        return matchesQuery && matchesLanguage && matchesGroup && matchesStatus;
+      });
     }
 
     function renderPages() {
       pagesList.innerHTML = "";
-      kpiTotal.textContent = String(pages.length);
+      kpiTotal.textContent = String(pages.length + state.builderPages.length);
       kpiServicos.textContent = String(pages.filter((page) => page.group === "servicos").length);
       const current = filteredPages();
       current.forEach((page) => {
         const item = document.createElement("li");
-        item.className = "item";
+        item.className = "item page-row";
         item.innerHTML =
-          '<div class="item-main"><div class="item-title">' + escapeHtml(page.label) + '<span class="badge" data-group="' +
-          escapeHtml(page.group) + '">' + escapeHtml(page.group) + '</span></div><div class="item-meta">' + escapeHtml(page.path) +
-          '</div></div><a class="pill pill--ok status-link" href="' +
-          escapeHtml(page.path) + '" target="_blank" rel="noopener noreferrer">ok</a>';
+          '<div class="item-main"><div class="item-title">' + escapeHtml(pageDisplayName(page)) + '<span class="badge" data-group="' +
+          escapeHtml(page.group) + '">' + escapeHtml(pageLanguage(page)) + '</span><span class="pill pill--ok">Publicada</span></div>' +
+          '<div class="item-meta"><span>' + escapeHtml(GROUP_LABELS[page.group] || "Página") + '</span><span class="row-separator">·</span>' +
+          '<button class="row-action" type="button" data-action="edit-page" data-path="' + escapeHtml(page.path) + '">Editar</button><span class="row-separator">·</span>' +
+          '<a class="row-action" href="' + escapeHtml(page.path) + '" target="_blank" rel="noopener noreferrer">Ver página</a></div></div>' +
+          '<div class="item-actions"><a class="btn btn-primary" href="' + escapeHtml(page.path) + '?edit=1&amp;active=1" target="_blank" rel="noopener noreferrer">✎ Editar na página</a>' +
+          '<button class="btn btn-soft" type="button" data-action="edit-page" data-path="' + escapeHtml(page.path) + '">Editar campos</button></div>';
         pagesList.appendChild(item);
       });
-      if (!current.length) {
+      const query = String(pagesFilter.value || "").trim().toLowerCase();
+      const languageFilter = qs("pagesLanguageFilter");
+      const groupFilter = qs("pagesGroupFilter");
+      const statusFilter = qs("pagesStatusFilter");
+      const language = languageFilter ? languageFilter.value : "all";
+      const group = groupFilter ? groupFilter.value : "all";
+      const selectedStatus = statusFilter ? statusFilter.value : "all";
+      const builderCurrent = state.builderPages.filter((page) => {
+        const matchesQuery = !query || String(page.title || "").toLowerCase().includes(query) || String(page.slug || "").toLowerCase().includes(query);
+        const matchesLanguage = language === "all" || page.locale === language;
+        const matchesGroup = group === "all" || group === "builder";
+        const matchesStatus = selectedStatus === "all" || page.status === selectedStatus;
+        return matchesQuery && matchesLanguage && matchesGroup && matchesStatus;
+      });
+      builderCurrent.forEach((page) => {
+        const item = document.createElement("li");
+        item.className = "item page-row";
+        const status = page.status === "published" ? "Publicada" : (page.status === "archived" ? "Arquivada" : "Rascunho");
+        const statusTone = page.status === "published" ? "pill--ok" : (page.status === "archived" ? "pill--bad" : "pill--warn");
+        item.innerHTML =
+          '<div class="item-main"><div class="item-title">' + escapeHtml(page.title || page.slug) + '<span class="badge" data-group="builder">' +
+          escapeHtml(page.locale === "en" ? "Inglês" : "Português") + '</span><span class="pill ' + statusTone + '">' + status + '</span></div>' +
+          '<div class="item-meta"><span>Página criada no editor</span><span class="row-separator">·</span>' +
+          '<button class="row-action" type="button" data-action="edit-builder-page" data-slug="' + escapeHtml(page.slug) + '">Editar</button><span class="row-separator">·</span>' +
+          '<button class="row-action" type="button" data-action="duplicate-builder-page" data-slug="' + escapeHtml(page.slug) + '">Duplicar</button>' +
+          (page.status !== "archived" ? '<span class="row-separator">·</span><button class="row-action" type="button" data-action="archive-builder-page" data-slug="' + escapeHtml(page.slug) + '">Arquivar</button>' : '') +
+          (page.status === "published" ? '<span class="row-separator">·</span><a class="row-action" href="/' + escapeHtml(page.slug) + '" target="_blank" rel="noopener noreferrer">Ver página</a>' : '') +
+          '</div></div><button class="btn btn-soft" type="button" data-action="edit-builder-page" data-slug="' + escapeHtml(page.slug) + '">Editar página</button>';
+        pagesList.appendChild(item);
+      });
+      if (!current.length && !builderCurrent.length) {
         const empty = document.createElement("li");
         empty.className = "empty-state";
         empty.innerHTML = '<div class="muted">Sem resultados para este filtro.</div>';
@@ -1294,14 +1893,13 @@
     function renderCmsPages() {
       cmsPagesList.innerHTML = "";
       pages.forEach((page) => {
-        const pageKey = pageKeyForPath(page.path);
         const item = document.createElement("li");
         const button = document.createElement("button");
         button.className = "cms-page-button" + (state.cmsPage && state.cmsPage.path === page.path ? " is-active" : "");
         button.type = "button";
         button.dataset.cmsPath = page.path;
         button.innerHTML =
-          "<b>" + escapeHtml(page.label) + "</b><span>" + escapeHtml(pageKey) + " · " + escapeHtml(page.path) + "</span>";
+          "<b>" + escapeHtml(pageDisplayName(page)) + "</b><span>" + escapeHtml(pageLanguage(page)) + " · " + escapeHtml(GROUP_LABELS[page.group] || "Página") + "</span>";
         item.appendChild(button);
         cmsPagesList.appendChild(item);
       });
@@ -1311,6 +1909,7 @@
       if (!element || element.nodeType !== 1) return false;
       if (!element.matches(CMS_EDITABLE_SELECTOR)) return false;
       if (element.closest("script, style, noscript, svg, .language-dropdown")) return false;
+      if (state.cmsPage && String(state.cmsPage.pageKey || "").startsWith("v2.") && !element.hasAttribute("data-cms-key")) return false;
       const text = readCmsElementValue(element, "pt");
       if (!text || text.length > 900) return false;
       if (element.hasAttribute("data-cms-key")) return true;
@@ -1334,9 +1933,54 @@
     }
 
     function fieldTitle(element) {
-      const tag = element.tagName.toLowerCase();
       const preview = readCmsElementValue(element, "pt").replace(/\s+/g, " ").trim();
-      return tag + (preview ? " · " + (preview.length > 74 ? preview.slice(0, 71) + "..." : preview) : "");
+      return preview.length > 90 ? preview.slice(0, 87) + "..." : preview;
+    }
+
+    function friendlyCmsFieldLabel(field) {
+      const exactLabels = {
+        "seo.title": "Título para Google e separador do browser",
+        "seo.description": "Descrição para Google e partilhas",
+        "hero.kicker": "Etiqueta acima do título",
+        "hero.title": "Título principal",
+        "hero.text": "Texto de apresentação",
+        "hero.updated": "Nota de atualização",
+        "intro.title": "Título da introdução",
+        "intro.text": "Texto da introdução",
+        "needs.kicker": "Etiqueta da secção de necessidades",
+        "needs.title": "Título da secção de necessidades",
+        "needs.text": "Texto da secção de necessidades",
+        "services.kicker": "Etiqueta da secção de serviços",
+        "services.title": "Título da secção de serviços",
+        "services.text": "Texto da secção de serviços",
+        "process.kicker": "Etiqueta da secção do processo",
+        "process.title": "Título da secção do processo",
+        "process.text": "Texto da secção do processo",
+        "engineering.kicker": "Etiqueta da secção de engenharia",
+        "engineering.title": "Título da secção de engenharia",
+        "engineering.text": "Texto da secção de engenharia",
+        "collaboration.title": "Título da colaboração",
+        "collaboration.text": "Texto da colaboração",
+        "story.title": "Título da história",
+        "story.text": "Texto da história",
+        "form.title": "Título do formulário",
+        "form.text": "Texto do formulário",
+        "deliverablesTitle": "Título dos resultados a entregar",
+        "fitTitle": "Título dos projetos indicados",
+        "stackNote": "Nota sobre tecnologia",
+        "note": "Nota adicional"
+      };
+      if (exactLabels[field.baseKey]) return exactLabels[field.baseKey];
+      const finalSegment = String(field.baseKey || "").split(".").pop();
+      const fallback = {
+        kicker: "Etiqueta da secção",
+        title: "Título",
+        text: "Texto",
+        label: "Texto do botão",
+        description: "Descrição",
+        note: "Nota"
+      };
+      return fallback[finalSegment] || (field.tag === "A" || field.tag === "BUTTON" ? "Texto do botão ou ligação" : "Conteúdo de texto");
     }
 
     function contentKeyForField(field, lang) {
@@ -1363,7 +2007,33 @@
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, "text/html");
       const seen = new Set();
-      return Array.prototype.slice.call(doc.querySelectorAll(CMS_EDITABLE_SELECTOR))
+      const headFields = [];
+      const titleElement = doc.querySelector("title");
+      const descriptionElement = doc.querySelector('meta[name="description"]');
+      if (titleElement && titleElement.textContent.trim()) {
+        headFields.push({
+          baseKey: "seo.title",
+          selector: "head > title",
+          tag: "TITLE",
+          translated: false,
+          title: titleElement.textContent.trim(),
+          values: { pt: titleElement.textContent.trim(), en: "", es: "" }
+        });
+        seen.add("seo.title");
+      }
+      if (descriptionElement && String(descriptionElement.getAttribute("content") || "").trim()) {
+        const description = String(descriptionElement.getAttribute("content") || "").trim();
+        headFields.push({
+          baseKey: "seo.description",
+          selector: 'head > meta[name="description"]',
+          tag: "META",
+          translated: false,
+          title: description,
+          values: { pt: description, en: "", es: "" }
+        });
+        seen.add("seo.description");
+      }
+      const bodyFields = Array.prototype.slice.call(doc.querySelectorAll(CMS_EDITABLE_SELECTOR))
         .filter(isCmsEditableTarget)
         .map((element) => {
           const baseKey = fieldBaseKey(element);
@@ -1379,11 +2049,12 @@
             values: {
               pt: readCmsElementValue(element, "pt"),
               en: translated ? readCmsElementValue(element, "en") : "",
-              es: translated ? readCmsElementValue(element, "es") : ""
+              es: ""
             }
           };
         })
         .filter(Boolean);
+      return headFields.concat(bodyFields);
     }
 
     function filteredCmsFields() {
@@ -1391,6 +2062,8 @@
       const mode = cmsFieldMode.value;
       return state.cmsFields.filter((field) => {
         if (mode === "main" && !CMS_MAIN_TAGS.has(field.tag)) return false;
+        if (mode === "seo" && !field.baseKey.startsWith("seo.")) return false;
+        if (mode === "form" && !field.baseKey.startsWith("form.")) return false;
         if (!query) return true;
         return (
           field.title.toLowerCase().includes(query) ||
@@ -1405,11 +2078,84 @@
         cmsMeta.innerHTML = "";
         return;
       }
-      const savedFields = Object.keys(state.cmsContent || {}).length;
       cmsMeta.innerHTML =
-        '<span class="meta-chip">pageKey: ' + escapeHtml(pageKeyForPath(state.cmsPage.path)) + '</span>' +
-        '<span class="meta-chip">' + state.cmsFields.length + ' campos detetados</span>' +
-        '<span class="meta-chip">' + savedFields + ' valores guardados</span>';
+        '<span class="meta-chip">' + escapeHtml(pageLanguage(state.cmsPage)) + '</span>' +
+        '<span class="meta-chip">' + state.cmsFields.length + ' textos disponíveis</span>' +
+        (state.cmsDirty
+          ? '<span class="meta-chip unsaved-dot">Alterações por guardar</span>'
+          : state.cmsHasDraft
+            ? '<span class="meta-chip unsaved-dot">Rascunho guardado</span>'
+            : '<span class="meta-chip">Versão publicada</span>');
+      const publishLanguage = qs("cmsPublishLanguage");
+      const publishChanges = qs("cmsPublishChanges");
+      if (publishLanguage) publishLanguage.textContent = pageLanguage(state.cmsPage);
+      const publishStatus = qs("cmsPublishStatus");
+      if (publishStatus) publishStatus.textContent = state.cmsHasDraft || state.cmsDirty ? "Rascunho" : "Publicado";
+      if (publishChanges) publishChanges.textContent = state.cmsDirty ? "Por guardar" : (state.cmsHasDraft ? "Rascunho guardado" : "Sem alterações");
+    }
+
+    function setCmsDirty(isDirty) {
+      state.cmsDirty = Boolean(isDirty);
+      const canEditContent = Boolean(state.currentUser && ["admin", "editor"].includes(state.currentUser.role));
+      cmsDraftBtn.disabled = !state.cmsDirty || !canEditContent;
+      cmsSaveBtn.disabled = (!state.cmsDirty && !state.cmsHasDraft) || !canEditContent;
+      cmsUndoBtn.disabled = state.cmsRevisions.length < 2 || !canEditContent;
+      renderCmsMeta();
+    }
+
+    function recommendedCmsLimit(field) {
+      const key = String(field && field.baseKey || "");
+      if (key === "seo.title") return 60;
+      if (key === "seo.description") return 160;
+      if (key.endsWith(".kicker")) return 42;
+      if (key === "hero.title") return 90;
+      if (key.endsWith(".title") || /(^|\.)title\d+$/.test(key)) return 80;
+      if (key.endsWith(".label") || key.includes("button") || field.tag === "BUTTON") return 45;
+      if (key.endsWith(".text") || key.endsWith(".description")) return 320;
+      return 0;
+    }
+
+    function renderCmsSeoPreview() {
+      const target = qs("cmsSeoPreview");
+      if (!target || !state.cmsPage) return;
+      const titleField = state.cmsFields.find((field) => field.baseKey === "seo.title");
+      const descriptionField = state.cmsFields.find((field) => field.baseKey === "seo.description");
+      const title = titleField ? fieldStoredValue(titleField, "pt") : pageDisplayName(state.cmsPage) + " | COBRAIT";
+      const description = descriptionField ? fieldStoredValue(descriptionField, "pt") : "Descrição da página";
+      target.innerHTML = '<small>cobrait.pt' + escapeHtml(state.cmsPage.path) + '</small><b>' + escapeHtml(title || "Título em falta") + '</b><p>' + escapeHtml(description || "Descrição em falta") + '</p>';
+    }
+
+    const BOOKING_OPTIONAL_FIELDS = [
+      ["form.optional.company", "Empresa", "Campo livre"],
+      ["form.optional.serviceInterest", "Serviço pretendido", "Lista de opções"],
+      ["form.optional.projectStage", "Fase do projeto", "Lista de opções"],
+      ["form.optional.preferredStart", "Início pretendido", "Lista de opções"],
+      ["form.optional.investmentStatus", "Estado do investimento", "Lista de opções"]
+    ];
+
+    function renderBookingFormManager() {
+      if (!state.cmsPage || !String(state.cmsPage.pageKey || "").endsWith(".booking")) return null;
+      const manager = document.createElement("section");
+      manager.className = "form-manager";
+      manager.innerHTML = '<h3>Campos visíveis no formulário</h3><p>Nome, email, resumo do projeto e consentimento são essenciais e não podem ser removidos. Os restantes podem ser ocultados e recuperados mais tarde.</p>';
+      BOOKING_OPTIONAL_FIELDS.forEach(([key, label, type]) => {
+        const hiddenKey = "__hidden." + key;
+        const row = document.createElement("label");
+        row.className = "form-field-toggle";
+        row.innerHTML = '<span>' + escapeHtml(label) + '<small>' + escapeHtml(type) + '</small></span>';
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = String(state.cmsContent[hiddenKey] || "") !== "true";
+        checkbox.setAttribute("aria-label", "Mostrar campo " + label);
+        checkbox.addEventListener("change", () => {
+          if (checkbox.checked) delete state.cmsContent[hiddenKey];
+          else state.cmsContent[hiddenKey] = "true";
+          setCmsDirty(true);
+        });
+        row.appendChild(checkbox);
+        manager.appendChild(row);
+      });
+      return manager;
     }
 
     function renderCmsFields() {
@@ -1420,24 +2166,36 @@
         renderEmptyList(cmsFields, "Seleciona uma página para começar.");
         return;
       }
+      if (cmsFieldMode.value === "seo" || cmsFieldMode.value === "all") {
+        const preview = document.createElement("section");
+        preview.id = "cmsSeoPreview";
+        preview.className = "cms-seo-preview";
+        cmsFields.appendChild(preview);
+        renderCmsSeoPreview();
+      }
+      if (cmsFieldMode.value === "form" || cmsFieldMode.value === "all") {
+        const formManager = renderBookingFormManager();
+        if (formManager) cmsFields.appendChild(formManager);
+      }
       const fields = filteredCmsFields();
       if (!fields.length) {
         renderEmptyList(cmsFields, "Sem campos para este filtro.");
         return;
       }
       fields.forEach((field, index) => {
-        const card = document.createElement("section");
+        const card = document.createElement("details");
         card.className = "cms-field";
+        card.open = true;
         card.innerHTML =
-          '<div class="cms-field-head"><div class="cms-field-title">' +
-          escapeHtml(field.title) +
+          '<summary class="cms-field-head"><div class="cms-field-title">' +
+          escapeHtml(friendlyCmsFieldLabel(field)) +
           '<span>' +
-          escapeHtml(field.selector) +
+          escapeHtml(field.title ? "Texto atual: “" + field.title + "”" : "Campo de texto") +
           '</span></div><span class="badge" data-group="' +
           (field.translated ? "core" : "tools") +
           '">' +
-          (field.translated ? "PT/EN/ES" : "texto") +
-          "</span></div>";
+          (field.translated ? "PT / EN" : escapeHtml(pageLanguage(state.cmsPage))) +
+          "</span></summary>";
         const langGrid = document.createElement("div");
         langGrid.className = "cms-lang-grid";
         const langs = field.translated ? CMS_LANGS : [{ code: "text", label: "Texto" }];
@@ -1447,17 +2205,30 @@
           textarea.dataset.cmsFieldIndex = String(index);
           textarea.dataset.cmsKey = lang.code === "text" ? field.baseKey : contentKeyForField(field, lang.code);
           textarea.value = lang.code === "text" ? fieldStoredValue(field, "pt") : fieldStoredValue(field, lang.code);
+          const count = document.createElement("div");
+          count.className = "char-count";
+          const recommendedLimit = recommendedCmsLimit(field);
+          const updateCount = () => {
+            const length = textarea.value.length;
+            count.textContent = length + " caracteres" + (recommendedLimit ? " · recomendado até " + recommendedLimit : "");
+            count.classList.toggle("is-warning", Boolean(recommendedLimit && length >= Math.round(recommendedLimit * .9) && length <= recommendedLimit));
+            count.classList.toggle("is-over", Boolean(recommendedLimit && length > recommendedLimit));
+          };
+          updateCount();
           textarea.addEventListener("input", () => {
-            state.cmsDirty = true;
+            setCmsDirty(true);
             if (textarea.value.trim()) {
               state.cmsContent[textarea.dataset.cmsKey] = textarea.value;
             } else {
               delete state.cmsContent[textarea.dataset.cmsKey];
             }
+            updateCount();
+            renderCmsSeoPreview();
           });
           const label = document.createElement("label");
-          label.textContent = lang.label;
+          label.textContent = field.translated ? lang.label : "Novo texto";
           label.appendChild(textarea);
+          label.appendChild(count);
           langGrid.appendChild(label);
         });
         card.appendChild(langGrid);
@@ -1470,6 +2241,63 @@
       state.siteContentEntries = Array.isArray(data && data.contentEntries) ? data.contentEntries : [];
     }
 
+    function renderCmsRevisions() {
+      const target = qs("cmsRevisions");
+      if (!target) return;
+      target.innerHTML = "";
+      if (!state.cmsRevisions.length) {
+        target.innerHTML = '<span class="muted">O histórico começa depois da primeira publicação.</span>';
+        return;
+      }
+      state.cmsRevisions.forEach((revision, index) => {
+        const content = revision && revision.content ? revision.content : {};
+        const keys = new Set([...Object.keys(state.cmsContent || {}), ...Object.keys(content)]);
+        const changedKeys = Array.from(keys).filter((key) => String((state.cmsContent || {})[key] || "") !== String(content[key] || ""));
+        const item = document.createElement("div");
+        item.className = "revision-item";
+        item.innerHTML =
+          '<b>' + (index === 0 ? "Versão mais recente" : "Versão anterior") + '</b>' +
+          '<span>' + escapeHtml(formatDate(revision.createdAt)) + ' · ' + escapeHtml(revision.actorName || "Sistema") + ' · ' + changedKeys.length + (changedKeys.length === 1 ? " diferença" : " diferenças") + '</span>' +
+          '<div class="revision-item-actions"><button class="btn btn-soft" type="button" data-revision-compare="' + escapeHtml(revision.id) + '">Comparar</button>' +
+          '<button class="btn btn-soft" type="button" data-revision-id="' + escapeHtml(revision.id) + '">Restaurar</button></div>' +
+          '<div class="revision-diff" data-revision-diff hidden></div>';
+        item.dataset.changedKeys = JSON.stringify(changedKeys.slice(0, 20));
+        target.appendChild(item);
+      });
+    }
+
+    async function loadCmsRevisions() {
+      if (!state.cmsPage) return;
+      const target = qs("cmsRevisions");
+      if (target) target.innerHTML = '<span class="muted">A carregar histórico...</span>';
+      try {
+        const pageKey = pageKeyForPath(state.cmsPage.path);
+        const data = await apiFetch("/site-content/" + encodeURIComponent(pageKey) + "/revisions?limit=12");
+        state.cmsRevisions = Array.isArray(data && data.revisions) ? data.revisions : [];
+        renderCmsRevisions();
+        setCmsDirty(state.cmsDirty);
+      } catch (_error) {
+        state.cmsRevisions = [];
+        if (target) target.innerHTML = '<span class="muted">Não foi possível carregar o histórico.</span>';
+        setCmsDirty(state.cmsDirty);
+      }
+    }
+
+    async function restoreCmsRevision(revisionId) {
+      if (!state.cmsPage || !revisionId) return;
+      if (!window.confirm("Restaurar esta versão? O conteúdo atual ficará guardado no histórico.")) return;
+      const page = state.cmsPage;
+      try {
+        const pageKey = pageKeyForPath(page.path);
+        await apiFetch("/site-content/" + encodeURIComponent(pageKey) + "/revisions/" + encodeURIComponent(revisionId) + "/restore", { method: "POST" });
+        await apiFetch("/site-content/" + encodeURIComponent("draft." + pageKey), { method: "PUT", body: { content: {} } });
+        await loadCmsPage(page);
+        showNotice(cmsNotice, "Versão restaurada e publicada com sucesso.", "ok");
+      } catch (error) {
+        showNotice(cmsNotice, error.message || "Não foi possível restaurar a versão.", "bad");
+      }
+    }
+
     function contentForPageKey(pageKey) {
       const entry = state.siteContentEntries.find((item) => item.pageKey === pageKey);
       return entry && entry.content ? { ...entry.content } : {};
@@ -1478,9 +2306,9 @@
     async function loadCmsPage(page) {
       state.cmsPage = page;
       state.cmsDirty = false;
-      cmsEditorTitle.textContent = page.label;
-      cmsEditorMeta.textContent = "A carregar campos de " + page.path + "...";
-      cmsPreviewLink.href = page.path;
+      cmsEditorTitle.textContent = "Editar: " + pageDisplayName(page);
+      cmsEditorMeta.textContent = "A carregar os textos da página...";
+      cmsPreviewLink.href = page.path + "?preview=draft";
       cmsReloadBtn.disabled = true;
       cmsSaveBtn.disabled = true;
       showNotice(cmsNotice, "", "info");
@@ -1491,49 +2319,121 @@
         const response = await fetch(page.path, { cache: "no-store" });
         if (!response.ok) throw new Error("Não foi possível abrir o HTML da página.");
         const html = await response.text();
-        state.cmsContent = contentForPageKey(pageKeyForPath(page.path));
+        const pageKey = page.pageKey || pageKeyForPath(page.path);
+        state.cmsPublishedContent = contentForPageKey(pageKey);
+        state.cmsDraftContent = contentForPageKey("draft." + pageKey);
+        state.cmsHasDraft = Object.keys(state.cmsDraftContent).length > 0;
+        state.cmsContent = { ...(state.cmsHasDraft ? state.cmsDraftContent : state.cmsPublishedContent) };
         state.cmsFields = extractCmsFields(html);
-        cmsEditorMeta.textContent = "Edita textos, CTAs e secções principais. Guarda para publicar.";
+        cmsEditorMeta.textContent = state.cmsHasDraft
+          ? "Existe um rascunho guardado. Confirme-o antes de publicar."
+          : "Altere o conteúdo, guarde como rascunho e confirme antes de publicar.";
         renderCmsFields();
+        setCmsDirty(false);
+        await loadCmsRevisions();
       } catch (error) {
         state.cmsFields = [];
         state.cmsContent = {};
+        state.cmsPublishedContent = {};
+        state.cmsDraftContent = {};
+        state.cmsHasDraft = false;
         showNotice(cmsNotice, error.message || "Não foi possível carregar a página.", "bad");
         renderEmptyList(cmsFields, "Falha ao carregar campos.");
       } finally {
         cmsReloadBtn.disabled = false;
-        cmsSaveBtn.disabled = false;
+        setCmsDirty(state.cmsDirty);
       }
     }
 
-    async function saveCmsPage() {
+    async function saveCmsDraft() {
       if (!state.cmsPage) return;
-      cmsSaveBtn.disabled = true;
-      cmsSaveBtn.textContent = "A guardar...";
+      cmsDraftBtn.disabled = true;
+      cmsDraftBtn.textContent = "A guardar...";
       showNotice(cmsNotice, "", "info");
       try {
-        const pageKey = pageKeyForPath(state.cmsPage.path);
+        const pageKey = state.cmsPage.pageKey || pageKeyForPath(state.cmsPage.path);
         const content = cleanedCmsContent(state.cmsContent);
-        const data = await apiFetch("/site-content/" + encodeURIComponent(pageKey), {
+        const data = await apiFetch("/site-content/" + encodeURIComponent("draft." + pageKey), {
           method: "PUT",
           body: { content }
         });
         const saved = data && data.contentEntry ? data.contentEntry : null;
         state.cmsContent = saved && saved.content ? { ...saved.content } : content;
+        state.cmsDraftContent = { ...state.cmsContent };
+        state.cmsHasDraft = Object.keys(state.cmsDraftContent).length > 0;
         state.cmsDirty = false;
         await loadSiteContentEntries();
         renderCmsFields();
-        showNotice(cmsNotice, "Conteúdo guardado. Abre a página ou faz refresh para confirmar.", "ok");
+        setCmsDirty(false);
+        showNotice(cmsNotice, "Rascunho guardado. A versão pública não foi alterada.", "ok");
       } catch (error) {
         if (error && error.status === 401) {
           showLogin("Sessão expirada. Inicia sessão novamente.");
           return;
         }
-        showNotice(cmsNotice, error.message || "Não foi possível guardar o conteúdo.", "bad");
+        showNotice(cmsNotice, error.message || "Não foi possível guardar o rascunho.", "bad");
       } finally {
-        cmsSaveBtn.disabled = false;
-        cmsSaveBtn.textContent = "Guardar";
+        cmsDraftBtn.textContent = "Guardar rascunho";
+        setCmsDirty(state.cmsDirty);
       }
+    }
+
+    async function publishCmsPage() {
+      if (!state.cmsPage) return;
+      if (!window.confirm("Publicar agora estas alterações no website?")) return;
+      cmsSaveBtn.disabled = true;
+      cmsSaveBtn.textContent = "A publicar...";
+      showNotice(cmsNotice, "", "info");
+      try {
+        const pageKey = state.cmsPage.pageKey || pageKeyForPath(state.cmsPage.path);
+        const content = cleanedCmsContent(state.cmsContent);
+        await apiFetch("/site-content/" + encodeURIComponent(pageKey), { method: "PUT", body: { content } });
+        await apiFetch("/site-content/" + encodeURIComponent("draft." + pageKey), { method: "PUT", body: { content: {} } });
+        state.cmsPublishedContent = { ...content };
+        state.cmsDraftContent = {};
+        state.cmsHasDraft = false;
+        state.cmsDirty = false;
+        await loadSiteContentEntries();
+        await loadCmsRevisions();
+        renderCmsFields();
+        setCmsDirty(false);
+        showNotice(cmsNotice, "Alterações publicadas com sucesso.", "ok");
+      } catch (error) {
+        if (error && error.status === 401) {
+          showLogin("Sessão expirada. Inicia sessão novamente.");
+          return;
+        }
+        showNotice(cmsNotice, error.message || "Não foi possível publicar o conteúdo.", "bad");
+      } finally {
+        cmsSaveBtn.textContent = "Publicar alterações";
+        setCmsDirty(state.cmsDirty);
+      }
+    }
+
+    async function discardCmsDraft() {
+      if (!state.cmsPage) return;
+      if (state.cmsHasDraft && !window.confirm("Eliminar o rascunho guardado e repor a versão publicada?")) return;
+      try {
+        const pageKey = state.cmsPage.pageKey || pageKeyForPath(state.cmsPage.path);
+        if (state.cmsHasDraft) {
+          await apiFetch("/site-content/" + encodeURIComponent("draft." + pageKey), { method: "PUT", body: { content: {} } });
+        }
+        state.cmsContent = { ...state.cmsPublishedContent };
+        state.cmsDraftContent = {};
+        state.cmsHasDraft = false;
+        state.cmsDirty = false;
+        await loadSiteContentEntries();
+        renderCmsFields();
+        setCmsDirty(false);
+        showNotice(cmsNotice, "Rascunho descartado. Está a ver a versão publicada.", "ok");
+      } catch (error) {
+        showNotice(cmsNotice, error.message || "Não foi possível descartar o rascunho.", "bad");
+      }
+    }
+
+    function undoLastCmsPublication() {
+      if (state.cmsRevisions.length < 2) return;
+      restoreCmsRevision(state.cmsRevisions[1].id);
     }
 
     async function bootCms() {
@@ -1544,12 +2444,368 @@
       }
     }
 
+    const GLOBAL_SETTINGS_DEFAULTS = {
+      "company.email": "geral@cobrait.pt",
+      "company.linkedin": "",
+      "company.legalName": "Vírgula Prodigiosa",
+      "company.taxId": "518841057",
+      "company.street": "Rua Engenheiro Ferreira Dias, 161",
+      "company.postalCode": "4100-247",
+      "company.city": "Porto",
+      "nav.services.pt": "Serviços",
+      "nav.services.en": "Services",
+      "nav.process.pt": "Processo",
+      "nav.process.en": "Process",
+      "nav.engineering.pt": "Engenharia",
+      "nav.engineering.en": "Engineering",
+      "nav.about.pt": "Sobre",
+      "nav.about.en": "About",
+      "nav.booking.pt": "Falar sobre um projeto",
+      "nav.booking.en": "Discuss a project",
+      "nav.showProcess": "true",
+      "nav.showEngineering": "true",
+      "nav.showAbout": "true",
+      "seo.socialImage": "",
+      "calendar.url": "",
+      "footer.location.pt": "Porto, Portugal",
+      "footer.location.en": "Porto, Portugal",
+      "footer.statement.pt": "Software pensado com clareza e construído com responsabilidade.",
+      "footer.statement.en": "Software shaped with clarity and built with accountability."
+    };
+
+    function renderGlobalSettings() {
+      const settings = { ...GLOBAL_SETTINGS_DEFAULTS, ...state.globalSettings };
+      const fieldMap = {
+        globalEmail: "company.email",
+        globalLinkedin: "company.linkedin",
+        globalLegalName: "company.legalName",
+        globalTaxId: "company.taxId",
+        globalStreet: "company.street",
+        globalPostalCode: "company.postalCode",
+        globalCity: "company.city",
+        globalNavServicesPt: "nav.services.pt",
+        globalNavServicesEn: "nav.services.en",
+        globalNavProcessPt: "nav.process.pt",
+        globalNavProcessEn: "nav.process.en",
+        globalNavEngineeringPt: "nav.engineering.pt",
+        globalNavEngineeringEn: "nav.engineering.en",
+        globalNavAboutPt: "nav.about.pt",
+        globalNavAboutEn: "nav.about.en",
+        globalNavBookingPt: "nav.booking.pt",
+        globalNavBookingEn: "nav.booking.en",
+        globalSocialImage: "seo.socialImage",
+        globalCalendarUrl: "calendar.url",
+        globalLocationPt: "footer.location.pt",
+        globalLocationEn: "footer.location.en",
+        globalStatementPt: "footer.statement.pt",
+        globalStatementEn: "footer.statement.en"
+      };
+      Object.entries(fieldMap).forEach(([id, key]) => {
+        const input = qs(id);
+        if (input) input.value = String(settings[key] || "");
+      });
+      [["globalShowProcess", "nav.showProcess"], ["globalShowEngineering", "nav.showEngineering"], ["globalShowAbout", "nav.showAbout"]].forEach(([id, key]) => {
+        const input = qs(id);
+        if (input) input.checked = String(settings[key] || "true") !== "false";
+      });
+    }
+
+    async function loadGlobalSettings() {
+      const data = await apiFetch("/site-content");
+      const entries = Array.isArray(data && data.contentEntries) ? data.contentEntries : [];
+      const entry = entries.find((item) => item.pageKey === "v2.global");
+      state.globalSettings = entry && entry.content ? { ...entry.content } : {};
+      renderGlobalSettings();
+    }
+
+    async function saveGlobalSettings(event) {
+      if (event) event.preventDefault();
+      const notice = qs("settingsNotice");
+      const button = qs("settingsSaveBtn");
+      const email = String(qs("globalEmail").value || "").trim();
+      const linkedIn = String(qs("globalLinkedin").value || "").trim();
+      const calendarUrl = String(qs("globalCalendarUrl").value || "").trim();
+      const socialImage = String(qs("globalSocialImage").value || "").trim();
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        showNotice(notice, "Introduza um email válido.", "bad");
+        return;
+      }
+      if (linkedIn && !/^https:\/\//i.test(linkedIn)) {
+        showNotice(notice, "O endereço do LinkedIn deve começar por https://.", "bad");
+        return;
+      }
+      if (calendarUrl && !/^https:\/\/(?:[^/]+\.)?cal\.com\//i.test(calendarUrl)) {
+        showNotice(notice, "O calendário deve usar um endereço oficial https://cal.com/...", "bad");
+        return;
+      }
+      if (socialImage && !/^\/assets\/[a-z0-9/_.-]+$/i.test(socialImage) && !/^https:\/\//i.test(socialImage)) {
+        showNotice(notice, "Escolha uma imagem da biblioteca ou introduza um endereço https:// válido.", "bad");
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "A guardar...";
+      try {
+        const content = {
+          ...state.globalSettings,
+          "company.email": email,
+          "company.linkedin": linkedIn,
+          "company.legalName": String(qs("globalLegalName").value || "").trim(),
+          "company.taxId": String(qs("globalTaxId").value || "").trim(),
+          "company.street": String(qs("globalStreet").value || "").trim(),
+          "company.postalCode": String(qs("globalPostalCode").value || "").trim(),
+          "company.city": String(qs("globalCity").value || "").trim(),
+          "nav.services.pt": String(qs("globalNavServicesPt").value || "").trim(),
+          "nav.services.en": String(qs("globalNavServicesEn").value || "").trim(),
+          "nav.process.pt": String(qs("globalNavProcessPt").value || "").trim(),
+          "nav.process.en": String(qs("globalNavProcessEn").value || "").trim(),
+          "nav.engineering.pt": String(qs("globalNavEngineeringPt").value || "").trim(),
+          "nav.engineering.en": String(qs("globalNavEngineeringEn").value || "").trim(),
+          "nav.about.pt": String(qs("globalNavAboutPt").value || "").trim(),
+          "nav.about.en": String(qs("globalNavAboutEn").value || "").trim(),
+          "nav.booking.pt": String(qs("globalNavBookingPt").value || "").trim(),
+          "nav.booking.en": String(qs("globalNavBookingEn").value || "").trim(),
+          "nav.showProcess": String(Boolean(qs("globalShowProcess").checked)),
+          "nav.showEngineering": String(Boolean(qs("globalShowEngineering").checked)),
+          "nav.showAbout": String(Boolean(qs("globalShowAbout").checked)),
+          "seo.socialImage": socialImage,
+          "calendar.url": calendarUrl,
+          "footer.location.pt": String(qs("globalLocationPt").value || "").trim(),
+          "footer.location.en": String(qs("globalLocationEn").value || "").trim(),
+          "footer.statement.pt": String(qs("globalStatementPt").value || "").trim(),
+          "footer.statement.en": String(qs("globalStatementEn").value || "").trim()
+        };
+        const data = await apiFetch("/site-content/v2.global", { method: "PUT", body: { content } });
+        state.globalSettings = data && data.contentEntry && data.contentEntry.content ? { ...data.contentEntry.content } : content;
+        renderGlobalSettings();
+        showNotice(notice, "Definições guardadas e aplicadas ao website.", "ok");
+      } catch (error) {
+        showNotice(notice, error.message || "Não foi possível guardar as definições.", "bad");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Guardar definições";
+      }
+    }
+
+    async function bootGlobalSettings() {
+      const form = qs("settingsForm");
+      const canEdit = Boolean(state.currentUser && ["admin", "editor"].includes(state.currentUser.role));
+      if (form) form.querySelectorAll("input, textarea, button").forEach((control) => { control.disabled = !canEdit; });
+      try {
+        await loadGlobalSettings();
+      } catch (error) {
+        showNotice(qs("settingsNotice"), error.message || "Não foi possível carregar as definições.", "bad");
+      }
+    }
+
+    const AUDIT_ACTION_LABELS = {
+      "auth.login": "Iniciou sessão",
+      "auth.password_change": "Alterou a palavra-passe",
+      "auth.password_reset_requested": "Pediu recuperação de acesso",
+      "auth.password_reset_completed": "Recuperou o acesso",
+      "users.create": "Criou um acesso",
+      "users.update": "Atualizou um acesso",
+      "site_content.upsert": "Publicou conteúdo",
+      "site_content.restore": "Restaurou uma versão",
+      "site_pages.upsert": "Guardou uma página",
+      "site_pages.duplicate": "Duplicou uma página",
+      "site_pages.archive": "Arquivou uma página",
+      "media.create": "Adicionou uma imagem",
+      "contact_requests.create": "Novo pedido de contacto",
+      "call_bookings.create": "Novo pedido de reunião"
+    };
+
+    function renderActivity() {
+      const target = qs("activityList");
+      if (!target) return;
+      target.innerHTML = "";
+      if (!state.auditLogs.length) {
+        target.innerHTML = '<div class="empty-state"><div>Não existem atividades para apresentar.</div></div>';
+        return;
+      }
+      state.auditLogs.forEach((log) => {
+        const row = document.createElement("article");
+        row.className = "activity-row";
+        row.innerHTML = '<span>' + escapeHtml(formatDate(log.createdAt)) + '</span><div><b>' + escapeHtml(AUDIT_ACTION_LABELS[log.action] || log.action || "Atividade") + '</b><span>' + escapeHtml(log.targetId || log.targetType || "") + '</span></div><span>' + escapeHtml(log.actorName || "Sistema") + (log.actorEmail ? " · " + escapeHtml(log.actorEmail) : "") + '</span>';
+        target.appendChild(row);
+      });
+    }
+
+    async function loadActivity() {
+      const notice = qs("activityNotice");
+      const button = qs("activityRefreshBtn");
+      if (!state.currentUser || state.currentUser.role !== "admin") {
+        state.auditLogs = [];
+        renderActivity();
+        showNotice(notice, "O histórico completo está disponível apenas para administradores.", "info");
+        if (button) button.disabled = true;
+        return;
+      }
+      if (button) button.disabled = true;
+      try {
+        const data = await apiFetch("/users/audit?limit=100");
+        state.auditLogs = Array.isArray(data && data.logs) ? data.logs : [];
+        renderActivity();
+        showNotice(notice, "", "info");
+      } catch (error) {
+        showNotice(notice, error.message || "Não foi possível carregar a atividade.", "bad");
+      } finally {
+        if (button) button.disabled = false;
+      }
+    }
+
+    async function changeOwnPassword(event) {
+      event.preventDefault();
+      const notice = qs("profileNotice");
+      const button = qs("profilePasswordBtn");
+      const currentPassword = qs("profileCurrentPassword").value;
+      const newPassword = qs("profileNewPassword").value;
+      const confirmation = qs("profileConfirmPassword").value;
+      if (newPassword.length < 8) {
+        showNotice(notice, "A nova palavra-passe deve ter pelo menos 8 caracteres.", "bad");
+        return;
+      }
+      if (newPassword !== confirmation) {
+        showNotice(notice, "A confirmação não coincide com a nova palavra-passe.", "bad");
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "A atualizar...";
+      try {
+        await apiFetch("/auth/password", { method: "POST", body: { currentPassword, newPassword } });
+        event.target.reset();
+        showNotice(notice, "Palavra-passe atualizada com sucesso.", "ok");
+        loadActivity();
+      } catch (error) {
+        showNotice(notice, error.message || "Não foi possível atualizar a palavra-passe.", "bad");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Atualizar palavra-passe";
+      }
+    }
+
+    function integrationCard(title, integration, detail) {
+      const configured = Boolean(integration && integration.configured);
+      return '<article class="integration-card"><div class="integration-card-head"><b>' + escapeHtml(title) + '</b><span class="pill ' + (configured ? "pill--ok" : "pill--warn") + '">' + (configured ? "Configurado" : "Por configurar") + '</span></div><p>' + escapeHtml(detail) + '</p></article>';
+    }
+
+    async function loadIntegrations() {
+      const target = qs("integrationGrid");
+      const notice = qs("integrationsNotice");
+      if (!target) return;
+      try {
+        const data = await apiFetch("/integrations");
+        const integrations = data && data.integrations ? data.integrations : {};
+        target.innerHTML =
+          integrationCard("Email do cPanel", integrations.smtp, integrations.smtp && integrations.smtp.configured ? "Envio para " + (integrations.smtp.destination || "destino configurado") + "." : "Falta preencher host, utilizador ou palavra-passe SMTP no servidor.") +
+          integrationCard("Zoho CRM", integrations.zoho, integrations.zoho && integrations.zoho.configured ? "Novos pedidos são enviados para o módulo " + integrations.zoho.module + "." : "A sincronização fica automática depois de configurar OAuth no servidor.") +
+          integrationCard("Cal.com", integrations.calendar, integrations.calendar && integrations.calendar.configured ? "URL pública e webhook de atualização estão ativos." : (integrations.calendar && integrations.calendar.publicUrlConfigured ? "URL pública definida; falta o segredo do webhook." : "Falta criar a conta/evento e indicar a URL pública.")) +
+          integrationCard("Armazenamento", { configured: integrations.storage && integrations.storage.mode !== "file" }, integrations.storage ? "Modo atual: " + integrations.storage.database + ". Em produção recomenda-se MySQL com backups." : "Estado indisponível.");
+        if (testEmailBtn) testEmailBtn.disabled = !(state.currentUser && state.currentUser.role === "admin" && integrations.smtp && integrations.smtp.configured);
+        showNotice(notice, "", "info");
+      } catch (error) {
+        target.innerHTML = '<div class="empty-state">Não foi possível carregar o estado das integrações.</div>';
+        showNotice(notice, error.message || "Falha ao consultar integrações.", "bad");
+      }
+    }
+
+    function formatFileSize(bytes) {
+      const size = Number(bytes) || 0;
+      if (size < 1024) return size + " B";
+      if (size < 1024 * 1024) return Math.round(size / 1024) + " KB";
+      return (size / (1024 * 1024)).toFixed(1) + " MB";
+    }
+
+    function renderMediaLibrary() {
+      const grid = qs("mediaGrid");
+      const meta = qs("mediaMeta");
+      if (!grid || !meta) return;
+      grid.innerHTML = "";
+      meta.textContent = state.mediaItems.length + (state.mediaItems.length === 1 ? " imagem disponível." : " imagens disponíveis.");
+      if (!state.mediaItems.length) {
+        grid.innerHTML = '<div class="empty-state"><div>A biblioteca ainda não tem imagens.</div></div>';
+        return;
+      }
+      state.mediaItems.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "media-card";
+        card.innerHTML =
+          '<div class="media-preview"><img src="' + escapeHtml(item.url) + '" alt="' + escapeHtml(item.alt || "") + '" loading="lazy"></div>' +
+          '<div class="media-card-body"><b title="' + escapeHtml(item.originalName) + '">' + escapeHtml(item.originalName) + '</b>' +
+          '<span>' + escapeHtml(formatFileSize(item.size)) + ' · ' + escapeHtml(formatDate(item.createdAt)) + '</span>' +
+          '<input class="media-url" type="text" readonly value="' + escapeHtml(item.url) + '" aria-label="Ligação da imagem"></div>';
+        grid.appendChild(card);
+      });
+    }
+
+    async function loadMediaLibrary() {
+      const response = await apiFetch("/media");
+      state.mediaItems = Array.isArray(response && response.media) ? response.media : [];
+      renderMediaLibrary();
+      if (builderMediaOptions) {
+        builderMediaOptions.innerHTML = state.mediaItems.map((item) => '<option value="' + escapeHtml(item.url) + '">' + escapeHtml(item.alt || item.originalName || "Imagem") + '</option>').join("");
+      }
+    }
+
+    async function uploadMedia(event) {
+      event.preventDefault();
+      const fileInput = qs("mediaFile");
+      const altInput = qs("mediaAlt");
+      const button = qs("mediaUploadBtn");
+      const notice = qs("mediaNotice");
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        showNotice(notice, "Escolha uma imagem para carregar.", "bad");
+        return;
+      }
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        showNotice(notice, "Formato não suportado. Utilize JPG, PNG ou WebP.", "bad");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showNotice(notice, "A imagem excede o limite de 5 MB.", "bad");
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "A carregar...";
+      try {
+        const query = new URLSearchParams({ filename: file.name, alt: altInput.value.trim() });
+        const response = await fetch(state.apiBase + "/media?" + query.toString(), {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": file.type },
+          body: file
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || "Não foi possível carregar a imagem.");
+        fileInput.value = "";
+        altInput.value = "";
+        await loadMediaLibrary();
+        showNotice(notice, "Imagem adicionada à biblioteca.", "ok");
+      } catch (error) {
+        showNotice(notice, error.message || "Não foi possível carregar a imagem.", "bad");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Carregar imagem";
+      }
+    }
+
+    async function bootMediaLibrary() {
+      const form = qs("mediaUploadForm");
+      const canEdit = Boolean(state.currentUser && ["admin", "editor"].includes(state.currentUser.role));
+      if (form) form.querySelectorAll("input, button").forEach((control) => { control.disabled = !canEdit; });
+      try {
+        await loadMediaLibrary();
+      } catch (error) {
+        showNotice(qs("mediaNotice"), error.message || "Não foi possível carregar a biblioteca.", "bad");
+      }
+    }
+
     function uniqueBuilderId() {
       return "block-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
     }
 
     function defaultBuilderBlock(type) {
-      const normalizedType = ["hero", "text", "cards", "faq", "cta"].includes(type) ? type : "text";
+      const normalizedType = ["hero", "text", "cards", "faq", "image", "cta"].includes(type) ? type : "text";
       const common = {
         id: uniqueBuilderId(),
         type: normalizedType,
@@ -1558,6 +2814,10 @@
         text: "",
         buttonLabel: "",
         buttonHref: "",
+        hidden: false,
+        imageUrl: "",
+        imageAlt: "",
+        imageCaption: "",
         items: []
       };
       if (normalizedType === "hero") {
@@ -1602,6 +2862,14 @@
           buttonHref: "/book-a-call.html"
         };
       }
+      if (normalizedType === "image") {
+        return {
+          ...common,
+          imageUrl: "",
+          imageAlt: "",
+          imageCaption: ""
+        };
+      }
       return {
         ...common,
         title: "Nova secção",
@@ -1612,6 +2880,7 @@
     function defaultBuilderPage() {
       return {
         slug: "nova-pagina",
+        locale: "pt",
         title: "Nova página",
         description: "",
         status: "draft",
@@ -1647,7 +2916,7 @@
       builderPagesList.innerHTML = "";
       const pagesList = Array.isArray(state.builderPages) ? state.builderPages : [];
       if (!pagesList.length) {
-        renderEmptyList(builderPagesList, "Ainda não há páginas criadas no Page Builder.");
+        renderEmptyList(builderPagesList, "Ainda não existem páginas criadas neste editor.");
         return;
       }
       pagesList.forEach((page) => {
@@ -1656,8 +2925,9 @@
         button.className = "cms-page-button" + (state.builderPage && state.builderPage.slug === page.slug ? " is-active" : "");
         button.type = "button";
         button.dataset.builderSlug = page.slug;
+        const pageStatus = page.status === "published" ? "Publicada" : (page.status === "archived" ? "Arquivada" : "Rascunho");
         button.innerHTML =
-          "<b>" + escapeHtml(page.title || page.slug) + "</b><span>/" + escapeHtml(page.slug) + " · " + escapeHtml(page.status || "draft") + "</span>";
+          "<b>" + escapeHtml(page.title || page.slug) + "</b><span>" + escapeHtml(page.locale === "en" ? "Inglês" : "Português") + " · " + escapeHtml(pageStatus) + "</span>";
         item.appendChild(button);
         builderPagesList.appendChild(item);
       });
@@ -1677,8 +2947,12 @@
       builderSlug.value = page.slug || "";
       builderTitle.value = page.title || "";
       builderDescription.value = page.description || "";
-      builderStatus.value = page.status === "published" ? "published" : "draft";
-      builderPreviewLink.href = page.slug ? "/" + page.slug : "#";
+      builderStatus.value = page.status === "published" || page.status === "archived" ? page.status : "draft";
+      builderLocale.value = page.locale === "en" ? "en" : "pt";
+      builderSaveBtn.textContent = page.status === "published" ? "Atualizar página" : (page.status === "archived" ? "Guardar arquivo" : "Guardar rascunho");
+      if (builderMediaOptions) {
+        builderMediaOptions.innerHTML = state.mediaItems.map((item) => '<option value="' + escapeHtml(item.url) + '">' + escapeHtml(item.alt || item.originalName || "Imagem") + '</option>').join("");
+      }
       builderBlocks.innerHTML = "";
       const blocks = Array.isArray(page.blocks) ? page.blocks : [];
       if (!blocks.length) {
@@ -1686,25 +2960,33 @@
       }
       blocks.forEach((block, index) => {
         const card = document.createElement("section");
-        card.className = "builder-block";
+        card.className = "builder-block" + (block.hidden ? " is-hidden" : "");
         card.dataset.builderIndex = String(index);
         card.dataset.builderType = block.type || "text";
-        card.innerHTML =
-          '<div class="builder-block-head"><div class="builder-block-title">' +
-          escapeHtml((index + 1) + ". " + (block.type || "text").toUpperCase()) +
-          '</div><div class="builder-block-actions">' +
-          '<button class="btn btn-soft" type="button" data-builder-action="up">Subir</button>' +
-          '<button class="btn btn-soft" type="button" data-builder-action="down">Descer</button>' +
-          '<button class="btn btn-ghost" type="button" data-builder-action="remove">Remover</button>' +
-          '</div></div>' +
-          '<div class="builder-form-grid">' +
-          '<label class="field-label">Kicker<input class="input" data-builder-field="kicker" type="text" value="' + escapeHtml(block.kicker || "") + '"></label>' +
+        card.dataset.builderId = block.id || uniqueBuilderId();
+        card.dataset.builderHidden = block.hidden ? "true" : "false";
+        const regularFields = block.type === "image" ? "" :
+          '<label class="field-label">Etiqueta breve<input class="input" data-builder-field="kicker" type="text" value="' + escapeHtml(block.kicker || "") + '"></label>' +
           '<label class="field-label">Título<input class="input" data-builder-field="title" type="text" value="' + escapeHtml(block.title || "") + '"></label>' +
           '<label class="field-label builder-full">Texto<textarea class="input" data-builder-field="text">' + escapeHtml(block.text || "") + '</textarea></label>' +
           '<label class="field-label">Texto do botão<input class="input" data-builder-field="buttonLabel" type="text" value="' + escapeHtml(block.buttonLabel || "") + '"></label>' +
-          '<label class="field-label">Link do botão<input class="input" data-builder-field="buttonHref" type="text" value="' + escapeHtml(block.buttonHref || "") + '"></label>' +
-          '<label class="field-label builder-full">Itens<textarea class="input" data-builder-field="items">' + escapeHtml(builderItemsToText(block)) + '</textarea></label>' +
-          '</div>';
+          '<label class="field-label">Destino do botão<input class="input" data-builder-field="buttonHref" type="text" value="' + escapeHtml(block.buttonHref || "") + '"></label>' +
+          '<label class="field-label builder-full">Itens ou destaques<textarea class="input" data-builder-field="items">' + escapeHtml(builderItemsToText(block)) + '</textarea></label>';
+        const imageFields = block.type !== "image" ? "" :
+          '<label class="field-label builder-full">Imagem da biblioteca ou URL<input class="input" data-builder-field="imageUrl" list="builderMediaOptions" type="text" value="' + escapeHtml(block.imageUrl || "") + '" placeholder="/assets/uploads/imagem.webp"></label>' +
+          '<label class="field-label builder-full">Texto alternativo<input class="input" data-builder-field="imageAlt" type="text" maxlength="240" value="' + escapeHtml(block.imageAlt || "") + '" placeholder="Descreve o conteúdo útil da imagem"></label>' +
+          '<label class="field-label builder-full">Legenda (opcional)<input class="input" data-builder-field="imageCaption" type="text" maxlength="300" value="' + escapeHtml(block.imageCaption || "") + '"></label>';
+        card.innerHTML =
+          '<div class="builder-block-head"><div class="builder-block-title"><button class="btn btn-soft builder-drag-handle" type="button" draggable="true" data-builder-drag aria-label="Arrastar secção">⋮⋮</button><span>' +
+          escapeHtml((index + 1) + ". " + (BUILDER_BLOCK_LABELS[block.type] || "Bloco de texto") + (block.hidden ? " · Oculta" : "")) + '</span>' +
+          '</div><div class="builder-block-actions">' +
+          '<button class="btn btn-soft" type="button" data-builder-action="up">Subir</button>' +
+          '<button class="btn btn-soft" type="button" data-builder-action="down">Descer</button>' +
+          '<button class="btn btn-soft" type="button" data-builder-action="duplicate">Duplicar</button>' +
+          '<button class="btn btn-soft" type="button" data-builder-action="toggle">' + (block.hidden ? "Mostrar" : "Ocultar") + '</button>' +
+          '<button class="btn btn-ghost" type="button" data-builder-action="remove">Remover</button>' +
+          '</div></div>' +
+          '<div class="builder-form-grid">' + regularFields + imageFields + '</div>';
         builderBlocks.appendChild(card);
       });
       renderBuilderPages();
@@ -1718,13 +3000,17 @@
           return input ? input.value.trim() : "";
         };
         return {
-          id: (state.builderPage && state.builderPage.blocks && state.builderPage.blocks[Number(card.dataset.builderIndex)] && state.builderPage.blocks[Number(card.dataset.builderIndex)].id) || uniqueBuilderId(),
+          id: card.dataset.builderId || uniqueBuilderId(),
           type,
           kicker: fieldValue("kicker"),
           title: fieldValue("title"),
           text: fieldValue("text"),
           buttonLabel: fieldValue("buttonLabel"),
           buttonHref: fieldValue("buttonHref"),
+          hidden: card.dataset.builderHidden === "true",
+          imageUrl: fieldValue("imageUrl"),
+          imageAlt: fieldValue("imageAlt"),
+          imageCaption: fieldValue("imageCaption"),
           items: parseBuilderItems(type, fieldValue("items"))
         };
       });
@@ -1732,18 +3018,116 @@
         slug: slugifySegment(builderSlug.value),
         title: builderTitle.value.trim(),
         description: builderDescription.value.trim(),
-        status: builderStatus.value === "published" ? "published" : "draft",
+        locale: builderLocale.value === "en" ? "en" : "pt",
+        status: builderStatus.value === "published" || builderStatus.value === "archived" ? builderStatus.value : "draft",
         blocks
       };
+    }
+
+    function saveBuilderAutosave() {
+      if (!state.builderDirty) return;
+      try {
+        const draft = collectBuilderPage();
+        localStorage.setItem("cobrait_builder_autosave", JSON.stringify({ savedAt: new Date().toISOString(), page: draft }));
+        if (builderAutosaveStatus) builderAutosaveStatus.textContent = "Cópia de segurança guardada neste navegador às " + new Date().toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" }) + ".";
+      } catch (_error) {
+        if (builderAutosaveStatus) builderAutosaveStatus.textContent = "Não foi possível criar a cópia de segurança automática.";
+      }
+    }
+
+    function scheduleBuilderAutosave() {
+      if (state.builderAutosaveTimer) window.clearTimeout(state.builderAutosaveTimer);
+      if (builderAutosaveStatus) builderAutosaveStatus.textContent = "A preparar cópia de segurança automática...";
+      state.builderAutosaveTimer = window.setTimeout(saveBuilderAutosave, 900);
+    }
+
+    function readBuilderAutosave() {
+      try {
+        const stored = JSON.parse(localStorage.getItem("cobrait_builder_autosave") || "null");
+        return stored && stored.page && Array.isArray(stored.page.blocks) ? stored : null;
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    function clearBuilderAutosave() {
+      try { localStorage.removeItem("cobrait_builder_autosave"); } catch (_error) {}
+      if (builderAutosaveStatus) builderAutosaveStatus.textContent = "Guardado no servidor.";
+    }
+
+    async function previewBuilderPage() {
+      const page = collectBuilderPage();
+      if (!page.title || !page.blocks.length) {
+        showNotice(builderNotice, "Adiciona um título e pelo menos uma secção antes de pré-visualizar.", "bad");
+        return;
+      }
+      builderPreviewLink.disabled = true;
+      builderPreviewLink.textContent = "A preparar...";
+      try {
+        const response = await fetch(state.apiBase + "/site-pages/preview", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(page)
+        });
+        const html = await response.text();
+        if (!response.ok) {
+          let message = html;
+          try { message = JSON.parse(html).message || message; } catch (_error) {}
+          throw new Error(message || "Não foi possível gerar a pré-visualização.");
+        }
+        builderPreviewFrame.srcdoc = html;
+        builderPreviewPanel.hidden = false;
+        builderPreviewPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        showNotice(builderNotice, "Pré-visualização atualizada sem publicar alterações.", "ok");
+      } catch (error) {
+        showNotice(builderNotice, error.message || "Não foi possível gerar a pré-visualização.", "bad");
+      } finally {
+        builderPreviewLink.disabled = false;
+        builderPreviewLink.textContent = "Pré-visualizar";
+      }
     }
 
     async function loadBuilderPages() {
       const data = await apiFetch("/site-pages");
       state.builderPages = Array.isArray(data && data.pages) ? data.pages : [];
       renderBuilderPages();
+      renderPages();
       if (!state.builderPage) {
         state.builderPage = state.builderPages[0] ? JSON.parse(JSON.stringify(state.builderPages[0])) : defaultBuilderPage();
         renderBuilderForm();
+      }
+    }
+
+    async function duplicateBuilderPageEntry(slug) {
+      const pagesNotice = qs("pagesNotice");
+      showNotice(pagesNotice, "A duplicar página...", "info");
+      try {
+        const data = await apiFetch("/site-pages/" + encodeURIComponent(slug) + "/duplicate", { method: "POST" });
+        await loadBuilderPages();
+        const duplicated = data && data.page ? data.page : state.builderPages.find((entry) => entry.slug !== slug && entry.slug.startsWith(slug + "-copia"));
+        if (duplicated) {
+          state.builderPage = JSON.parse(JSON.stringify(duplicated));
+          state.builderDirty = false;
+          renderBuilderForm();
+          setAdminView("builder");
+          showNotice(builderNotice, "Página duplicada como rascunho. Pode agora alterar o conteúdo e publicar.", "ok");
+        }
+      } catch (error) {
+        showNotice(pagesNotice, error.message || "Não foi possível duplicar a página.", "bad");
+      }
+    }
+
+    async function archiveBuilderPageEntry(slug) {
+      if (!window.confirm("Arquivar esta página? Deixará de estar disponível publicamente, mas poderá recuperá-la.")) return;
+      const pagesNotice = qs("pagesNotice");
+      showNotice(pagesNotice, "A arquivar página...", "info");
+      try {
+        await apiFetch("/site-pages/" + encodeURIComponent(slug) + "/archive", { method: "POST" });
+        await loadBuilderPages();
+        showNotice(pagesNotice, "Página arquivada. Continua disponível através do filtro “Arquivadas”.", "ok");
+      } catch (error) {
+        showNotice(pagesNotice, error.message || "Não foi possível arquivar a página.", "bad");
       }
     }
 
@@ -1754,7 +3138,7 @@
       showNotice(builderNotice, "", "info");
       try {
         const page = collectBuilderPage();
-        if (!page.slug) throw new Error("Define um slug válido para a URL.");
+        if (!page.slug) throw new Error("Define um endereço válido para a página.");
         if (!page.title) throw new Error("Define um título para a página.");
         if (!page.blocks.length) throw new Error("Adiciona pelo menos uma secção.");
         const data = await apiFetch("/site-pages/" + encodeURIComponent(page.slug), {
@@ -1763,9 +3147,10 @@
         });
         state.builderPage = data && data.page ? JSON.parse(JSON.stringify(data.page)) : page;
         state.builderDirty = false;
+        clearBuilderAutosave();
         await loadBuilderPages();
         renderBuilderForm();
-        showNotice(builderNotice, "Página guardada. Se estiver publicada, já responde em /" + state.builderPage.slug + ".", "ok");
+        showNotice(builderNotice, "Página guardada com sucesso." + (state.builderPage.status === "published" ? " Já está publicada no website." : " Continua como rascunho."), "ok");
       } catch (error) {
         if (error && error.status === 401) {
           showLogin("Sessão expirada. Inicia sessão novamente.");
@@ -1774,7 +3159,7 @@
         showNotice(builderNotice, error.message || "Não foi possível guardar a página.", "bad");
       } finally {
         builderSaveBtn.disabled = false;
-        builderSaveBtn.textContent = "Guardar página";
+        builderSaveBtn.textContent = state.builderPage && state.builderPage.status === "published" ? "Atualizar página" : (state.builderPage && state.builderPage.status === "archived" ? "Guardar arquivo" : "Guardar rascunho");
       }
     }
 
@@ -1848,7 +3233,7 @@
       }
       const activeUsers = state.users.filter((user) => user.isActive).length;
       const activeAdmins = state.users.filter((user) => user.isActive && user.role === "admin").length;
-      usersMeta.textContent = state.users.length + " utilizadores, " + activeAdmins + " admins ativos.";
+      usersMeta.textContent = state.users.length + " pessoas com acesso, " + activeAdmins + " administradores ativos.";
       kpiUsers.textContent = String(activeUsers);
       state.users.forEach((user) => {
         const current = state.currentUser && state.currentUser.id === user.id;
@@ -1856,9 +3241,9 @@
         item.className = "item";
         item.innerHTML =
           '<div class="item-main"><div class="item-title">' + escapeHtml(user.fullName) +
-          '<span class="badge" data-role="' + escapeHtml(user.role) + '">' + escapeHtml(user.role) + '</span><span class="' + (user.isActive ? "pill pill--ok" : "pill pill--bad") + '">' + (user.isActive ? "ativo" : "inativo") + '</span>' +
-          (current ? '<span class="pill pill--info">sessão atual</span>' : "") +
-          '</div><div class="item-meta">' + escapeHtml(user.email) + '</div><div class="item-meta">Último login: ' + escapeHtml(formatDate(user.lastLoginAt)) + " | Criado: " + escapeHtml(formatDate(user.createdAt)) +
+          '<span class="badge" data-role="' + escapeHtml(user.role) + '">' + escapeHtml(roleLabel(user.role)) + '</span><span class="' + (user.isActive ? "pill pill--ok" : "pill pill--bad") + '">' + (user.isActive ? "Ativo" : "Inativo") + '</span>' +
+          (current ? '<span class="pill pill--info">Esta sessão</span>' : "") +
+          '</div><div class="item-meta">' + escapeHtml(user.email) + '</div><div class="item-meta">Último acesso: ' + escapeHtml(formatDate(user.lastLoginAt)) + " · Conta criada: " + escapeHtml(formatDate(user.createdAt)) +
           '</div></div><div class="item-actions"><button class="btn btn-soft" type="button" data-action="edit" data-id="' + escapeHtml(user.id) + '">Editar</button><button class="btn btn-soft" type="button" data-action="toggle" data-id="' + escapeHtml(user.id) + '">' + (user.isActive ? "Desativar" : "Ativar") + "</button></div>";
         usersList.appendChild(item);
       });
@@ -1874,7 +3259,7 @@
 
     function statusOptions(options, current) {
       return options
-        .map((status) => '<option value="' + status + '"' + (status === current ? " selected" : "") + ">" + status + "</option>")
+        .map((status) => '<option value="' + status + '"' + (status === current ? " selected" : "") + ">" + escapeHtml(statusLabel(status)) + "</option>")
         .join("");
     }
 
@@ -1939,7 +3324,7 @@
 
       bookingsMeta.textContent =
         (currentBookings.length === state.callBookings.length
-          ? state.callBookings.length + " pedidos guardados no backoffice."
+          ? state.callBookings.length + " pedidos de reunião recebidos."
           : currentBookings.length + " de " + state.callBookings.length + " pedidos visíveis.") +
         " " +
         state.callBookings.filter((booking) => booking.status === "new").length +
@@ -1966,7 +3351,7 @@
         ]);
         item.innerHTML =
           '<div class="item-main"><div class="item-title">' + escapeHtml(booking.fullName) +
-          '<span class="pill ' + (booking.status === "new" ? "pill--warn" : "pill--info") + '">' + escapeHtml(booking.status) + '</span></div>' +
+          '<span class="pill ' + (booking.status === "new" ? "pill--warn" : "pill--info") + '">' + escapeHtml(statusLabel(booking.status)) + '</span></div>' +
           '<div class="item-meta-wrap">' + bookingMeta + '</div>' +
           '<div class="item-summary">' + escapeHtml(booking.projectSummary || "Sem resumo adicional.") + '</div>' +
           '<div class="item-meta">Recebido em ' + escapeHtml(formatDate(booking.createdAt)) + '</div></div>' +
@@ -1992,8 +3377,8 @@
 
       contactsMeta.textContent =
         (currentContacts.length === state.contactRequests.length
-          ? state.contactRequests.length + " leads guardadas no backoffice."
-          : currentContacts.length + " de " + state.contactRequests.length + " leads visíveis.") +
+          ? state.contactRequests.length + " pedidos de contacto recebidos."
+          : currentContacts.length + " de " + state.contactRequests.length + " pedidos visíveis.") +
         " " +
         state.contactRequests.filter((contact) => contact.status === "new").length +
         " novas no total.";
@@ -2017,7 +3402,7 @@
         ]);
         item.innerHTML =
           '<div class="item-main"><div class="item-title">' + escapeHtml(contact.fullName) +
-          '<span class="pill ' + (contact.status === "new" ? "pill--warn" : "pill--info") + '">' + escapeHtml(contact.status) + '</span></div>' +
+          '<span class="pill ' + (contact.status === "new" ? "pill--warn" : "pill--info") + '">' + escapeHtml(statusLabel(contact.status)) + '</span></div>' +
           '<div class="item-meta-wrap">' + contactMeta + '</div>' +
           '<div class="item-summary">' + escapeHtml(contact.message || "Sem mensagem.") + '</div>' +
           '<div class="item-meta">Recebido em ' + escapeHtml(formatDate(contact.createdAt)) + '</div></div>' +
@@ -2051,8 +3436,8 @@
       userRole.value = user.role;
       userActive.value = String(Boolean(user.isActive));
       userPassword.value = "";
-      userPassword.placeholder = "Deixa vazio para manter a password atual";
-      userPasswordHint.textContent = "Opcional ao editar. Só preenche se quiseres trocar a password.";
+      userPassword.placeholder = "Deixa vazio para manter a palavra-passe atual";
+      userPasswordHint.textContent = "Opcional ao editar. Preenche apenas para definir uma nova palavra-passe.";
       saveUserBtn.textContent = "Guardar alterações";
       showNotice(userFormStatus, "", "info");
       userFullName.focus();
@@ -2069,18 +3454,18 @@
       contactsFilter.disabled = !canManageUsers;
       resetUserFormBtn.disabled = !canManageUsers;
       if (!canManageUsers) {
-        showNotice(usersNotice, "A tua conta pode entrar no painel, mas só admins podem gerir utilizadores.", "info");
+        showNotice(usersNotice, "A sua conta pode entrar no painel, mas apenas administradores podem gerir acessos.", "info");
         usersMeta.textContent = "Sem permissão para listar utilizadores.";
         kpiUsers.textContent = "-";
         kpiBookings.textContent = "-";
         kpiContacts.textContent = "-";
-        renderEmptyUsers("Gestão de utilizadores reservada a admins.");
+        renderEmptyUsers("Gestão de acessos reservada a administradores.");
         bookingsMeta.textContent = "Sem permissão para listar pedidos de chamada.";
         contactsMeta.textContent = "Sem permissão para listar pedidos de contacto.";
-        renderEmptyList(bookingsList, "Pipeline de agendamentos reservada a admins.");
-        renderEmptyList(contactsList, "Pipeline de contactos reservada a admins.");
-        showNotice(bookingsNotice, "Só admins podem gerir pedidos de chamada.", "info");
-        showNotice(contactsNotice, "Só admins podem gerir pedidos de contacto.", "info");
+        renderEmptyList(bookingsList, "Pedidos de reunião reservados a administradores.");
+        renderEmptyList(contactsList, "Pedidos de contacto reservados a administradores.");
+        showNotice(bookingsNotice, "Apenas administradores podem gerir pedidos de reunião.", "info");
+        showNotice(contactsNotice, "Apenas administradores podem gerir pedidos de contacto.", "info");
         showNotice(userFormStatus, "Sem permissão para criar ou editar utilizadores.", "bad");
         return false;
       }
@@ -2095,6 +3480,8 @@
       const canEditContent = !!(state.currentUser && ["admin", "editor"].includes(state.currentUser.role));
       [
         cmsSaveBtn,
+        cmsDraftBtn,
+        cmsUndoBtn,
         cmsReloadBtn,
         cmsFieldFilter,
         cmsFieldMode,
@@ -2104,16 +3491,17 @@
         builderTitle,
         builderDescription,
         builderStatus,
+        builderLocale,
         builderBlockType,
         builderAddBlockBtn
       ].forEach((control) => {
         if (control) control.disabled = !canEditContent;
       });
       if (!canEditContent) {
-        showNotice(cmsNotice, "A tua conta pode entrar no painel, mas não tem permissão para editar conteúdo.", "info");
-        showNotice(builderNotice, "A tua conta pode entrar no painel, mas não tem permissão para criar páginas.", "info");
-        renderEmptyList(cmsFields, "Edição de conteúdo reservada a admins e editors.");
-        renderEmptyList(builderPagesList, "Page Builder reservado a admins e editors.");
+        showNotice(cmsNotice, "A sua conta pode consultar o painel, mas não tem permissão para editar conteúdos.", "info");
+        showNotice(builderNotice, "A sua conta não tem permissão para criar páginas.", "info");
+        renderEmptyList(cmsFields, "Edição reservada a administradores e editores de conteúdos.");
+        renderEmptyList(builderPagesList, "Criação de páginas reservada a administradores e editores de conteúdos.");
         return false;
       }
       showNotice(builderNotice, "", "info");
@@ -2131,7 +3519,7 @@
         .slice(0, 2)
         .map((part) => part.charAt(0).toUpperCase())
         .join("") || "CA";
-      sessionRole.textContent = user.role;
+      sessionRole.textContent = roleLabel(user.role);
       ["sessionName", "sidebarSessionName"].forEach((id) => {
         const element = qs(id);
         if (element) element.textContent = displayName;
@@ -2144,8 +3532,8 @@
         avatar.textContent = initials;
       });
       const roleChip = document.querySelector(".session-chips .pill");
-      if (roleChip) roleChip.textContent = user.role;
-      sessionInfo.textContent = "Último login: " + escapeHtml(formatDate(user.lastLoginAt)) + " · Criado: " + escapeHtml(formatDate(user.createdAt));
+      if (roleChip) roleChip.textContent = roleLabel(user.role);
+      sessionInfo.textContent = "Último acesso: " + formatDate(user.lastLoginAt) + " · Conta criada: " + formatDate(user.createdAt);
     }
 
     function showLogin(message) {
@@ -2167,6 +3555,10 @@
       applyCmsPermissions();
       bootCms();
       bootBuilder();
+      bootGlobalSettings();
+      bootMediaLibrary();
+      loadActivity();
+      loadIntegrations();
       resetUserForm();
       applyUserPermissions();
       runChecks();
@@ -2189,7 +3581,7 @@
           return;
         }
         showNotice(usersNotice, error.message || "Não foi possível carregar os utilizadores.", "bad");
-        renderEmptyUsers("Falha ao contactar a API.");
+        renderEmptyUsers("Não foi possível carregar os acessos. Tenta novamente.");
       } finally {
         refreshUsersBtn.disabled = false;
         refreshUsersBtn.textContent = "Atualizar";
@@ -2210,7 +3602,7 @@
           return;
         }
         showNotice(bookingsNotice, error.message || "Não foi possível carregar os agendamentos.", "bad");
-        renderEmptyList(bookingsList, "Falha ao contactar a API.");
+        renderEmptyList(bookingsList, "Não foi possível carregar os pedidos. Tenta novamente.");
       } finally {
         refreshBookingsBtn.disabled = false;
         refreshBookingsBtn.textContent = "Atualizar";
@@ -2231,7 +3623,7 @@
           return;
         }
         showNotice(contactsNotice, error.message || "Não foi possível carregar os contactos.", "bad");
-        renderEmptyList(contactsList, "Falha ao contactar a API.");
+        renderEmptyList(contactsList, "Não foi possível carregar os contactos. Tenta novamente.");
       } finally {
         refreshContactsBtn.disabled = false;
         refreshContactsBtn.textContent = "Atualizar";
@@ -2266,17 +3658,17 @@
       if (!applyUserPermissions()) return;
       testEmailBtn.disabled = true;
       testEmailBtn.textContent = "A testar...";
-      showNotice(contactsNotice, "A enviar email de teste...", "info");
+      showNotice(qs("integrationsNotice"), "A enviar email de teste...", "info");
       try {
         const data = await apiFetch("/notification-test", { method: "POST" });
         const accepted = data && data.result && Array.isArray(data.result.accepted) ? data.result.accepted.join(", ") : "";
-        showNotice(contactsNotice, "Email de teste enviado" + (accepted ? " para " + accepted : "") + ". Verifica a caixa de entrada e spam.", "ok");
+        showNotice(qs("integrationsNotice"), "Email de teste enviado" + (accepted ? " para " + accepted : "") + ". Verifica a caixa de entrada e spam.", "ok");
       } catch (error) {
         if (error && error.status === 401) {
           showLogin("Sessão expirada. Inicia sessão novamente.");
           return;
         }
-        showNotice(contactsNotice, formatNotificationDiagnostic(error && error.payload), "bad");
+        showNotice(qs("integrationsNotice"), formatNotificationDiagnostic(error && error.payload), "bad");
       } finally {
         testEmailBtn.disabled = false;
         testEmailBtn.textContent = "Testar email";
@@ -2414,6 +3806,60 @@
       }
     }
 
+    async function requestPasswordReset() {
+      setApiBaseFromInput();
+      const email = loginEmail.value.trim();
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        loginError.textContent = "Introduz primeiro o email da tua conta.";
+        loginEmail.focus();
+        return;
+      }
+      forgotPasswordBtn.disabled = true;
+      forgotPasswordBtn.textContent = "A enviar...";
+      try {
+        const data = await apiFetch("/auth/forgot-password", { method: "POST", body: { email } });
+        loginError.textContent = data && data.message ? data.message : "Se a conta existir, receberás uma ligação por email.";
+      } catch (error) {
+        loginError.textContent = error.message || "Não foi possível pedir a recuperação.";
+      } finally {
+        forgotPasswordBtn.disabled = false;
+        forgotPasswordBtn.textContent = "Esqueci-me da palavra-passe";
+      }
+    }
+
+    function resetTokenFromUrl() {
+      try { return new URLSearchParams(window.location.search).get("reset") || ""; } catch (_error) { return ""; }
+    }
+
+    function showPasswordResetIfNeeded() {
+      const hasToken = Boolean(resetTokenFromUrl());
+      qs("loginFormPanel").classList.toggle("hidden", hasToken);
+      qs("resetPasswordPanel").classList.toggle("hidden", !hasToken);
+      if (hasToken) loginSection.querySelector("h1").textContent = "Definir palavra-passe";
+    }
+
+    async function completePasswordReset() {
+      const password = qs("resetPassword").value;
+      const confirmation = qs("resetPasswordConfirm").value;
+      if (password.length < 8) { loginError.textContent = "A palavra-passe deve ter pelo menos 8 caracteres."; return; }
+      if (password !== confirmation) { loginError.textContent = "As palavras-passe não coincidem."; return; }
+      resetPasswordBtn.disabled = true;
+      resetPasswordBtn.textContent = "A guardar...";
+      try {
+        await apiFetch("/auth/reset-password", { method: "POST", body: { token: resetTokenFromUrl(), newPassword: password } });
+        window.history.replaceState({}, "", window.location.pathname);
+        qs("resetPasswordPanel").classList.add("hidden");
+        qs("loginFormPanel").classList.remove("hidden");
+        loginSection.querySelector("h1").textContent = "Iniciar sessão";
+        loginError.textContent = "Palavra-passe atualizada. Já podes iniciar sessão.";
+      } catch (error) {
+        loginError.textContent = error.message || "Não foi possível atualizar a palavra-passe.";
+      } finally {
+        resetPasswordBtn.disabled = false;
+        resetPasswordBtn.textContent = "Guardar nova palavra-passe";
+      }
+    }
+
     async function restoreSession() {
       await resolveWorkingApiBase();
       apiBaseInput.value = state.apiBase;
@@ -2429,7 +3875,43 @@
       }
     }
 
+    function confirmDiscardCmsChanges() {
+      if (!state.cmsDirty) return true;
+      return window.confirm("Existem alterações por guardar. Pretende descartá-las?");
+    }
+
     pagesFilter.addEventListener("input", renderPages);
+    [qs("pagesLanguageFilter"), qs("pagesGroupFilter"), qs("pagesStatusFilter")].filter(Boolean).forEach((filter) => {
+      filter.addEventListener("change", renderPages);
+    });
+    pagesList.addEventListener("click", (event) => {
+      const duplicateButton = event.target.closest('[data-action="duplicate-builder-page"][data-slug]');
+      if (duplicateButton) {
+        duplicateBuilderPageEntry(duplicateButton.dataset.slug);
+        return;
+      }
+      const archiveButton = event.target.closest('[data-action="archive-builder-page"][data-slug]');
+      if (archiveButton) {
+        archiveBuilderPageEntry(archiveButton.dataset.slug);
+        return;
+      }
+      const builderButton = event.target.closest('[data-action="edit-builder-page"][data-slug]');
+      if (builderButton) {
+        const builderPage = state.builderPages.find((entry) => entry.slug === builderButton.dataset.slug);
+        if (!builderPage) return;
+        state.builderPage = JSON.parse(JSON.stringify(builderPage));
+        state.builderDirty = false;
+        renderBuilderForm();
+        setAdminView("builder");
+        return;
+      }
+      const editButton = event.target.closest('[data-action="edit-page"][data-path]');
+      if (!editButton) return;
+      const page = pages.find((entry) => entry.path === editButton.dataset.path);
+      if (!page) return;
+      setAdminView("cms");
+      loadCmsPage(page);
+    });
     rerunChecksBtn.addEventListener("click", runChecks);
     refreshUsersBtn.addEventListener("click", loadUsers);
     refreshBookingsBtn.addEventListener("click", loadCallBookings);
@@ -2441,14 +3923,34 @@
       const button = event.target.closest("button[data-cms-path]");
       if (!button) return;
       const page = pages.find((entry) => entry.path === button.dataset.cmsPath);
-      if (page) loadCmsPage(page);
+      if (page && (!state.cmsPage || page.path === state.cmsPage.path || confirmDiscardCmsChanges())) loadCmsPage(page);
     });
     cmsFieldFilter.addEventListener("input", renderCmsFields);
     cmsFieldMode.addEventListener("change", renderCmsFields);
-    cmsReloadBtn.addEventListener("click", () => {
-      if (state.cmsPage) loadCmsPage(state.cmsPage);
-    });
-    cmsSaveBtn.addEventListener("click", saveCmsPage);
+    cmsExpandAllBtn.addEventListener("click", () => cmsFields.querySelectorAll("details.cms-field").forEach((field) => { field.open = true; }));
+    cmsCollapseAllBtn.addEventListener("click", () => cmsFields.querySelectorAll("details.cms-field").forEach((field) => { field.open = false; }));
+    cmsReloadBtn.addEventListener("click", discardCmsDraft);
+    cmsUndoBtn.addEventListener("click", undoLastCmsPublication);
+    cmsDraftBtn.addEventListener("click", saveCmsDraft);
+    cmsSaveBtn.addEventListener("click", publishCmsPage);
+    const cmsRevisionsList = qs("cmsRevisions");
+    if (cmsRevisionsList) {
+      cmsRevisionsList.addEventListener("click", (event) => {
+        const compareButton = event.target.closest("button[data-revision-compare]");
+        if (compareButton) {
+          const item = compareButton.closest(".revision-item");
+          const diff = item && item.querySelector("[data-revision-diff]");
+          if (!item || !diff) return;
+          const keys = JSON.parse(item.dataset.changedKeys || "[]");
+          diff.innerHTML = keys.length ? keys.map((key) => "<b>" + escapeHtml(friendlyCmsFieldLabel({ baseKey: key, tag: "" })) + "</b>").join("") : "<span>Sem diferenças face ao conteúdo atual.</span>";
+          diff.hidden = !diff.hidden;
+          compareButton.textContent = diff.hidden ? "Comparar" : "Fechar comparação";
+          return;
+        }
+        const restoreButton = event.target.closest("button[data-revision-id]");
+        if (restoreButton) restoreCmsRevision(restoreButton.dataset.revisionId);
+      });
+    }
     builderPagesList.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-builder-slug]");
       if (!button) return;
@@ -2456,13 +3958,16 @@
       if (!page) return;
       state.builderPage = JSON.parse(JSON.stringify(page));
       state.builderDirty = false;
+      state.auditLogs = [];
       showNotice(builderNotice, "", "info");
       renderBuilderForm();
     });
     builderNewBtn.addEventListener("click", () => {
-      state.builderPage = defaultBuilderPage();
+      const autosave = readBuilderAutosave();
+      const restore = autosave && window.confirm("Existe uma cópia de segurança não publicada de " + formatDate(autosave.savedAt) + ". Pretende recuperá-la?");
+      state.builderPage = restore ? autosave.page : defaultBuilderPage();
       state.builderDirty = false;
-      showNotice(builderNotice, "Nova página em rascunho. Guarda para criar a URL.", "info");
+      showNotice(builderNotice, restore ? "Cópia de segurança recuperada. Confirma o conteúdo e guarda quando estiver pronto." : "Nova página em rascunho. Guarda para criar a URL.", "info");
       renderBuilderForm();
     });
     builderAddBlockBtn.addEventListener("click", () => {
@@ -2471,16 +3976,22 @@
       state.builderPage = page;
       state.builderDirty = true;
       renderBuilderForm();
+      scheduleBuilderAutosave();
     });
     builderBlocks.addEventListener("input", () => {
       state.builderDirty = true;
+      scheduleBuilderAutosave();
     });
-    [builderSlug, builderTitle, builderDescription, builderStatus].forEach((input) => {
+    [builderSlug, builderTitle, builderDescription, builderStatus, builderLocale].forEach((input) => {
       input.addEventListener("input", () => {
         state.builderDirty = true;
-        if (input === builderSlug) {
-          builderPreviewLink.href = builderSlug.value ? "/" + slugifySegment(builderSlug.value) : "#";
+        if (input === builderTitle && (!builderSlug.value || builderSlug.value === "nova-pagina")) {
+          builderSlug.value = slugifySegment(builderTitle.value) || "nova-pagina";
         }
+        if (input === builderStatus) {
+          builderSaveBtn.textContent = builderStatus.value === "published" ? "Publicar página" : (builderStatus.value === "archived" ? "Guardar arquivo" : "Guardar rascunho");
+        }
+        scheduleBuilderAutosave();
       });
     });
     builderBlocks.addEventListener("click", (event) => {
@@ -2493,6 +4004,12 @@
       const index = Number(card.dataset.builderIndex);
       if (action === "remove") {
         page.blocks.splice(index, 1);
+      } else if (action === "duplicate") {
+        const duplicate = JSON.parse(JSON.stringify(page.blocks[index]));
+        duplicate.id = uniqueBuilderId();
+        page.blocks.splice(index + 1, 0, duplicate);
+      } else if (action === "toggle") {
+        page.blocks[index].hidden = !page.blocks[index].hidden;
       } else if (action === "up" && index > 0) {
         const [block] = page.blocks.splice(index, 1);
         page.blocks.splice(index - 1, 0, block);
@@ -2503,13 +4020,82 @@
       state.builderPage = page;
       state.builderDirty = true;
       renderBuilderForm();
+      scheduleBuilderAutosave();
     });
+    builderBlocks.addEventListener("dragstart", (event) => {
+      const handle = event.target.closest("[data-builder-drag]");
+      const card = handle && handle.closest(".builder-block");
+      if (!card) return;
+      state.builderDragIndex = Number(card.dataset.builderIndex);
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", card.dataset.builderIndex);
+    });
+    builderBlocks.addEventListener("dragover", (event) => {
+      const card = event.target.closest(".builder-block");
+      if (!card || state.builderDragIndex === null) return;
+      event.preventDefault();
+      builderBlocks.querySelectorAll(".builder-block").forEach((entry) => entry.classList.toggle("is-drag-over", entry === card));
+    });
+    builderBlocks.addEventListener("drop", (event) => {
+      const card = event.target.closest(".builder-block");
+      if (!card || state.builderDragIndex === null) return;
+      event.preventDefault();
+      const targetIndex = Number(card.dataset.builderIndex);
+      const page = collectBuilderPage();
+      const sourceIndex = state.builderDragIndex;
+      if (sourceIndex !== targetIndex && page.blocks[sourceIndex]) {
+        const [block] = page.blocks.splice(sourceIndex, 1);
+        page.blocks.splice(targetIndex, 0, block);
+        state.builderPage = page;
+        state.builderDirty = true;
+        renderBuilderForm();
+        scheduleBuilderAutosave();
+      }
+      state.builderDragIndex = null;
+    });
+    builderBlocks.addEventListener("dragend", () => {
+      state.builderDragIndex = null;
+      builderBlocks.querySelectorAll(".builder-block").forEach((entry) => entry.classList.remove("is-drag-over"));
+    });
+    builderPreviewLink.addEventListener("click", previewBuilderPage);
+    if (builderPreviewClose) builderPreviewClose.addEventListener("click", () => { builderPreviewPanel.hidden = true; });
+    if (builderPreviewPanel) {
+      builderPreviewPanel.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-preview-width]");
+        if (button) builderPreviewFrameWrap.style.width = button.dataset.previewWidth;
+      });
+    }
     builderSaveBtn.addEventListener("click", saveBuilderPage);
     resetUserFormBtn.addEventListener("click", resetUserForm);
     userForm.addEventListener("submit", submitUserForm);
+    const settingsForm = qs("settingsForm");
+    if (settingsForm) settingsForm.addEventListener("submit", saveGlobalSettings);
+    const profilePasswordForm = qs("profilePasswordForm");
+    const activityRefreshBtn = qs("activityRefreshBtn");
+    const integrationsRefreshBtn = qs("integrationsRefreshBtn");
+    if (profilePasswordForm) profilePasswordForm.addEventListener("submit", changeOwnPassword);
+    if (activityRefreshBtn) activityRefreshBtn.addEventListener("click", loadActivity);
+    if (integrationsRefreshBtn) integrationsRefreshBtn.addEventListener("click", loadIntegrations);
+    const mediaUploadForm = qs("mediaUploadForm");
+    const mediaRefreshBtn = qs("mediaRefreshBtn");
+    const mediaGrid = qs("mediaGrid");
+    if (mediaUploadForm) mediaUploadForm.addEventListener("submit", uploadMedia);
+    if (mediaRefreshBtn) mediaRefreshBtn.addEventListener("click", loadMediaLibrary);
+    if (mediaGrid) {
+      mediaGrid.addEventListener("click", (event) => {
+        const urlInput = event.target.closest("input.media-url");
+        if (urlInput) urlInput.select();
+      });
+    }
     loginBtn.addEventListener("click", login);
+    forgotPasswordBtn.addEventListener("click", requestPasswordReset);
+    resetPasswordBtn.addEventListener("click", completePasswordReset);
     document.querySelectorAll("[data-admin-view]").forEach((button) => {
-      button.addEventListener("click", () => setAdminView(button.dataset.adminView));
+      button.addEventListener("click", () => {
+        const leavingEditor = button.dataset.adminView !== "cms" && document.querySelector('[data-admin-panel="cms"].is-active');
+        if (leavingEditor && !confirmDiscardCmsChanges()) return;
+        setAdminView(button.dataset.adminView);
+      });
     });
     [loginEmail, loginPass, apiBaseInput].forEach((input) => {
       input.addEventListener("keydown", (event) => {
@@ -2522,6 +4108,7 @@
     apiBaseInput.addEventListener("change", setApiBaseFromInput);
     apiBaseInput.addEventListener("blur", setApiBaseFromInput);
     logoutBtn.addEventListener("click", async () => {
+      if (!confirmDiscardCmsChanges()) return;
       try { await apiFetch("/auth/logout", { method: "POST" }); } catch (_error) {}
       state.users = [];
       state.callBookings = [];
@@ -2530,7 +4117,13 @@
       state.cmsPage = null;
       state.cmsFields = [];
       state.cmsContent = {};
+      state.cmsPublishedContent = {};
+      state.cmsDraftContent = {};
+      state.cmsHasDraft = false;
       state.cmsDirty = false;
+      state.cmsRevisions = [];
+      state.globalSettings = {};
+      state.mediaItems = [];
       state.builderPages = [];
       state.builderPage = null;
       state.builderDirty = false;
@@ -2544,6 +4137,11 @@
       builderPagesList.innerHTML = "";
       builderBlocks.innerHTML = "";
       showLogin("");
+    });
+    window.addEventListener("beforeunload", (event) => {
+      if (!state.cmsDirty && !state.builderDirty) return;
+      event.preventDefault();
+      event.returnValue = "";
     });
     usersList.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-action]");
@@ -2568,6 +4166,7 @@
       saveContactStatus(button.getAttribute("data-id"), button);
     });
 
+    showPasswordResetIfNeeded();
     restoreSession();
   </script>
 </body>

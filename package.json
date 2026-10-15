@@ -6,21 +6,25 @@
   "type": "commonjs",
   "scripts": {
     "start": "node app.js",
-    "site:render": "node scripts/render-public-site.js",
-    "site:check": "node scripts/render-public-site.js --check && node scripts/check-language-switch.js",
-    "check": "node --check app.js && node --check scripts/render-public-site.js && node --check server/src/server.js && node --check server/src/app.js && node --check server/src/routes/auth.routes.js && node --check server/src/routes/users.routes.js && node --check server/src/routes/public.routes.js && node --check server/src/routes/content.routes.js && node --check server/src/services/notifications.service.js && node --check server/src/services/page-builder.service.js && node --check server/src/services/page-builder.renderer.js",
-    "public:check": "node scripts/check-language-switch.js",
+    "check": "node --check app.js && node --check server/src/server.js && node --check server/src/app.js && node --check server/src/routes/auth.routes.js && node --check server/src/routes/users.routes.js && node --check server/src/routes/public.routes.js && node --check server/src/routes/content.routes.js && node --check server/src/routes/site.routes.js && node --check server/src/site/content.js && node --check server/src/site/pages.js && node --check server/src/services/ops.service.js && node --check server/src/services/notifications.service.js && node --check server/src/services/zoho.service.js && node --check server/src/services/page-builder.service.js && node --check server/src/services/page-builder.renderer.js && node --check assets/js/cms-inline-editor.js && node scripts/check-language-switch.js && node scripts/check-lre-footer.js && node scripts/check-editor-layout.js",
+    "language:check": "node scripts/check-language-switch.js",
+    "live:check": "node scripts/check-live-site.js",
+    "live:check:safe": "node scripts/check-live-site.js --skip-forms",
     "mysql:setup": "node server/scripts/setup-mysql.js",
     "mysql:migrate-file": "node server/scripts/migrate-file-storage-to-mysql.js"
   },
   "dependencies": {
+    "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.2",
-    "nodemailer": "^8.0.7",
+    "nodemailer": "^9.0.4",
+    "nunjucks": "^3.2.4",
     "pg": "^8.13.3"
   },
   "engines": {

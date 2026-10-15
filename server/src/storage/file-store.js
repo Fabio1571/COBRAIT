@@ -8,7 +8,8 @@ const EMPTY_DATA = {
   auditLogs: [],
   contactRequests: [],
   callBookings: [],
-  siteContentEntries: []
+  siteContentEntries: [],
+  siteContentRevisions: []
 };
 
 let writeQueue = Promise.resolve();
@@ -34,7 +35,8 @@ function normalizeDataShape(data) {
     auditLogs: Array.isArray(data && data.auditLogs) ? data.auditLogs : [],
     contactRequests: Array.isArray(data && data.contactRequests) ? data.contactRequests : [],
     callBookings: Array.isArray(data && data.callBookings) ? data.callBookings : [],
-    siteContentEntries: Array.isArray(data && data.siteContentEntries) ? data.siteContentEntries : []
+    siteContentEntries: Array.isArray(data && data.siteContentEntries) ? data.siteContentEntries : [],
+    siteContentRevisions: Array.isArray(data && data.siteContentRevisions) ? data.siteContentRevisions : []
   };
 }
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const { requireAdmin, requireAuth } = require("../middleware/auth");
-const { createAuditLog, createUser, listUsers, updateUser } = require("../services/users.service");
+const { createAuditLog, createUser, listAuditLogs, listUsers, updateUser } = require("../services/users.service");
 
 const router = express.Router();
 
@@ -10,6 +10,15 @@ router.get("/", async (request, response, next) => {
   try {
     const users = await listUsers();
     response.json({ users });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/audit", async (request, response, next) => {
+  try {
+    const logs = await listAuditLogs(request.query.limit);
+    response.json({ logs });
   } catch (error) {
     next(error);
   }
@@ -47,4 +56,3 @@ router.patch("/:id([0-9a-fA-F-]{36})", async (request, response, next) => {
 });
 
 module.exports = router;
-

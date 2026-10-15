@@ -1,0 +1,64 @@
+{% extends "layouts/base.njk" %}
+{% block content %}
+<section class="page-hero service-hero">
+  <div class="shell page-hero-grid">
+    <p class="eyebrow" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+    <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+    <p class="hero-text" data-cms-key="hero.text">{{ page.hero.text }}</p>
+    <a class="button button-primary" href="{{ paths.booking }}"><span data-cms-scope="global" data-cms-key="common.talk.{{ locale }}">{{ shared.common.talk }}</span><span aria-hidden="true">↗</span></a>
+  </div>
+  {% include "partials/technical-diagram.njk" %}
+</section>
+
+<section class="section service-fit-section" data-cms-remove-key="block.service.fit">
+  <div class="shell two-column-heading">
+    <div>
+      <p class="eyebrow">{{ 'Contexto' if locale == 'pt' else 'Context' }}</p>
+      <h2 data-cms-key="fitTitle">{{ page.fitTitle }}</h2>
+    </div>
+    <ul class="statement-list">
+      {% for item in page.fits %}<li class="reveal"><span>0{{ loop.index }}</span><p data-cms-key="fits.{{ loop.index0 }}">{{ item }}</p></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section section-dark service-deliverables-section" data-cms-remove-key="block.service.deliverables">
+  <div class="shell two-column-heading">
+    <div>
+      <p class="eyebrow eyebrow-light">{{ 'Entrega' if locale == 'pt' else 'Delivery' }}</p>
+      <h2 data-cms-key="deliverablesTitle">{{ page.deliverablesTitle }}</h2>
+      <p class="service-note" data-cms-key="note">{{ page.note }}</p>
+    </div>
+    <ol class="deliverable-list">
+      {% for item in page.deliverables %}<li><span>{{ loop.index }}</span><span data-cms-key="deliverables.{{ loop.index0 }}">{{ item }}</span></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section" data-cms-remove-key="block.service.process">
+  <div class="shell">
+    <div class="section-heading section-heading-split">
+      <div><p class="eyebrow">{{ 'Método' if locale == 'pt' else 'Method' }}</p><h2>{{ 'Um processo visível do início ao lançamento.' if locale == 'pt' else 'A visible process from the first decision to launch.' }}</h2></div>
+      <p>{{ 'O âmbito muda, mas os princípios mantêm-se: reduzir risco cedo, demonstrar progresso e documentar decisões úteis.' if locale == 'pt' else 'Scope changes, but the principles remain: reduce risk early, demonstrate progress and document useful decisions.' }}</p>
+    </div>
+    <ol class="process-track process-track-compact">
+      {% for step in processSteps %}<li><span>{{ step.number }}</span><strong>{{ step.title }}</strong></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section faq-section" data-cms-remove-key="block.service.faq">
+  <div class="shell faq-grid">
+    <div><p class="eyebrow">FAQ</p><h2>{{ 'Perguntas antes da primeira conversa.' if locale == 'pt' else 'Questions before the first conversation.' }}</h2></div>
+    <div class="accordion-list">
+      {% for item in page.faq %}
+      <details class="accordion-item">
+        <summary><span data-cms-key="faq.{{ loop.index0 }}.q">{{ item.q }}</span><span aria-hidden="true">+</span></summary>
+        <div><p data-cms-key="faq.{{ loop.index0 }}.a">{{ item.a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% include "partials/final-cta.njk" %}
+{% endblock %}

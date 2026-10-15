@@ -1,0 +1,150 @@
+{% extends "layouts/base.njk" %}
+
+{% block content %}
+<section class="hero hero-home">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow hero-kicker" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+      <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+      <p class="hero-text" data-cms-key="hero.text">{{ page.hero.text }}</p>
+      <div class="button-row">
+        <a class="button button-primary" href="{{ page.hero.primaryHref }}" data-cms-href-key="hero.primaryHref" data-track="hero_booking"><span data-cms-key="hero.primary">{{ page.hero.primary }}</span><span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="{{ page.hero.secondaryHref }}" data-cms-href-key="hero.secondaryHref"><span data-cms-key="hero.secondary">{{ page.hero.secondary }}</span><span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="hero-signals" aria-label="{{ 'Informação essencial' if locale == 'pt' else 'Key information' }}">
+        {% for signal in page.hero.signals %}<li data-cms-key="hero.signals.{{ loop.index0 }}">{{ signal }}</li>{% endfor %}
+      </ul>
+    </div>
+
+    <div class="hero-system" aria-label="{{ 'Produto, inteligência artificial, design e engenharia ligados num único processo' if locale == 'pt' else 'Product, artificial intelligence, design and engineering connected in one process' }}">
+      <div class="system-orbit system-orbit-one" aria-hidden="true"></div>
+      <div class="system-orbit system-orbit-two" aria-hidden="true"></div>
+      <div class="system-connector system-connector-one" aria-hidden="true"><i></i></div>
+      <div class="system-connector system-connector-two" aria-hidden="true"><i></i></div>
+      <div class="system-core">
+        <span>COBRAIT</span>
+        <strong>{{ 'Entrega responsável' if locale == 'pt' else 'Accountable delivery' }}</strong>
+      </div>
+      <div class="system-node system-node-product"><span>01</span>{{ 'Produto' if locale == 'pt' else 'Product' }}</div>
+      <div class="system-node system-node-ai"><span>02</span>AI</div>
+      <div class="system-node system-node-design"><span>03</span>UX/UI</div>
+      <div class="system-node system-node-engineering"><span>04</span>{{ 'Engenharia' if locale == 'pt' else 'Engineering' }}</div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-needs" data-cms-remove-key="block.home.needs">
+  <div class="shell">
+    <div class="section-heading section-heading-split">
+      <div>
+        <p class="eyebrow" data-cms-key="needs.kicker">{{ page.needs.kicker }}</p>
+        <h2 data-cms-key="needs.title">{{ page.needs.title }}</h2>
+      </div>
+      <p data-cms-key="needs.text">{{ page.needs.text }}</p>
+    </div>
+    <div class="need-list">
+      {% for item in page.needs.items %}
+      <article class="need-row reveal">
+        <span class="index">{{ item.number }}</span>
+        <h3 data-cms-key="needs.items.{{ loop.index0 }}.title">{{ item.title }}</h3>
+        <p data-cms-key="needs.items.{{ loop.index0 }}.text">{{ item.text }}</p>
+        <a href="{{ item.link }}" data-cms-href-key="needs.items.{{ loop.index0 }}.link" aria-label="{{ item.label }}"><span data-cms-key="needs.items.{{ loop.index0 }}.label">{{ item.label }}</span><span aria-hidden="true">↗</span></a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-services" data-cms-remove-key="block.home.services">
+  <div class="shell">
+    <div class="section-heading section-heading-split">
+      <div>
+        <p class="eyebrow" data-cms-key="services.kicker">{{ page.services.kicker }}</p>
+        <h2 data-cms-key="services.title">{{ page.services.title }}</h2>
+      </div>
+      <p data-cms-key="services.text">{{ page.services.text }}</p>
+    </div>
+    <div class="services-showcase" data-service-preview>
+      <div class="service-editorial-list">
+        {% for service in page.capabilities %}
+        <a class="service-editorial-row reveal{% if loop.first %} is-active{% endif %}" href="{{ service.href }}" data-cms-href-key="capabilities.{{ loop.index0 }}.href" data-service-preview-item data-preview-number="{{ service.number }}" data-preview-title="{{ service.title }}" data-preview-summary="{{ service.summary }}" data-preview-outcome="{{ service.outcome }}">
+          <span class="index">{{ service.number }}</span>
+          <span><strong data-cms-key="capabilities.{{ loop.index0 }}.title">{{ service.title }}</strong><small data-cms-key="capabilities.{{ loop.index0 }}.short">{{ service.short }}</small></span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        {% endfor %}
+      </div>
+      <aside class="service-live-preview" aria-hidden="true">
+        <div class="service-live-visual"><span data-service-preview-number>{{ page.capabilities[0].number }}</span><i></i><i></i></div>
+        <p class="eyebrow">{{ 'Em foco' if locale == 'pt' else 'In focus' }}</p>
+        <h3 data-service-preview-title data-cms-key="capabilities.0.title">{{ page.capabilities[0].title }}</h3>
+        <p data-service-preview-summary data-cms-key="capabilities.0.summary">{{ page.capabilities[0].summary }}</p>
+        <small>{{ 'Resultado' if locale == 'pt' else 'Outcome' }}</small>
+        <strong data-service-preview-outcome data-cms-key="capabilities.0.outcome">{{ page.capabilities[0].outcome }}</strong>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section section-process-preview" data-cms-remove-key="block.home.process">
+  <div class="shell">
+    <div class="section-heading section-heading-narrow">
+      <p class="eyebrow" data-cms-key="process.kicker">{{ page.process.kicker }}</p>
+      <h2 data-cms-key="process.title">{{ page.process.title }}</h2>
+      <p data-cms-key="process.text">{{ page.process.text }}</p>
+    </div>
+    <div class="process-explorer process-explorer-home" data-process-explorer>
+      <div class="process-tabs" role="tablist" aria-label="{{ 'Fases do processo' if locale == 'pt' else 'Process stages' }}">
+        {% for step in page.workflow %}
+        <button id="home-process-tab-{{ loop.index }}" type="button" role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}" aria-controls="home-process-panel-{{ loop.index }}" tabindex="{{ '0' if loop.first else '-1' }}" data-process-tab="{{ loop.index0 }}">
+          <span>{{ step.number }}</span><strong data-cms-key="workflow.{{ loop.index0 }}.title">{{ step.title }}</strong>
+        </button>
+        {% endfor %}
+      </div>
+      <div class="process-stage">
+        <div class="process-stage-visual" aria-hidden="true"><span class="process-pulse"></span><span class="process-axis"></span><strong data-process-number>01</strong></div>
+        {% for step in page.workflow %}
+        <article id="home-process-panel-{{ loop.index }}" role="tabpanel" aria-labelledby="home-process-tab-{{ loop.index }}" data-process-panel="{{ loop.index0 }}"{% if not loop.first %} hidden{% endif %}>
+          <p class="eyebrow">{{ 'Fase' if locale == 'pt' else 'Stage' }} {{ step.number }}</p>
+          <h3 data-cms-key="workflow.{{ loop.index0 }}.title">{{ step.title }}</h3>
+          <p data-cms-key="workflow.{{ loop.index0 }}.text">{{ step.text }}</p>
+          <small>{{ 'Decisão visível · Entregável verificável' if locale == 'pt' else 'Visible decision · Verifiable output' }}</small>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    <a class="text-link process-more-link" href="{{ paths.process }}">{{ 'Ver o processo completo' if locale == 'pt' else 'Explore the full process' }}<span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<section class="section section-evidence" data-cms-remove-key="block.home.evidence">
+  <div class="shell evidence-layout">
+    <div class="section-heading">
+      <p class="eyebrow" data-cms-key="evidence.kicker">{{ page.evidence.kicker }}</p>
+      <h2 data-cms-key="evidence.title">{{ page.evidence.title }}</h2>
+      <p data-cms-key="evidence.text">{{ page.evidence.text }}</p>
+    </div>
+    <ol class="evidence-list">
+      {% for item in page.evidence.items %}
+      <li class="reveal"><span>0{{ loop.index }}</span><div><h3 data-cms-key="evidence.items.{{ loop.index0 }}.title">{{ item.title }}</h3><p data-cms-key="evidence.items.{{ loop.index0 }}.text">{{ item.text }}</p></div></li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="section section-engineering-preview section-dark" data-cms-remove-key="block.home.engineering">
+  <div class="shell engineering-grid">
+    <div class="section-heading">
+      <p class="eyebrow eyebrow-light" data-cms-key="engineering.kicker">{{ page.engineering.kicker }}</p>
+      <h2 data-cms-key="engineering.title">{{ page.engineering.title }}</h2>
+      <p data-cms-key="engineering.text">{{ page.engineering.text }}</p>
+      <a class="button button-outline-light" href="{{ paths.engineering }}">{{ 'Conhecer a nossa abordagem' if locale == 'pt' else 'Explore our approach' }}<span aria-hidden="true">→</span></a>
+    </div>
+    <ul class="engineering-points">
+      {% for point in page.engineering.points %}<li><span>0{{ loop.index }}</span><span data-cms-key="engineering.points.{{ loop.index0 }}">{{ point }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% include "partials/final-cta.njk" %}
+{% endblock %}

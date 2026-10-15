@@ -1,0 +1,91 @@
+{% extends "layouts/base.njk" %}
+{% block content %}
+<section class="page-hero">
+  <div class="shell page-hero-grid">
+    <p class="eyebrow" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+    <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+    <p class="hero-text" data-cms-key="hero.text">{{ page.hero.text }}</p>
+  </div>
+  {% include "partials/technical-diagram.njk" %}
+</section>
+
+<section class="section section-tight" data-cms-remove-key="block.services.intro">
+  <div class="shell editorial-intro">
+    <h2 data-cms-key="intro.title">{{ page.intro.title }}</h2>
+    <p data-cms-key="intro.text">{{ page.intro.text }}</p>
+  </div>
+</section>
+
+<section class="section service-finder-section" data-cms-remove-key="block.services.finder">
+  <div class="shell service-finder" data-service-finder>
+    <div class="section-heading section-heading-split">
+      <div>
+        <p class="eyebrow" data-cms-key="finder.kicker">{{ page.finder.kicker }}</p>
+        <h2 data-cms-key="finder.title">{{ page.finder.title }}</h2>
+      </div>
+      <p data-cms-key="finder.text">{{ page.finder.text }}</p>
+    </div>
+    <div class="service-finder-layout">
+      <div class="service-finder-options" role="group" aria-label="{{ page.finder.question }}">
+        <p class="finder-question" data-cms-key="finder.question">{{ page.finder.question }}</p>
+        {% for option in page.finder.options %}
+        <button class="finder-option" type="button" data-finder-option="{{ loop.index0 }}" aria-pressed="{{ 'true' if loop.first else 'false' }}">
+          <span>0{{ loop.index }}</span><strong data-cms-key="finder.options.{{ loop.index0 }}.label">{{ option.label }}</strong><i aria-hidden="true">→</i>
+        </button>
+        {% endfor %}
+      </div>
+      <div class="finder-result" aria-live="polite">
+        {% for option in page.finder.options %}
+        <article data-finder-result="{{ loop.index0 }}"{% if not loop.first %} hidden{% endif %}>
+          <p class="eyebrow" data-cms-key="finder.resultLabel">{{ page.finder.resultLabel }}</p>
+          <h3 data-cms-key="finder.options.{{ loop.index0 }}.result">{{ option.result }}</h3>
+          <p data-cms-key="finder.options.{{ loop.index0 }}.description">{{ option.description }}</p>
+          <a class="button button-light" href="{{ option.href }}" data-cms-href-key="finder.options.{{ loop.index0 }}.href" data-track="service_recommendation"><span data-cms-key="finder.action">{{ page.finder.action }}</span><span aria-hidden="true">→</span></a>
+        </article>
+        {% endfor %}
+        <div class="finder-diagram" aria-hidden="true"><span></span><span></span><span></span><strong>COBRAIT</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section service-comparison-section" data-cms-remove-key="block.services.comparison">
+  <div class="shell">
+    <div class="section-heading section-heading-split">
+      <div><p class="eyebrow" data-cms-key="comparison.kicker">{{ page.comparison.kicker }}</p><h2 data-cms-key="comparison.title">{{ page.comparison.title }}</h2></div>
+      <p>{{ 'A comparação ajuda a preparar a conversa. O formato final depende sempre do contexto, risco e capacidade existente.' if locale == 'pt' else 'This comparison helps prepare the conversation. The final format always depends on context, risk and existing capability.' }}</p>
+    </div>
+    <div class="comparison-scroll" tabindex="0" role="region" aria-label="{{ page.comparison.title }}">
+      <table class="service-comparison">
+        <thead><tr>{% for column in page.comparison.columns %}<th scope="col" data-cms-key="comparison.columns.{{ loop.index0 }}">{{ column }}</th>{% endfor %}</tr></thead>
+        <tbody>{% for row in page.comparison.rows %}{% set rowIndex = loop.index0 %}<tr>{% for cell in row %}{% if loop.first %}<th scope="row" data-cms-key="comparison.rows.{{ rowIndex }}.{{ loop.index0 }}">{{ cell }}</th>{% else %}<td data-cms-key="comparison.rows.{{ rowIndex }}.{{ loop.index0 }}">{{ cell }}</td>{% endif %}{% endfor %}</tr>{% endfor %}</tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section-services-detail" data-cms-remove-key="block.services.detail">
+  <div class="shell">
+    {% for service in page.services %}
+    <article class="service-detail-row reveal">
+      <div class="service-detail-index"><span>{{ service.number }}</span></div>
+      <div>
+        <p class="eyebrow" data-cms-key="services.{{ loop.index0 }}.short">{{ service.short }}</p>
+        <h2 data-cms-key="services.{{ loop.index0 }}.title">{{ service.title }}</h2>
+        <p data-cms-key="services.{{ loop.index0 }}.summary">{{ service.summary }}</p>
+      </div>
+      <div>
+        <dl>
+          <dt>{{ 'Adequado quando' if locale == 'pt' else 'Useful when' }}</dt>
+          <dd data-cms-key="services.{{ loop.index0 }}.situation">{{ service.situation }}</dd>
+          <dt>{{ 'Resultado' if locale == 'pt' else 'Outcome' }}</dt>
+          <dd data-cms-key="services.{{ loop.index0 }}.outcome">{{ service.outcome }}</dd>
+        </dl>
+        <a class="text-link" href="{{ service.href }}" data-cms-href-key="services.{{ loop.index0 }}.href"><span data-cms-key="linkLabel">{{ page.linkLabel }}</span><span aria-hidden="true">→</span></a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% include "partials/final-cta.njk" %}
+{% endblock %}

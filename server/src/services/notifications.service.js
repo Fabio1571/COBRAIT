@@ -211,6 +211,31 @@ async function notifyCallBookingCreated(booking) {
     ],
     booking.email
   );
+
+  if (!config.leadConfirmationEnabled || !isEmailEnabled() || !booking.email) return;
+
+  const isPortuguese = String(booking.sourcePage || "").startsWith("/pt/");
+  const subject = isPortuguese
+    ? "Recebemos o seu pedido — COBRAIT"
+    : "We received your request — COBRAIT";
+  const greeting = isPortuguese
+    ? `Olá ${formatValue(booking.fullName)},`
+    : `Hello ${formatValue(booking.fullName)},`;
+  const message = isPortuguese
+    ? "Recebemos o contexto do seu projeto. A nossa equipa comercial irá analisá-lo para preparar uma primeira conversa útil. Se selecionou um horário no calendário, receberá também a respetiva confirmação."
+    : "We have received your project context. Our commercial team will review it to prepare a useful initial conversation. If you selected a calendar slot, you will also receive the corresponding confirmation.";
+  const closing = isPortuguese
+    ? "Obrigado,\nEquipa COBRAIT"
+    : "Thank you,\nCOBRAIT team";
+
+  await getTransporter().sendMail({
+    from: config.notificationEmailFrom,
+    to: booking.email,
+    replyTo: config.notificationEmailTo,
+    subject,
+    text: [greeting, "", message, "", closing].join("\n"),
+    html: `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6;max-width:620px;"><p>${escapeHtml(greeting)}</p><p>${escapeHtml(message)}</p><p>${escapeHtml(closing).replace(/\n/g, "<br>")}</p></div>`
+  });
 }
 
 async function notifyContactRequestCreated(contactRequest) {
@@ -230,6 +255,37 @@ async function notifyContactRequestCreated(contactRequest) {
     ],
     contactRequest.email
   );
+
+  if (!config.leadConfirmationEnabled || !isEmailEnabled() || !contactRequest.email) return;
+  const isPortuguese = String(contactRequest.sourcePage || "").startsWith("/pt/");
+  const subject = isPortuguese ? "Recebemos a sua mensagem — COBRAIT" : "We received your message — COBRAIT";
+  const greeting = isPortuguese ? `Olá ${formatValue(contactRequest.fullName)},` : `Hello ${formatValue(contactRequest.fullName)},`;
+  const message = isPortuguese
+    ? "A sua mensagem ficou guardada e será analisada pela nossa equipa comercial."
+    : "Your message has been saved and will be reviewed by our commercial team.";
+  const closing = isPortuguese ? "Obrigado,\nEquipa COBRAIT" : "Thank you,\nCOBRAIT team";
+
+  await getTransporter().sendMail({
+    from: config.notificationEmailFrom,
+    to: contactRequest.email,
+    replyTo: config.notificationEmailTo,
+    subject,
+    text: [greeting, "", message, "", closing].join("\n"),
+    html: `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6;max-width:620px;"><p>${escapeHtml(greeting)}</p><p>${escapeHtml(message)}</p><p>${escapeHtml(closing).replace(/\n/g, "<br>")}</p></div>`
+  });
+}
+
+async function sendPasswordResetEmail(user, resetUrl) {
+  if (!isEmailEnabled()) return { sent: false };
+  await getTransporter().sendMail({
+    from: config.notificationEmailFrom,
+    to: user.email,
+    replyTo: config.notificationEmailTo,
+    subject: "Recuperar acesso ao painel COBRAIT",
+    text: `Olá ${formatValue(user.fullName)},\n\nUtilize esta ligação para definir uma nova palavra-passe. A ligação é válida durante 30 minutos:\n${resetUrl}\n\nSe não pediu esta alteração, ignore esta mensagem.`,
+    html: `<div style="font-family:Arial,sans-serif;color:#111827;line-height:1.6;max-width:620px;"><p>Olá ${escapeHtml(formatValue(user.fullName))},</p><p>Utilize a ligação seguinte para definir uma nova palavra-passe. A ligação é válida durante 30 minutos.</p><p><a href="${escapeHtml(resetUrl)}" style="display:inline-block;padding:12px 18px;color:#fff;background:#2059b5;border-radius:7px;text-decoration:none;font-weight:700;">Definir nova palavra-passe</a></p><p>Se não pediu esta alteração, ignore esta mensagem.</p></div>`
+  });
+  return { sent: true };
 }
 
 module.exports = {
@@ -237,5 +293,6 @@ module.exports = {
   getNotificationConfigSummary,
   notifyCallBookingCreated,
   notifyContactRequestCreated,
+  sendPasswordResetEmail,
   sendTestNotification
 };

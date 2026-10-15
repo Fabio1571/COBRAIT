@@ -4,7 +4,7 @@ const { HttpError } = require("../utils/errors");
 const BUILDER_FIELD = "__builderPage";
 const BUILDER_PREFIX = "builder.";
 const SLUG_REGEX = /^[a-z0-9][a-z0-9-]{0,50}$/;
-const VALID_BLOCK_TYPES = new Set(["hero", "text", "cards", "faq", "cta"]);
+const VALID_BLOCK_TYPES = new Set(["hero", "text", "cards", "faq", "image", "cta"]);
 const RESERVED_SLUGS = new Set([
   "admin",
   "agendar-chamada",
@@ -79,7 +79,11 @@ function normalizeBlock(block, index) {
     title: normalizeText(block && block.title),
     text: normalizeText(block && block.text),
     buttonLabel: normalizeText(block && block.buttonLabel),
-    buttonHref: normalizeText(block && block.buttonHref)
+    buttonHref: normalizeText(block && block.buttonHref),
+    hidden: Boolean(block && block.hidden),
+    imageUrl: normalizeText(block && block.imageUrl).slice(0, 500),
+    imageAlt: normalizeText(block && block.imageAlt).slice(0, 240),
+    imageCaption: normalizeText(block && block.imageCaption).slice(0, 300)
   };
 
   if (type === "cards") {
@@ -88,6 +92,10 @@ function normalizeBlock(block, index) {
     normalized.items = cleanPairs(block && block.items, 10);
   } else {
     normalized.items = cleanList(block && block.items, 8);
+  }
+
+  if (type === "image" && normalized.imageUrl && !/^\/assets\/uploads\/[a-z0-9._-]+$/i.test(normalized.imageUrl) && !/^https:\/\//i.test(normalized.imageUrl)) {
+    throw new HttpError(400, "A imagem deve vir da biblioteca ou usar um endereco https:// valido.");
   }
 
   return normalized;
@@ -107,9 +115,10 @@ function normalizeBuilderPage(input, fallbackSlug) {
     throw new HttpError(400, "Titulo da pagina e obrigatorio.");
   }
 
-  const status = input && input.status === "draft" ? "draft" : "published";
+  const requestedStatus = input && input.status;
+  const status = requestedStatus === "draft" || requestedStatus === "archived" ? requestedStatus : "published";
   const blocks = Array.isArray(input && input.blocks)
-    ? input.blocks.slice(0, 24).map(normalizeBlock).filter((block) => block.title || block.text || block.items.length)
+    ? input.blocks.slice(0, 24).map(normalizeBlock).filter((block) => block.title || block.text || block.imageUrl || block.items.length)
     : [];
 
   if (!blocks.length) {
@@ -118,6 +127,7 @@ function normalizeBuilderPage(input, fallbackSlug) {
 
   return {
     slug,
+    locale: input && input.locale === "en" ? "en" : "pt",
     title,
     description: normalizeText(input && input.description).slice(0, 220),
     status,
@@ -163,9 +173,36 @@ async function upsertBuilderPage(slugInput, pageInput, updatedBy) {
   return mapBuilderEntry(contentEntry);
 }
 
+async function duplicateBuilderPage(slugInput, updatedBy) {
+  const source = await getBuilderPage(slugInput);
+  if (!source) throw new HttpError(404, "Pagina nao encontrada.");
+  const baseSlug = normalizeSlug(source.slug + "-copia").slice(0, 45);
+  let duplicateSlug = baseSlug;
+  let counter = 2;
+  while (await getBuilderPage(duplicateSlug)) {
+    duplicateSlug = `${baseSlug}-${counter}`.slice(0, 51);
+    counter += 1;
+  }
+  return upsertBuilderPage(duplicateSlug, {
+    ...source,
+    slug: duplicateSlug,
+    title: `${source.title} (cópia)`,
+    status: "draft"
+  }, updatedBy);
+}
+
+async function archiveBuilderPage(slugInput, updatedBy) {
+  const source = await getBuilderPage(slugInput);
+  if (!source) throw new HttpError(404, "Pagina nao encontrada.");
+  return upsertBuilderPage(source.slug, { ...source, status: "archived" }, updatedBy);
+}
+
 module.exports = {
+  archiveBuilderPage,
+  duplicateBuilderPage,
   getBuilderPage,
   listBuilderPages,
+  normalizeBuilderPage,
   normalizeSlug,
   upsertBuilderPage
 };

@@ -128,6 +128,46 @@ async function createAuditLog(actorUserId, action, targetType, targetId, details
   );
 }
 
+function mapAuditLog(row, actor) {
+  let details = row.details || {};
+  if (typeof details === "string") {
+    try { details = JSON.parse(details); } catch { details = {}; }
+  }
+  return {
+    id: row.id,
+    actorUserId: row.actor_user_id || row.actorUserId || null,
+    actorName: (actor && (actor.full_name || actor.fullName)) || row.actor_name || "Sistema",
+    actorEmail: (actor && actor.email) || row.actor_email || "",
+    action: row.action,
+    targetType: row.target_type || row.targetType,
+    targetId: row.target_id || row.targetId || null,
+    details,
+    createdAt: row.created_at || row.createdAt
+  };
+}
+
+async function listAuditLogs(limitInput) {
+  const limit = Math.min(Math.max(Number(limitInput) || 80, 1), 200);
+  if (config.storageMode === "file") {
+    const data = readData();
+    return data.auditLogs
+      .slice()
+      .sort((left, right) => String(right.createdAt || right.created_at || "").localeCompare(String(left.createdAt || left.created_at || "")))
+      .slice(0, limit)
+      .map((item) => mapAuditLog(item, data.users.find((user) => user.id === (item.actorUserId || item.actor_user_id))));
+  }
+
+  const result = await query(
+    `SELECT l.id, l.actor_user_id, l.action, l.target_type, l.target_id, l.details, l.created_at,
+      u.full_name AS actor_name, u.email AS actor_email
+     FROM admin_audit_logs l
+     LEFT JOIN admin_users u ON u.id = l.actor_user_id
+     ORDER BY l.created_at DESC
+     LIMIT ${limit}`
+  );
+  return result.rows.map((row) => mapAuditLog(row));
+}
+
 async function listUsers() {
   if (config.storageMode === "file") {
     return readData().users
@@ -174,6 +214,18 @@ async function getUserById(id) {
     [id]
   );
 
+  return toPublicUser(result.rows[0] || null);
+}
+
+async function getUserByEmail(emailInput) {
+  const email = validateEmail(normalizeEmail(emailInput));
+  if (config.storageMode === "file") {
+    return toPublicUser(readData().users.find((entry) => entry.email === email) || null);
+  }
+  const result = await query(
+    `SELECT ${PUBLIC_COLUMNS} FROM admin_users WHERE lower(email) = lower($1) LIMIT 1`,
+    [email]
+  );
   return toPublicUser(result.rows[0] || null);
 }
 
@@ -567,9 +619,10 @@ module.exports = {
   createUser,
   ensureBootstrapAdmin,
   getUserById,
+  getUserByEmail,
   getUserWithPasswordCheck,
+  listAuditLogs,
   listUsers,
   updateLastLogin,
   updateUser
 };
-

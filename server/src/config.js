@@ -156,6 +156,17 @@ module.exports = {
     "..",
     firstNonEmpty(["STORAGE_FILE"], "data/local-storage.json")
   ),
+  mediaUploadPath: path.resolve(
+    __dirname,
+    "..",
+    "..",
+    firstNonEmpty(["MEDIA_UPLOAD_DIR"], "assets/uploads")
+  ),
+  mediaIndexPath: path.resolve(
+    __dirname,
+    "..",
+    firstNonEmpty(["MEDIA_INDEX_FILE"], "data/media-library.json")
+  ),
   host: firstNonEmpty(["API_HOST", "HOST"], "0.0.0.0"),
   port: parsePositiveInt(firstNonEmpty(["PORT", "API_PORT"]), 4000),
   databaseUrl,
@@ -170,6 +181,8 @@ module.exports = {
   bootstrapAdminPassword: String(process.env.ADMIN_PASSWORD || ""),
   bootstrapAdminName: String(process.env.ADMIN_NAME || "COBRAIT Admin").trim(),
   notificationEmailTo: firstNonEmpty(["NOTIFICATION_EMAIL_TO"], "geral@cobrait.pt"),
+  notificationsDisabled: parseBoolean(process.env.NOTIFICATIONS_DISABLED, false),
+  leadConfirmationEnabled: parseBoolean(firstNonEmpty(["LEAD_CONFIRMATION_ENABLED", "BOOKING_CONFIRMATION_ENABLED"]), true),
   notificationEmailFrom: firstNonEmpty(["NOTIFICATION_EMAIL_FROM", "SMTP_FROM"], "COBRAIT Website <geral@cobrait.pt>"),
   smtpHost: firstNonEmpty(["SMTP_HOST"]),
   smtpPort: parsePositiveInt(firstNonEmpty(["SMTP_PORT"]), 587),
@@ -177,5 +190,15 @@ module.exports = {
   smtpUser: firstNonEmpty(["SMTP_USER"]),
   smtpPassword: firstNonEmpty(["SMTP_PASSWORD"]),
   openaiApiKey: String(process.env.OPENAI_API_KEY || "").trim(),
-  openaiChatModel: String(process.env.OPENAI_CHAT_MODEL || "gpt-5.4-mini").trim()
+  openaiChatModel: String(process.env.OPENAI_CHAT_MODEL || "gpt-5.4-mini").trim(),
+  siteUrl: firstNonEmpty(["SITE_URL"], "https://cobrait.pt").replace(/\/+$/, ""),
+  calBookingUrl: firstNonEmpty(["CALCOM_BOOKING_URL"]).replace(/\/+$/, ""),
+  calWebhookSecret: firstNonEmpty(["CALCOM_WEBHOOK_SECRET"]),
+  zohoAccountsUrl: firstNonEmpty(["ZOHO_ACCOUNTS_URL"], "https://accounts.zoho.eu").replace(/\/+$/, ""),
+  zohoApiDomain: firstNonEmpty(["ZOHO_API_DOMAIN"], "https://www.zohoapis.eu").replace(/\/+$/, ""),
+  zohoClientId: firstNonEmpty(["ZOHO_CLIENT_ID"]),
+  zohoClientSecret: firstNonEmpty(["ZOHO_CLIENT_SECRET"]),
+  zohoRefreshToken: firstNonEmpty(["ZOHO_REFRESH_TOKEN"]),
+  zohoLeadModule: firstNonEmpty(["ZOHO_LEAD_MODULE"], "Leads"),
+  zohoTriggerWorkflows: parseBoolean(process.env.ZOHO_TRIGGER_WORKFLOWS, false)
 };

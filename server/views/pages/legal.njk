@@ -1,0 +1,20 @@
+{% extends "layouts/base.njk" %}
+{% block content %}
+<section class="page-hero legal-hero">
+  <div class="shell page-hero-grid">
+    <a class="back-link" href="{{ paths.home }}">← <span data-cms-scope="global" data-cms-key="common.backHome.{{ locale }}">{{ shared.common.backHome }}</span></a>
+    <p class="eyebrow" data-cms-key="hero.kicker">{{ page.hero.kicker }}</p>
+    <h1 data-cms-key="hero.title">{{ page.hero.title }}</h1>
+    <p class="hero-text" data-cms-key="hero.text">{{ page.hero.text }}</p>
+    <small data-cms-key="hero.updated">{{ page.hero.updated }}</small>
+  </div>
+</section>
+<section class="section legal-content-section">
+  <div class="shell legal-content">
+    {% for section in page.sections %}
+    {% set sectionIndex = loop.index0 %}
+    <article><span>0{{ loop.index }}</span><div><h2 data-cms-key="sections.{{ sectionIndex }}.title">{{ section.title }}</h2>{% for paragraph in section.body %}<p data-cms-key="sections.{{ sectionIndex }}.body.{{ loop.index0 }}">{{ paragraph }}</p>{% endfor %}</div></article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

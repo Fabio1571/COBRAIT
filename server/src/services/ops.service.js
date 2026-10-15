@@ -499,6 +499,48 @@ async function listCallBookings() {
   return result.rows.map(mapBooking);
 }
 
+async function syncCallBookingFromCalendar(payload) {
+  const bookingId = normalizeNullableText(payload && payload.id);
+  const email = normalizeNullableText(payload && payload.email);
+  if (!bookingId && !email) return null;
+
+  if (config.storageMode === "file") {
+    let updated = null;
+    await queueWrite((data) => {
+      const candidates = data.callBookings
+        .filter((item) => bookingId ? item.id === bookingId : String(item.email || "").toLowerCase() === String(email).toLowerCase())
+        .sort((left, right) => String(right.created_at || "").localeCompare(String(left.created_at || "")));
+      const entry = candidates[0];
+      if (!entry) return data;
+      if (payload.meetingUrl !== undefined) entry.meeting_url = normalizeNullableText(payload.meetingUrl);
+      if (payload.meetingAt !== undefined) entry.meeting_at = validateDateTime(payload.meetingAt);
+      if (payload.status !== undefined) entry.status = validateBookingStatus(payload.status);
+      entry.updated_at = nowIso();
+      updated = { ...entry };
+      return data;
+    });
+    return updated ? mapBooking(updated) : null;
+  }
+
+  let target = null;
+  if (bookingId) {
+    target = await fetchBookingById(bookingId);
+  } else {
+    const result = await query(
+      `SELECT ${BOOKING_COLUMNS} FROM call_bookings WHERE LOWER(email) = LOWER($1) ORDER BY created_at DESC LIMIT 1`,
+      [email]
+    );
+    target = result.rows[0] || null;
+  }
+  if (!target) return null;
+
+  return updateCallBooking(target.id, {
+    ...(payload.meetingUrl !== undefined ? { meetingUrl: payload.meetingUrl } : {}),
+    ...(payload.meetingAt !== undefined ? { meetingAt: payload.meetingAt } : {}),
+    ...(payload.status !== undefined ? { status: payload.status } : {})
+  });
+}
+
 async function updateCallBooking(id, payload) {
   if (config.storageMode === "file") {
     let updated = null;
@@ -709,5 +751,6 @@ module.exports = {
   listCallBookings,
   listContactRequests,
   updateCallBooking,
-  updateContactRequest
+  updateContactRequest,
+  syncCallBookingFromCalendar
 };
