@@ -112,7 +112,7 @@ function applyGlobalSettings(sharedContent, content, locale) {
   const next = deepClone(sharedContent);
   const values = content || {};
   next.brand = {
-    logo: safeAssetUrl(values["brand.logo"]) || "/assets/images/cobrait-symbol.svg?v=20260826b",
+    logo: safeAssetUrl(values["brand.logo"]) || "/assets/images/cobrait-symbol.svg?v=20261015a",
     logoAlt: String(values["brand.logoAlt"] || "").trim().slice(0, 240)
   };
   next.company = {

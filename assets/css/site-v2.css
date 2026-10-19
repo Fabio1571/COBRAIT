@@ -139,8 +139,8 @@ h3 { font-size: clamp(1.35rem, 2.2vw, 2rem); line-height: 1.15; font-weight: 640
 .site-header.is-scrolled { border-color: var(--line); box-shadow: 0 8px 30px rgba(20,18,29,.05); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 78px; gap: 30px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
-.brand-symbol { position: relative; display: grid; place-items: center; width: 36px; height: 38px; overflow: visible; }
-.brand-symbol img { width: 36px; height: 32px; object-fit: contain; }
+.brand-symbol { position: relative; display: grid; place-items: center; width: 44px; height: 32px; overflow: visible; }
+.brand-symbol img { width: 44px; height: 28px; object-fit: contain; }
 .brand-word { color: var(--blue-ink); font-size: 18px; font-weight: 850; letter-spacing: .13em; }
 .desktop-nav { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 2.6vw, 38px); margin-left: auto; }
 .desktop-nav a { position: relative; color: var(--ink-soft); font-size: 13px; font-weight: 650; }

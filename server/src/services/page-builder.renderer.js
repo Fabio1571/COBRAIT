@@ -99,14 +99,14 @@ function renderBuilderPage(page, options = {}) {
   <title>${title} — COBRAIT</title>
   <link rel="canonical" href="${canonical}">
   <link rel="icon" href="/assets/images/favicon/favicon.ico" sizes="any">
-  <link rel="icon" type="image/svg+xml" href="/assets/images/cobrait-symbol.svg?v=20260826b">
-  <link rel="stylesheet" href="/assets/css/site-v2.css?v=20260825a">
+  <link rel="icon" type="image/svg+xml" href="/assets/images/cobrait-symbol.svg?v=20261015a">
+  <link rel="stylesheet" href="/assets/css/site-v2.css?v=20261015a">
 </head>
 <body class="site-v2 builder-page">
   <a class="skip-link" href="#main-content">${isEnglish ? "Skip to content" : "Saltar para o conteúdo"}</a>
   <header class="site-header" data-site-header>
     <div class="shell header-inner">
-      <a class="brand" href="${home}"><span class="brand-symbol" aria-hidden="true"><img src="/assets/images/cobrait-symbol.svg?v=20260826b" alt="" width="64" height="64"></span><span class="brand-word">COBRAIT</span></a>
+      <a class="brand" href="${home}"><span class="brand-symbol" aria-hidden="true"><img src="/assets/images/cobrait-symbol.svg?v=20261015a" alt="" width="96" height="56"></span><span class="brand-word">COBRAIT</span></a>
       <nav class="desktop-nav" aria-label="${isEnglish ? "Primary navigation" : "Navegação principal"}"><a href="${services}">${isEnglish ? "Services" : "Serviços"}</a><a href="${about}">${isEnglish ? "About" : "Sobre"}</a></nav>
       <a class="button button-small button-dark" href="${booking}">${isEnglish ? "Discuss a project" : "Falar sobre um projeto"}</a>
     </div>
